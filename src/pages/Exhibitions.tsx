@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, ExternalLink, Play } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 interface ExhibitionImage {
   id: string;
@@ -223,23 +224,33 @@ const Exhibitions = () => {
                     )}
                   </div>
                   
-                  {/* Exhibition Images */}
-                  {exhibition.exhibition_images.length > 0 && (
-                    <div>
-                      <h3 className="font-display text-lg font-medium text-primary mb-4">Exhibition Highlights</h3>
-                      <div className="space-y-4">
-                        {exhibition.exhibition_images.map((image, idx) => (
-                          <div key={image.id} className="group">
-                            <img
-                              src={image.image_url}
-                              alt={`${exhibition.title} - Image ${idx + 1}`}
-                              className="w-full rounded-lg shadow-card hover-lift transition-transform duration-300"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                   {/* Exhibition Images */}
+                   {exhibition.exhibition_images.length > 0 && (
+                     <div>
+                       <h3 className="font-display text-lg font-medium text-primary mb-4">Exhibition Highlights</h3>
+                       <Carousel className="w-full">
+                         <CarouselContent>
+                           {exhibition.exhibition_images.map((image, idx) => (
+                             <CarouselItem key={image.id}>
+                               <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
+                                 <img
+                                   src={image.image_url}
+                                   alt={`${exhibition.title} - Image ${idx + 1}`}
+                                   className="w-full h-full object-cover shadow-card hover-lift transition-transform duration-300"
+                                 />
+                               </div>
+                             </CarouselItem>
+                           ))}
+                         </CarouselContent>
+                         {exhibition.exhibition_images.length > 1 && (
+                           <>
+                             <CarouselPrevious />
+                             <CarouselNext />
+                           </>
+                         )}
+                       </Carousel>
+                     </div>
+                   )}
                 </div>
               </Card>
             ))
