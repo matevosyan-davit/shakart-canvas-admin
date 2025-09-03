@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { ArrowDown } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 import heroImage from "@/assets/hero-bg.jpg";
 
 const HeroSection = () => {
+  const { t } = useLanguage();
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden canvas-texture">
       {/* Background Image with refined overlay */}
@@ -17,11 +19,11 @@ const HeroSection = () => {
       {/* Content */}
       <div className="relative z-10 text-center max-w-5xl mx-auto gallery-spacing animate-fade-in" style={{ marginTop: "4rem", animationDelay: "0.3s" }}>
         <h1 className="font-display text-7xl md:text-9xl text-primary mb-8 tracking-gallery leading-none">
-          Shakart
+          {t('hero.title')}
         </h1>
         <div className="max-w-2xl mx-auto mb-12">
           <p className="font-serif text-xl md:text-2xl text-muted-foreground leading-relaxed italic">
-            Contemporary painter exploring the intersection of emotion and abstraction through the language of color and form
+            {t('hero.description')}
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
@@ -31,7 +33,7 @@ const HeroSection = () => {
             className="font-body text-sm uppercase tracking-widest border border-primary/30 hover:border-primary hover:bg-primary/5 px-12 py-4 transition-all duration-500"
             asChild
           >
-            <Link to="/gallery">Explore Gallery</Link>
+            <Link to="/gallery">{t('hero.explore')}</Link>
           </Button>
           <Button 
             variant="ghost" 
@@ -39,7 +41,7 @@ const HeroSection = () => {
             className="font-body text-sm uppercase tracking-widest text-muted-foreground hover:text-primary px-8 py-4 transition-all duration-500"
             asChild
           >
-            <Link to="/about">About the Artist</Link>
+            <Link to="/about">{t('hero.about')}</Link>
           </Button>
         </div>
       </div>

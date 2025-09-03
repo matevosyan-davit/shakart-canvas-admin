@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getLocalizedText } from "@/utils/multiLanguage";
 
 interface ExhibitionImage {
   id: string;
@@ -25,6 +27,7 @@ interface Exhibition {
 const ExhibitionsSection = () => {
   const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t, currentLanguage } = useLanguage();
 
   useEffect(() => {
     fetchExhibitions();
@@ -63,7 +66,7 @@ const ExhibitionsSection = () => {
     return (
       <section className="py-24 px-6 bg-surface">
         <div className="max-w-6xl mx-auto text-center">
-          <p className="text-muted-foreground">Loading exhibitions...</p>
+          <p className="text-muted-foreground">{t('common.loading')}</p>
         </div>
       </section>
     );
@@ -75,10 +78,10 @@ const ExhibitionsSection = () => {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16 animate-slide-up">
             <h2 className="font-display text-4xl md:text-5xl font-semibold text-primary mb-6">
-              Exhibitions
+              {t('exhibitions.title')}
             </h2>
             <p className="font-body text-lg text-muted-foreground max-w-2xl mx-auto">
-              Stay tuned for upcoming exhibitions and artistic showcases.
+              {t('exhibitions.subtitle')}
             </p>
           </div>
         </div>
@@ -90,12 +93,12 @@ const ExhibitionsSection = () => {
     <section className="py-24 px-6 bg-surface">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16 animate-slide-up">
-          <h2 className="font-display text-4xl md:text-5xl font-semibold text-primary mb-6">
-            Exhibitions
-          </h2>
-          <p className="font-body text-lg text-muted-foreground max-w-2xl mx-auto">
-            Recent solo and group exhibitions showcasing my artistic evolution and growing presence in the contemporary art scene.
-          </p>
+            <h2 className="font-display text-4xl md:text-5xl font-semibold text-primary mb-6">
+              {t('exhibitions.title')}
+            </h2>
+            <p className="font-body text-lg text-muted-foreground max-w-2xl mx-auto">
+              {t('exhibitions.subtitle')}
+            </p>
         </div>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -138,18 +141,18 @@ const ExhibitionsSection = () => {
               <div className="space-y-3">
                 <div>
                   <h3 className="font-display text-xl font-semibold text-primary mb-1 line-clamp-1">
-                    {exhibition.title}
+                    {getLocalizedText(exhibition, 'title', currentLanguage)}
                   </h3>
                   {exhibition.theme && (
                     <span className="inline-block px-2 py-1 bg-accent text-accent-foreground text-xs font-medium rounded-full mb-2">
-                      {exhibition.theme}
+                      {getLocalizedText(exhibition, 'theme', currentLanguage)}
                     </span>
                   )}
                 </div>
 
                 <div className="space-y-1">
                   <p className="font-body text-primary font-medium">
-                    {exhibition.location}
+                    {getLocalizedText(exhibition, 'location', currentLanguage)}
                   </p>
                   <p className="font-body text-muted-foreground text-sm">
                     {new Date(exhibition.date).toLocaleDateString('en-US', { 
@@ -162,7 +165,7 @@ const ExhibitionsSection = () => {
 
                 {exhibition.description && (
                   <p className="font-body text-muted-foreground text-sm line-clamp-2">
-                    {exhibition.description}
+                    {getLocalizedText(exhibition, 'description', currentLanguage)}
                   </p>
                 )}
 
@@ -181,7 +184,7 @@ const ExhibitionsSection = () => {
         
         <div className="text-center mt-12">
           <Link to="/exhibitions">
-            <Button className="mb-4">View All Exhibitions</Button>
+            <Button className="mb-4">{t('exhibitions.viewAll')}</Button>
           </Link>
           <p className="font-body text-muted-foreground">
             For exhibition inquiries and collaboration opportunities, please{" "}

@@ -54,27 +54,42 @@ export type Database = {
           category: string
           created_at: string
           description: string | null
+          description_am: string | null
+          description_ru: string | null
           id: string
+          language: string | null
           price: number | null
           title: string
+          title_am: string | null
+          title_ru: string | null
           updated_at: string
         }
         Insert: {
           category: string
           created_at?: string
           description?: string | null
+          description_am?: string | null
+          description_ru?: string | null
           id?: string
+          language?: string | null
           price?: number | null
           title: string
+          title_am?: string | null
+          title_ru?: string | null
           updated_at?: string
         }
         Update: {
           category?: string
           created_at?: string
           description?: string | null
+          description_am?: string | null
+          description_ru?: string | null
           id?: string
+          language?: string | null
           price?: number | null
           title?: string
+          title_am?: string | null
+          title_ru?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -157,30 +172,57 @@ export type Database = {
           created_at: string
           date: string
           description: string | null
+          description_am: string | null
+          description_ru: string | null
           id: string
+          language: string | null
           location: string
+          location_am: string | null
+          location_ru: string | null
           theme: string | null
+          theme_am: string | null
+          theme_ru: string | null
           title: string
+          title_am: string | null
+          title_ru: string | null
           updated_at: string
         }
         Insert: {
           created_at?: string
           date: string
           description?: string | null
+          description_am?: string | null
+          description_ru?: string | null
           id?: string
+          language?: string | null
           location: string
+          location_am?: string | null
+          location_ru?: string | null
           theme?: string | null
+          theme_am?: string | null
+          theme_ru?: string | null
           title: string
+          title_am?: string | null
+          title_ru?: string | null
           updated_at?: string
         }
         Update: {
           created_at?: string
           date?: string
           description?: string | null
+          description_am?: string | null
+          description_ru?: string | null
           id?: string
+          language?: string | null
           location?: string
+          location_am?: string | null
+          location_ru?: string | null
           theme?: string | null
+          theme_am?: string | null
+          theme_ru?: string | null
           title?: string
+          title_am?: string | null
+          title_ru?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -190,8 +232,13 @@ export type Database = {
           created_at: string
           embed_link: string
           id: string
+          language: string | null
           media_name: string
+          media_name_am: string | null
+          media_name_ru: string | null
           title: string
+          title_am: string | null
+          title_ru: string | null
           type: string
           updated_at: string
         }
@@ -199,8 +246,13 @@ export type Database = {
           created_at?: string
           embed_link: string
           id?: string
+          language?: string | null
           media_name: string
+          media_name_am?: string | null
+          media_name_ru?: string | null
           title: string
+          title_am?: string | null
+          title_ru?: string | null
           type?: string
           updated_at?: string
         }
@@ -208,8 +260,13 @@ export type Database = {
           created_at?: string
           embed_link?: string
           id?: string
+          language?: string | null
           media_name?: string
+          media_name_am?: string | null
+          media_name_ru?: string | null
           title?: string
+          title_am?: string | null
+          title_ru?: string | null
           type?: string
           updated_at?: string
         }

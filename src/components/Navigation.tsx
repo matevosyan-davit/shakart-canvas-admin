@@ -1,17 +1,20 @@
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const Navigation = () => {
   const location = useLocation();
+  const { t } = useLanguage();
   
   const navLinks = [
-    { href: "/", label: "Home" },
-    { href: "/about", label: "About" },
-    { href: "/gallery", label: "Gallery" },
-    { href: "/exhibitions", label: "Exhibitions" },
-    { href: "/media", label: "Media" },
-    { href: "/contact", label: "Contact Us" },
-    { href: "/admin", label: "Admin" }
+    { href: "/", label: t('nav.home') },
+    { href: "/about", label: t('nav.about') },
+    { href: "/gallery", label: t('nav.gallery') },
+    { href: "/exhibitions", label: t('nav.exhibitions') },
+    { href: "/media", label: t('nav.media') },
+    { href: "/contact", label: t('nav.contact') },
+    { href: "/admin", label: t('nav.admin') }
   ];
 
   return (
@@ -36,6 +39,7 @@ const Navigation = () => {
                 {link.label}
               </Link>
             ))}
+            <LanguageSwitcher />
           </div>
           
           {/* Mobile menu button */}

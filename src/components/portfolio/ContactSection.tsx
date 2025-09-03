@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Mail, Phone, MapPin, Instagram } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +15,7 @@ const ContactSection = () => {
     message: ""
   });
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,11 +39,10 @@ const ContactSection = () => {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16 animate-slide-up">
           <h2 className="font-display text-4xl md:text-5xl font-semibold text-primary mb-6">
-            Get in Touch
+            {t('contact.title')}
           </h2>
           <p className="font-body text-lg text-muted-foreground max-w-2xl mx-auto">
-            I'd love to hear from you. Whether you're interested in commissioning a piece, 
-            collaborating, or simply want to discuss art, don't hesitate to reach out.
+            {t('contact.subtitle')}
           </p>
         </div>
         
@@ -121,7 +122,7 @@ const ContactSection = () => {
           <div className="space-y-8 animate-slide-up" style={{ animationDelay: "0.2s" }}>
             <div>
               <h3 className="font-display text-2xl font-medium text-primary mb-6">
-                Contact Information
+                {t('contact.info')}
               </h3>
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
@@ -129,7 +130,7 @@ const ContactSection = () => {
                     <Mail className="w-5 h-5 text-accent" />
                   </div>
                   <div>
-                    <p className="font-body font-medium text-foreground">Email</p>
+                    <p className="font-body font-medium text-foreground">{t('contact.email')}</p>
                     <p className="font-body text-muted-foreground">hello@shakart.com</p>
                   </div>
                 </div>
@@ -139,7 +140,7 @@ const ContactSection = () => {
                     <Phone className="w-5 h-5 text-accent" />
                   </div>
                   <div>
-                    <p className="font-body font-medium text-foreground">Phone</p>
+                    <p className="font-body font-medium text-foreground">{t('contact.phone')}</p>
                     <p className="font-body text-muted-foreground">+1 (555) 123-4567</p>
                   </div>
                 </div>
@@ -149,7 +150,7 @@ const ContactSection = () => {
                     <MapPin className="w-5 h-5 text-accent" />
                   </div>
                   <div>
-                    <p className="font-body font-medium text-foreground">Studio</p>
+                    <p className="font-body font-medium text-foreground">{t('contact.location')}</p>
                     <p className="font-body text-muted-foreground">San Francisco, CA</p>
                   </div>
                 </div>
