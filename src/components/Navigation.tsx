@@ -10,7 +10,8 @@ const Navigation = () => {
     { href: "/gallery", label: "Gallery" },
     { href: "/exhibitions", label: "Exhibitions" },
     { href: "/media", label: "Media" },
-    { href: "/contact", label: "Contact Us" }
+    { href: "/contact", label: "Contact Us" },
+    { href: "/admin", label: "Admin" }
   ];
 
   return (

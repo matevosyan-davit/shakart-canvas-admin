@@ -14,7 +14,71 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      artwork_images: {
+        Row: {
+          artwork_id: string
+          created_at: string
+          display_order: number | null
+          id: string
+          image_path: string
+          image_url: string
+        }
+        Insert: {
+          artwork_id: string
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          image_path: string
+          image_url: string
+        }
+        Update: {
+          artwork_id?: string
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          image_path?: string
+          image_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "artwork_images_artwork_id_fkey"
+            columns: ["artwork_id"]
+            isOneToOne: false
+            referencedRelation: "artworks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      artworks: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          price: number | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          price?: number | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          price?: number | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
