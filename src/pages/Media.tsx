@@ -21,6 +21,22 @@ const Media = () => {
     fetchMedia();
   }, []);
 
+  const extractEmbedUrl = (embedLink: string): string => {
+    // If it's already a URL, return it
+    if (embedLink.startsWith('http')) {
+      return embedLink;
+    }
+    
+    // If it's iframe HTML, extract the src URL
+    const srcMatch = embedLink.match(/src="([^"]+)"/);
+    if (srcMatch && srcMatch[1]) {
+      return srcMatch[1];
+    }
+    
+    // Fallback to the original link
+    return embedLink;
+  };
+
   const fetchMedia = async () => {
     try {
       const { data, error } = await supabase
@@ -75,7 +91,7 @@ const Media = () => {
                     {/* Video Embed */}
                     <div className="aspect-video bg-muted rounded-lg overflow-hidden">
                       <iframe
-                        src={mediaItem.embed_link}
+                        src={extractEmbedUrl(mediaItem.embed_link)}
                         title={mediaItem.title}
                         className="w-full h-full"
                         frameBorder="0"
