@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,9 +6,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Upload, X } from "lucide-react";
+import { Upload, X, Edit, Trash2, Plus } from "lucide-react";
 
 interface ArtworkForm {
   title: string;
@@ -17,10 +18,29 @@ interface ArtworkForm {
   category: "painting" | "sculpture" | "streetart";
 }
 
+interface ArtworkImage {
+  id: string;
+  image_url: string;
+  display_order: number;
+}
+
+interface Artwork {
+  id: string;
+  title: string;
+  description: string | null;
+  price: number | null;
+  category: string;
+  created_at: string;
+  artwork_images: ArtworkImage[];
+}
+
 const Admin = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
   const [previews, setPreviews] = useState<string[]>([]);
+  const [artworks, setArtworks] = useState<Artwork[]>([]);
+  const [editingArtwork, setEditingArtwork] = useState<Artwork | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const form = useForm<ArtworkForm>({
     defaultValues: {
@@ -30,6 +50,50 @@ const Admin = () => {
       category: "painting",
     },
   });
+
+  useEffect(() => {
+    fetchArtworks();
+  }, []);
+
+  useEffect(() => {
+    if (editingArtwork) {
+      form.reset({
+        title: editingArtwork.title,
+        description: editingArtwork.description || "",
+        price: editingArtwork.price?.toString() || "",
+        category: editingArtwork.category as "painting" | "sculpture" | "streetart",
+      });
+    }
+  }, [editingArtwork, form]);
+
+  const fetchArtworks = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('artworks')
+        .select(`
+          *,
+          artwork_images (
+            id,
+            image_url,
+            display_order
+          )
+        `)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      
+      const sortedArtworks = data?.map(artwork => ({
+        ...artwork,
+        artwork_images: artwork.artwork_images.sort((a: ArtworkImage, b: ArtworkImage) => a.display_order - b.display_order)
+      })) || [];
+      
+      setArtworks(sortedArtworks);
+    } catch (error) {
+      console.error('Error fetching artworks:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
@@ -78,56 +142,151 @@ const Admin = () => {
   };
 
   const onSubmit = async (data: ArtworkForm) => {
-    if (selectedFiles.length === 0) {
+    if (!editingArtwork && selectedFiles.length === 0) {
       toast.error("Please select at least one image");
       return;
     }
 
     setUploading(true);
     try {
-      // Create artwork record
-      const { data: artwork, error: artworkError } = await supabase
-        .from('artworks')
-        .insert({
-          title: data.title,
-          description: data.description,
-          price: parseFloat(data.price),
-          category: data.category,
-        })
-        .select()
-        .single();
+      if (editingArtwork) {
+        // Update existing artwork
+        const { error: artworkError } = await supabase
+          .from('artworks')
+          .update({
+            title: data.title,
+            description: data.description,
+            price: parseFloat(data.price),
+            category: data.category,
+          })
+          .eq('id', editingArtwork.id);
 
-      if (artworkError) throw artworkError;
+        if (artworkError) throw artworkError;
 
-      // Upload all images
-      await Promise.all(
-        selectedFiles.map((file, index) => 
-          uploadFile(file, artwork.id, index)
-        )
-      );
+        // Upload new images if any
+        if (selectedFiles.length > 0) {
+          await Promise.all(
+            selectedFiles.map((file, index) => 
+              uploadFile(file, editingArtwork.id, editingArtwork.artwork_images.length + index)
+            )
+          );
+        }
 
-      toast.success("Artwork added successfully!");
+        toast.success("Artwork updated successfully!");
+        setEditingArtwork(null);
+      } else {
+        // Create new artwork
+        const { data: artwork, error: artworkError } = await supabase
+          .from('artworks')
+          .insert({
+            title: data.title,
+            description: data.description,
+            price: parseFloat(data.price),
+            category: data.category,
+          })
+          .select()
+          .single();
+
+        if (artworkError) throw artworkError;
+
+        // Upload all images
+        await Promise.all(
+          selectedFiles.map((file, index) => 
+            uploadFile(file, artwork.id, index)
+          )
+        );
+
+        toast.success("Artwork added successfully!");
+      }
+
       form.reset();
       setSelectedFiles([]);
       setPreviews([]);
+      fetchArtworks();
     } catch (error) {
-      console.error('Error adding artwork:', error);
-      toast.error("Failed to add artwork");
+      console.error('Error saving artwork:', error);
+      toast.error("Failed to save artwork");
     } finally {
       setUploading(false);
     }
   };
 
+  const handleEdit = (artwork: Artwork) => {
+    setEditingArtwork(artwork);
+    setSelectedFiles([]);
+    setPreviews([]);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingArtwork(null);
+    form.reset();
+    setSelectedFiles([]);
+    setPreviews([]);
+  };
+
+  const handleDelete = async (artworkId: string) => {
+    if (!confirm("Are you sure you want to delete this artwork?")) return;
+
+    try {
+      const { error } = await supabase
+        .from('artworks')
+        .delete()
+        .eq('id', artworkId);
+
+      if (error) throw error;
+      
+      toast.success("Artwork deleted successfully!");
+      fetchArtworks();
+    } catch (error) {
+      console.error('Error deleting artwork:', error);
+      toast.error("Failed to delete artwork");
+    }
+  };
+
+  const handleDeleteImage = async (imageId: string) => {
+    if (!confirm("Are you sure you want to delete this image?")) return;
+
+    try {
+      const { error } = await supabase
+        .from('artwork_images')
+        .delete()
+        .eq('id', imageId);
+
+      if (error) throw error;
+      
+      toast.success("Image deleted successfully!");
+      fetchArtworks();
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      toast.error("Failed to delete image");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background py-12">
-      <div className="container mx-auto px-4 max-w-2xl">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-center">Add New Artwork</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <div className="container mx-auto px-4 max-w-6xl">
+        <Tabs defaultValue="add" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-8">
+            <TabsTrigger value="add" className="flex items-center gap-2">
+              <Plus className="w-4 h-4" />
+              Add Artwork
+            </TabsTrigger>
+            <TabsTrigger value="manage" className="flex items-center gap-2">
+              <Edit className="w-4 h-4" />
+              Manage Artworks
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="add">
+            <Card className="max-w-2xl mx-auto">
+              <CardHeader>
+                <CardTitle className="text-2xl font-bold text-center">
+                  {editingArtwork ? 'Edit Artwork' : 'Add New Artwork'}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <FormField
                   control={form.control}
                   name="title"
@@ -253,17 +412,120 @@ const Admin = () => {
                   )}
                 </div>
 
-                <Button 
-                  type="submit" 
-                  className="w-full" 
-                  disabled={uploading}
-                >
-                  {uploading ? "Adding Artwork..." : "Add Artwork"}
-                </Button>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
+                    <div className="flex gap-4">
+                      {editingArtwork && (
+                        <Button 
+                          type="button" 
+                          variant="outline"
+                          className="flex-1" 
+                          onClick={handleCancelEdit}
+                        >
+                          Cancel
+                        </Button>
+                      )}
+                      <Button 
+                        type="submit" 
+                        className="flex-1" 
+                        disabled={uploading}
+                      >
+                        {uploading 
+                          ? (editingArtwork ? "Updating..." : "Adding...") 
+                          : (editingArtwork ? "Update Artwork" : "Add Artwork")
+                        }
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="manage">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-2xl font-bold">Manage Artworks</CardTitle>
+              </CardHeader>
+              <CardContent>
+            {loading ? (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">Loading artworks...</p>
+              </div>
+            ) : artworks.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">No artworks found. Add some using the "Add Artwork" tab.</p>
+              </div>
+            ) : (
+              <div className="grid gap-6">
+                {artworks.map((artwork) => (
+                  <Card key={artwork.id} className="p-6">
+                    <div className="flex gap-6">
+                      <div className="w-32 h-32 flex-shrink-0">
+                        <img
+                          src={artwork.artwork_images[0]?.image_url || '/placeholder.svg'}
+                          alt={artwork.title}
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex justify-between items-start mb-2">
+                          <h3 className="text-xl font-semibold text-primary">{artwork.title}</h3>
+                          <div className="flex gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleEdit(artwork)}
+                            >
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => handleDelete(artwork.id)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                        <p className="text-muted-foreground mb-2 capitalize">{artwork.category}</p>
+                        <p className="text-foreground mb-2">${artwork.price?.toFixed(2) || 'Price on request'}</p>
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {artwork.description || 'No description'}
+                        </p>
+                        
+                        {artwork.artwork_images.length > 1 && (
+                          <div className="mt-4">
+                            <p className="text-sm font-medium mb-2">Images ({artwork.artwork_images.length}):</p>
+                            <div className="flex gap-2 flex-wrap">
+                              {artwork.artwork_images.map((image, index) => (
+                                <div key={image.id} className="relative">
+                                  <img
+                                    src={image.image_url}
+                                    alt={`${artwork.title} ${index + 1}`}
+                                    className="w-16 h-16 object-cover rounded border"
+                                  />
+                                  <Button
+                                    variant="destructive"
+                                    size="icon"
+                                    className="absolute -top-2 -right-2 h-5 w-5"
+                                    onClick={() => handleDeleteImage(image.id)}
+                                  >
+                                    <X className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
