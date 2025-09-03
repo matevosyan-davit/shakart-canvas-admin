@@ -27,7 +27,7 @@ const Media = () => {
       const url = extractEmbedUrl(mediaItem.embed_link);
       if (!isVideoUrl(url) && !previewImages[mediaItem.id]) {
         try {
-          const response = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}`);
+          const response = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}&meta=true`);
           const data = await response.json();
           if (data.status === 'success' && data.data?.image?.url) {
             setPreviewImages(prev => ({
