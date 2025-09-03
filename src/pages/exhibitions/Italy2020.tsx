@@ -35,7 +35,7 @@ const Italy2020 = () => {
   ];
 
   return (
-    <main className="min-h-screen bg-surface">
+    <main className="min-h-screen bg-surface pt-24">
       {/* Navigation */}
       <div className="sticky top-0 z-40 bg-surface p-6">
         <Link to="/exhibitions">
