@@ -176,7 +176,7 @@ const Gallery = () => {
           className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4"
           onClick={() => setSelectedArtwork(null)}
         >
-          <div className="w-[80vw] h-[80vh] glass rounded-lg overflow-hidden" onClick={(e) => e.stopPropagation()}>
+          <div className="w-[90vw] h-[90vh] glass rounded-lg overflow-hidden" onClick={(e) => e.stopPropagation()}>
             <div className="flex h-full">
               {/* Image Section - Left Side */}
               <div className="flex-1 bg-black/20 flex items-center justify-center p-8">
