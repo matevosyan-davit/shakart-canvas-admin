@@ -9,6 +9,7 @@ import About from "./pages/About";
 import Gallery from "./pages/Gallery";
 import Exhibitions from "./pages/Exhibitions";
 import Media from "./pages/Media";
+import Contact from "./pages/Contact";
 import Armenia2019 from "./pages/exhibitions/Armenia2019";
 import Italy2020 from "./pages/exhibitions/Italy2020";
 import Armenia2022 from "./pages/exhibitions/Armenia2022";
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/exhibitions/italy-2020" element={<Italy2020 />} />
           <Route path="/exhibitions/armenia-2022" element={<Armenia2022 />} />
           <Route path="/media" element={<Media />} />
+          <Route path="/contact" element={<Contact />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
