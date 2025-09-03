@@ -36,6 +36,28 @@ const Media = () => {
     return embedLink;
   };
 
+  const convertToEmbedUrl = (url: string): string => {
+    // Handle YouTube URLs
+    const youtubeRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/;
+    const match = url.match(youtubeRegex);
+    if (match) {
+      return `https://www.youtube.com/embed/${match[1]}`;
+    }
+    
+    // If it's already an embed URL, return as is
+    if (url.includes('/embed/')) {
+      return url;
+    }
+    
+    // For other URLs, return as is (we'll handle them differently in the display)
+    return url;
+  };
+
+  const isVideoUrl = (url: string): boolean => {
+    return url.includes('youtube.com') || url.includes('youtu.be') || 
+           url.includes('vimeo.com') || url.includes('/embed/');
+  };
+
   const fetchMedia = async () => {
     try {
       const { data, error } = await supabase
@@ -87,17 +109,42 @@ const Media = () => {
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <div className="grid lg:grid-cols-2 gap-8 p-8">
-                    {/* Video Embed */}
-                    <div className="aspect-video bg-muted rounded-lg overflow-hidden">
-                      <iframe
-                        src={extractEmbedUrl(mediaItem.embed_link)}
-                        title={mediaItem.title}
-                        className="w-full h-full"
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      />
-                    </div>
+                    {/* Media Content */}
+                    {isVideoUrl(extractEmbedUrl(mediaItem.embed_link)) ? (
+                      <div className="aspect-video bg-muted rounded-lg overflow-hidden">
+                        <iframe
+                          src={convertToEmbedUrl(extractEmbedUrl(mediaItem.embed_link))}
+                          title={mediaItem.title}
+                          className="w-full h-full"
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                      </div>
+                    ) : (
+                      <div className="aspect-video bg-muted rounded-lg overflow-hidden flex items-center justify-center border-2 border-dashed border-border">
+                        <div className="text-center p-6">
+                          <div className="mb-4">
+                            <svg className="w-16 h-16 mx-auto text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                          </div>
+                          <h3 className="font-medium text-foreground mb-2">Article Link</h3>
+                          <p className="text-sm text-muted-foreground mb-4">This content is available as an external article</p>
+                          <a
+                            href={extractEmbedUrl(mediaItem.embed_link)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+                          >
+                            Read Article
+                            <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                          </a>
+                        </div>
+                      </div>
+                    )}
                     
                     {/* Content */}
                     <div className="flex flex-col justify-center">

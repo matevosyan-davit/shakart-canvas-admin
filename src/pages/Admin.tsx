@@ -163,6 +163,28 @@ const Admin = () => {
     return embedLink;
   };
 
+  const convertToEmbedUrl = (url: string): string => {
+    // Handle YouTube URLs
+    const youtubeRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/;
+    const match = url.match(youtubeRegex);
+    if (match) {
+      return `https://www.youtube.com/embed/${match[1]}`;
+    }
+    
+    // If it's already an embed URL, return as is
+    if (url.includes('/embed/')) {
+      return url;
+    }
+    
+    // For other URLs, return as is (we'll handle them differently in the display)
+    return url;
+  };
+
+  const isVideoUrl = (url: string): boolean => {
+    return url.includes('youtube.com') || url.includes('youtu.be') || 
+           url.includes('vimeo.com') || url.includes('/embed/');
+  };
+
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
     setSelectedFiles(prev => [...prev, ...files]);
@@ -683,7 +705,7 @@ const Admin = () => {
                         <FormLabel>Embed Link</FormLabel>
                         <FormControl>
                           <Input 
-                            placeholder="YouTube embed URL (e.g., https://www.youtube.com/embed/VIDEO_ID)" 
+                            placeholder="YouTube URL, embed URL, or article link" 
                             {...field} 
                           />
                         </FormControl>
@@ -832,16 +854,38 @@ const Admin = () => {
                         </div>
                       </div>
                       
-                      <div className="aspect-video bg-muted rounded-lg overflow-hidden mb-4">
-                        <iframe
-                          src={extractEmbedUrl(mediaItem.embed_link)}
-                          title={mediaItem.title}
-                          className="w-full h-full"
-                          frameBorder="0"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                        />
-                      </div>
+                      {/* Media Preview */}
+                      {isVideoUrl(extractEmbedUrl(mediaItem.embed_link)) ? (
+                        <div className="aspect-video bg-muted rounded-lg overflow-hidden mb-4">
+                          <iframe
+                            src={convertToEmbedUrl(extractEmbedUrl(mediaItem.embed_link))}
+                            title={mediaItem.title}
+                            className="w-full h-full"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          />
+                        </div>
+                      ) : (
+                        <div className="aspect-video bg-muted rounded-lg overflow-hidden mb-4 flex items-center justify-center border-2 border-dashed border-border">
+                          <div className="text-center p-4">
+                            <div className="mb-2">
+                              <svg className="w-12 h-12 mx-auto text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                              </svg>
+                            </div>
+                            <p className="text-sm text-muted-foreground mb-2">Article Link</p>
+                            <a
+                              href={extractEmbedUrl(mediaItem.embed_link)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-primary hover:underline"
+                            >
+                              View Article
+                            </a>
+                          </div>
+                        </div>
+                      )}
                       
                       <p className="text-sm text-muted-foreground">
                         <strong>Embed Link:</strong> {mediaItem.embed_link}
