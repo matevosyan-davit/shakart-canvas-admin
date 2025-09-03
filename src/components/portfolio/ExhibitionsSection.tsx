@@ -1,41 +1,37 @@
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const exhibitions = [
   {
     id: 1,
-    title: "Convergent Visions",
-    gallery: "Modern Art Gallery",
-    location: "New York, NY",
-    date: "March 2024",
+    title: "Echoes of Heritage",
+    gallery: "National Gallery of Armenia",
+    location: "Yerevan, Armenia",
+    date: "2019",
     type: "Solo Exhibition",
-    status: "Current"
+    status: "Past",
+    link: "/exhibitions/armenia-2019"
   },
   {
     id: 2,
-    title: "Abstract Narratives",
-    gallery: "Contemporary Space",
-    location: "Los Angeles, CA",
-    date: "September 2023",
+    title: "Mediterranean Dialogues",
+    gallery: "Contemporary Arts Center",
+    location: "Rome, Italy",
+    date: "2020",
     type: "Group Exhibition",
-    status: "Past"
+    status: "Past",
+    link: "/exhibitions/italy-2020"
   },
   {
     id: 3,
-    title: "Emerging Voices",
-    gallery: "Art District Gallery",
-    location: "San Francisco, CA",
-    date: "June 2023",
-    type: "Group Exhibition",
-    status: "Past"
-  },
-  {
-    id: 4,
-    title: "Color & Form",
-    gallery: "Cultural Arts Center",
-    location: "Chicago, IL",
-    date: "December 2022",
+    title: "Urban Visions",
+    gallery: "Yerevan Modern Gallery",
+    location: "Yerevan, Armenia",
+    date: "2022",
     type: "Solo Exhibition",
-    status: "Past"
+    status: "Past",
+    link: "/exhibitions/armenia-2022"
   }
 ];
 
@@ -84,6 +80,14 @@ const ExhibitionsSection = () => {
                   <span className="font-body text-sm text-muted-foreground">
                     {exhibition.type}
                   </span>
+                  <Link 
+                    to={exhibition.link}
+                    className="mt-2"
+                  >
+                    <Button variant="outline" size="sm">
+                      View Details
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </Card>
@@ -93,9 +97,9 @@ const ExhibitionsSection = () => {
         <div className="text-center mt-12">
           <p className="font-body text-muted-foreground">
             For exhibition inquiries and collaboration opportunities, please{" "}
-            <button className="text-accent hover:text-accent/80 font-medium transition-colors duration-300">
+            <Link to="/contact" className="text-accent hover:text-accent/80 font-medium transition-colors duration-300">
               get in touch
-            </button>
+            </Link>
           </p>
         </div>
       </div>

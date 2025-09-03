@@ -15,7 +15,7 @@ const HeroSection = () => {
       </div>
       
       {/* Content */}
-      <div className="relative z-10 text-center max-w-4xl mx-auto px-6 animate-fade-in">
+      <div className="relative z-10 text-center max-w-4xl mx-auto px-6 animate-fade-in" style={{ marginTop: "6rem" }}>
         <h1 className="font-display text-6xl md:text-8xl font-semibold text-primary mb-6 tracking-tight">
           Shakart
         </h1>
