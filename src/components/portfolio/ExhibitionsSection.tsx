@@ -3,6 +3,13 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+
+interface ExhibitionImage {
+  id: string;
+  image_url: string;
+  display_order: number;
+}
 
 interface Exhibition {
   id: string;
@@ -12,6 +19,7 @@ interface Exhibition {
   theme: string | null;
   description: string | null;
   created_at: string;
+  exhibition_images: ExhibitionImage[];
 }
 
 const ExhibitionsSection = () => {
@@ -26,11 +34,24 @@ const ExhibitionsSection = () => {
     try {
       const { data, error } = await supabase
         .from('exhibitions')
-        .select('*')
+        .select(`
+          *,
+          exhibition_images (
+            id,
+            image_url,
+            display_order
+          )
+        `)
         .order('date', { ascending: false });
 
       if (error) throw error;
-      setExhibitions(data || []);
+      
+      const sortedExhibitions = data?.map(exhibition => ({
+        ...exhibition,
+        exhibition_images: exhibition.exhibition_images.sort((a: ExhibitionImage, b: ExhibitionImage) => a.display_order - b.display_order)
+      })) || [];
+      
+      setExhibitions(sortedExhibitions);
     } catch (error) {
       console.error('Error fetching exhibitions:', error);
     } finally {
@@ -77,46 +98,82 @@ const ExhibitionsSection = () => {
           </p>
         </div>
         
-        <div className="space-y-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {exhibitions.map((exhibition, index) => (
             <Card 
               key={exhibition.id}
-              className="p-8 border-0 shadow-card hover-lift bg-card animate-slide-up"
+              className="p-6 border-0 shadow-card hover-lift bg-card animate-slide-up overflow-hidden"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-                <div className="flex-1">
-                  <div className="flex items-center gap-4 mb-3">
-                    <h3 className="font-display text-2xl font-medium text-primary">
-                      {exhibition.title}
-                    </h3>
-                    {exhibition.theme && (
-                      <span className="px-3 py-1 bg-accent text-accent-foreground text-sm font-medium rounded-full">
-                        {exhibition.theme}
-                      </span>
-                    )}
-                  </div>
-                  <div className="font-body text-muted-foreground space-y-1">
-                    <p className="text-lg">{exhibition.location}</p>
-                    {exhibition.description && (
-                      <p className="text-sm">{exhibition.description}</p>
-                    )}
-                  </div>
+              {/* Image Carousel */}
+              {exhibition.exhibition_images.length > 0 ? (
+                <Carousel className="w-full mb-4 relative">
+                  <CarouselContent>
+                    {exhibition.exhibition_images.map((image) => (
+                      <CarouselItem key={image.id}>
+                        <div className="aspect-square overflow-hidden rounded-lg">
+                          <img
+                            src={image.image_url}
+                            alt={`${exhibition.title} - Exhibition Image`}
+                            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                          />
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  {exhibition.exhibition_images.length > 1 && (
+                    <>
+                      <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10" />
+                      <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10" />
+                    </>
+                  )}
+                </Carousel>
+              ) : (
+                <div className="aspect-square bg-muted rounded-lg mb-4 flex items-center justify-center">
+                  <p className="text-muted-foreground text-sm">No Images Available</p>
                 </div>
-                
-                <div className="flex flex-col lg:items-end gap-2">
-                  <span className="font-body text-primary font-medium text-lg">
-                    {new Date(exhibition.date).getFullYear()}
-                  </span>
-                  <Link 
-                    to="/exhibitions"
-                    className="mt-2"
-                  >
-                    <Button variant="outline" size="sm">
-                      View Details
-                    </Button>
-                  </Link>
+              )}
+
+              {/* Exhibition Details */}
+              <div className="space-y-3">
+                <div>
+                  <h3 className="font-display text-xl font-semibold text-primary mb-1 line-clamp-1">
+                    {exhibition.title}
+                  </h3>
+                  {exhibition.theme && (
+                    <span className="inline-block px-2 py-1 bg-accent text-accent-foreground text-xs font-medium rounded-full mb-2">
+                      {exhibition.theme}
+                    </span>
+                  )}
                 </div>
+
+                <div className="space-y-1">
+                  <p className="font-body text-primary font-medium">
+                    {exhibition.location}
+                  </p>
+                  <p className="font-body text-muted-foreground text-sm">
+                    {new Date(exhibition.date).toLocaleDateString('en-US', { 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </p>
+                </div>
+
+                {exhibition.description && (
+                  <p className="font-body text-muted-foreground text-sm line-clamp-2">
+                    {exhibition.description}
+                  </p>
+                )}
+
+                <Link 
+                  to="/exhibitions"
+                  className="block mt-4"
+                >
+                  <Button variant="outline" size="sm" className="w-full">
+                    View Details
+                  </Button>
+                </Link>
               </div>
             </Card>
           ))}
