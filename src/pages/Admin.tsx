@@ -266,7 +266,7 @@ const Admin = () => {
     <div className="min-h-screen bg-background py-12">
       <div className="container mx-auto px-4 max-w-6xl">
         <Tabs defaultValue="add" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
+          <TabsList className="grid w-full grid-cols-2 mb-8 bg-muted rounded-md">
             <TabsTrigger value="add" className="flex items-center gap-2">
               <Plus className="w-4 h-4" />
               Add Artwork
