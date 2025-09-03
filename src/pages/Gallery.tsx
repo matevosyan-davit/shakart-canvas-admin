@@ -1,124 +1,138 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, X } from "lucide-react";
+import { ArrowLeft, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import artwork1 from "@/assets/artwork-1.jpg";
-import artwork2 from "@/assets/artwork-2.jpg";
-import artwork3 from "@/assets/artwork-3.jpg";
+import { supabase } from "@/integrations/supabase/client";
 
-const artworks = {
-  paintings: [
-    {
-      id: 1,
-      title: "Convergence",
-      year: "2024",
-      medium: "Oil on Canvas",
-      dimensions: "48\" × 36\"",
-      price: "$3,200",
-      image: artwork1,
-      description: "An exploration of color harmony and emotional depth through abstract forms. This piece represents the convergence of different life experiences into a single moment of clarity and understanding."
-    },
-    {
-      id: 2,
-      title: "Whispered Landscapes",
-      year: "2023",
-      medium: "Acrylic on Canvas",
-      dimensions: "60\" × 40\"",
-      price: "$4,500",
-      image: artwork2,
-      description: "Capturing the subtle conversations between light and shadow in nature. This painting invites viewers to listen to the quiet stories that landscapes tell when we take time to truly observe."
-    },
-    {
-      id: 3,
-      title: "Urban Rhythms",
-      year: "2024",
-      medium: "Mixed Media",
-      dimensions: "36\" × 48\"",
-      price: "$2,800",
-      image: artwork3,
-      description: "The pulse and energy of city life translated into geometric abstraction. Each layer represents a different aspect of urban existence, from the rush of daily commutes to quiet moments of reflection."
-    }
-  ],
-  sculpture: [
-    {
-      id: 4,
-      title: "Metamorphosis",
-      year: "2023",
-      medium: "Bronze and Steel",
-      dimensions: "72\" × 24\" × 18\"",
-      price: "$8,500",
-      image: artwork1,
-      description: "A sculptural exploration of transformation and growth. The interplay between bronze and steel represents the balance between tradition and modernity in contemporary life."
-    },
-    {
-      id: 5,
-      title: "Fragmented Unity",
-      year: "2022",
-      medium: "Marble and Wood",
-      dimensions: "48\" × 48\" × 36\"",
-      price: "$12,000",
-      image: artwork2,
-      description: "This piece examines how individual fragments can come together to form a cohesive whole, much like communities and relationships in our interconnected world."
-    }
-  ],
-  streetart: [
-    {
-      id: 6,
-      title: "Urban Canvas",
-      year: "2024",
-      medium: "Spray Paint and Stencil",
-      dimensions: "12' × 8'",
-      price: "Commission Only",
-      image: artwork3,
-      description: "A large-scale mural that transforms an urban wall into a vibrant narrative about community, hope, and artistic expression in public spaces."
-    },
-    {
-      id: 7,
-      title: "City Voices",
-      year: "2023",
-      medium: "Mixed Media Street Art",
-      dimensions: "8' × 20'",
-      price: "Commission Only",
-      image: artwork1,
-      description: "An interactive street art installation that incorporates elements of the surrounding architecture to create a dialogue between the artwork and its environment."
-    }
-  ]
-};
+interface ArtworkImage {
+  id: string;
+  image_url: string;
+  display_order: number;
+}
+
+interface Artwork {
+  id: string;
+  title: string;
+  description: string | null;
+  price: number | null;
+  category: string;
+  created_at: string;
+  artwork_images: ArtworkImage[];
+}
 
 const Gallery = () => {
-  const [selectedArtwork, setSelectedArtwork] = useState<typeof artworks.paintings[0] | null>(null);
+  const [artworks, setArtworks] = useState<Artwork[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const renderArtworkGrid = (category: keyof typeof artworks) => (
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {artworks[category].map((artwork, index) => (
-        <Card 
-          key={artwork.id}
-          className="group overflow-hidden border-0 shadow-card hover-lift cursor-pointer bg-card"
-          style={{ animationDelay: `${index * 0.1}s` }}
-          onClick={() => setSelectedArtwork(artwork)}
-        >
-          <div className="aspect-square overflow-hidden">
-            <img
-              src={artwork.image}
-              alt={artwork.title}
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-          </div>
-          <div className="p-4">
-            <h3 className="font-display text-lg font-medium text-primary mb-2">
-              {artwork.title}
-            </h3>
-            <div className="font-body text-sm text-muted-foreground">
-              <p>{artwork.year} • {artwork.medium}</p>
-              <p className="mt-1">{artwork.dimensions}</p>
+  useEffect(() => {
+    fetchArtworks();
+  }, []);
+
+  const fetchArtworks = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('artworks')
+        .select(`
+          *,
+          artwork_images (
+            id,
+            image_url,
+            display_order
+          )
+        `)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      
+      // Sort images by display_order for each artwork
+      const sortedArtworks = data?.map(artwork => ({
+        ...artwork,
+        artwork_images: artwork.artwork_images.sort((a: ArtworkImage, b: ArtworkImage) => a.display_order - b.display_order)
+      })) || [];
+      
+      setArtworks(sortedArtworks);
+    } catch (error) {
+      console.error('Error fetching artworks:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getArtworksByCategory = (category: string) => {
+    return artworks.filter(artwork => artwork.category === category);
+  };
+
+  const handleArtworkClick = (artwork: Artwork) => {
+    setSelectedArtwork(artwork);
+    setCurrentImageIndex(0);
+  };
+
+  const nextImage = () => {
+    if (selectedArtwork && selectedArtwork.artwork_images.length > 1) {
+      setCurrentImageIndex((prev) => 
+        prev === selectedArtwork.artwork_images.length - 1 ? 0 : prev + 1
+      );
+    }
+  };
+
+  const prevImage = () => {
+    if (selectedArtwork && selectedArtwork.artwork_images.length > 1) {
+      setCurrentImageIndex((prev) => 
+        prev === 0 ? selectedArtwork.artwork_images.length - 1 : prev - 1
+      );
+    }
+  };
+
+  const renderArtworkGrid = (category: string) => {
+    const categoryArtworks = getArtworksByCategory(category);
+    
+    if (categoryArtworks.length === 0) {
+      return (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">No artworks in this category yet.</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {categoryArtworks.map((artwork, index) => (
+          <Card 
+            key={artwork.id}
+            className="group overflow-hidden border-0 shadow-card hover-lift cursor-pointer bg-card"
+            style={{ animationDelay: `${index * 0.1}s` }}
+            onClick={() => handleArtworkClick(artwork)}
+          >
+            <div className="aspect-square overflow-hidden">
+              <img
+                src={artwork.artwork_images[0]?.image_url || '/placeholder.svg'}
+                alt={artwork.title}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
             </div>
-          </div>
-        </Card>
-      ))}
-    </div>
-  );
+            <div className="p-4">
+              <h3 className="font-display text-lg font-medium text-primary mb-2">
+                {artwork.title}
+              </h3>
+              <div className="font-body text-sm text-muted-foreground">
+                <p>${artwork.price?.toFixed(2) || 'Price on request'}</p>
+                <p className="mt-1 capitalize">{artwork.category}</p>
+                {artwork.artwork_images.length > 1 && (
+                  <p className="text-xs text-accent mt-1">
+                    +{artwork.artwork_images.length - 1} more images
+                  </p>
+                )}
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <main className="min-h-screen bg-surface pt-24">
@@ -148,25 +162,31 @@ const Gallery = () => {
       {/* Gallery Tabs */}
       <section className="py-8 px-6">
         <div className="max-w-6xl mx-auto">
-          <Tabs defaultValue="paintings" className="w-full">
-            <TabsList className="sticky top-0 z-40 grid w-full grid-cols-3 mb-12 bg-card shadow-card">
-              <TabsTrigger value="paintings" className="font-body text-base">Paintings</TabsTrigger>
-              <TabsTrigger value="sculpture" className="font-body text-base">Sculpture</TabsTrigger>
-              <TabsTrigger value="streetart" className="font-body text-base">Street Art</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="paintings">
-              {renderArtworkGrid('paintings')}
-            </TabsContent>
-            
-            <TabsContent value="sculpture">
-              {renderArtworkGrid('sculpture')}
-            </TabsContent>
-            
-            <TabsContent value="streetart">
-              {renderArtworkGrid('streetart')}
-            </TabsContent>
-          </Tabs>
+          {loading ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">Loading artworks...</p>
+            </div>
+          ) : (
+            <Tabs defaultValue="painting" className="w-full">
+              <TabsList className="sticky top-0 z-40 grid w-full grid-cols-3 mb-12 bg-card shadow-card">
+                <TabsTrigger value="painting" className="font-body text-base">Paintings</TabsTrigger>
+                <TabsTrigger value="sculpture" className="font-body text-base">Sculpture</TabsTrigger>
+                <TabsTrigger value="streetart" className="font-body text-base">Street Art</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="painting">
+                {renderArtworkGrid('painting')}
+              </TabsContent>
+              
+              <TabsContent value="sculpture">
+                {renderArtworkGrid('sculpture')}
+              </TabsContent>
+              
+              <TabsContent value="streetart">
+                {renderArtworkGrid('streetart')}
+              </TabsContent>
+            </Tabs>
+          )}
         </div>
       </section>
 
@@ -179,12 +199,35 @@ const Gallery = () => {
           <div className="w-[90vw] h-[90vh] glass rounded-lg overflow-hidden" onClick={(e) => e.stopPropagation()}>
             <div className="flex h-full">
               {/* Image Section - Left Side */}
-              <div className="flex-1 bg-black/20 flex items-center justify-center p-8">
+              <div className="flex-1 bg-black/20 flex items-center justify-center p-8 relative">
                 <img
-                  src={selectedArtwork.image}
+                  src={selectedArtwork.artwork_images[currentImageIndex]?.image_url || '/placeholder.svg'}
                   alt={selectedArtwork.title}
                   className="max-w-full max-h-full object-contain"
                 />
+                
+                {/* Image Navigation */}
+                {selectedArtwork.artwork_images.length > 1 && (
+                  <>
+                    <button
+                      onClick={prevImage}
+                      className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+                    >
+                      <ChevronLeft className="w-6 h-6" />
+                    </button>
+                    <button
+                      onClick={nextImage}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+                    >
+                      <ChevronRight className="w-6 h-6" />
+                    </button>
+                    
+                    {/* Image Counter */}
+                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                      {currentImageIndex + 1} / {selectedArtwork.artwork_images.length}
+                    </div>
+                  </>
+                )}
               </div>
               
               {/* Content Section - Right Side */}
@@ -196,8 +239,10 @@ const Gallery = () => {
                         {selectedArtwork.title}
                       </h3>
                       <div className="font-body text-muted-foreground space-y-1">
-                        <p className="text-base">{selectedArtwork.year} • {selectedArtwork.medium}</p>
-                        <p className="text-sm">{selectedArtwork.dimensions}</p>
+                        <p className="text-base capitalize">{selectedArtwork.category}</p>
+                        <p className="text-sm">
+                          {new Date(selectedArtwork.created_at).getFullYear()}
+                        </p>
                       </div>
                     </div>
                     <button
@@ -211,13 +256,13 @@ const Gallery = () => {
                   <div className="w-16 h-px bg-accent"></div>
                   
                   <p className="font-body text-foreground leading-relaxed">
-                    {selectedArtwork.description}
+                    {selectedArtwork.description || 'No description available.'}
                   </p>
                 </div>
                 
                 <div className="pt-6 border-t border-border/20">
                   <div className="font-display text-2xl text-primary font-semibold">
-                    {selectedArtwork.price}
+                    ${selectedArtwork.price?.toFixed(2) || 'Price on request'}
                   </div>
                 </div>
               </div>
