@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowDown } from "lucide-react";
+import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-bg.jpg";
 
 const HeroSection = () => {
@@ -26,15 +27,17 @@ const HeroSection = () => {
             variant="default" 
             size="lg"
             className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium px-8"
+            asChild
           >
-            View Gallery
+            <Link to="/gallery">View Gallery</Link>
           </Button>
           <Button 
             variant="outline" 
             size="lg"
             className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+            asChild
           >
-            About My Work
+            <Link to="/about">About My Work</Link>
           </Button>
         </div>
       </div>
