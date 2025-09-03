@@ -48,6 +48,8 @@ export const createExhibitionUpdate = (
   language: Language,
   date: string
 ) => {
+  console.log('Creating exhibition update for language:', language, 'with data:', data);
+  
   const update: any = {
     date,
     language,
@@ -65,6 +67,7 @@ export const createExhibitionUpdate = (
     update[`description_${language}`] = data.description;
   }
   
+  console.log('Final update object:', update);
   return update;
 };
 
