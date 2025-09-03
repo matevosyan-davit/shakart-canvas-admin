@@ -79,6 +79,112 @@ export type Database = {
         }
         Relationships: []
       }
+      exhibition_images: {
+        Row: {
+          created_at: string
+          display_order: number | null
+          exhibition_id: string
+          id: string
+          image_path: string
+          image_url: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number | null
+          exhibition_id: string
+          id?: string
+          image_path: string
+          image_url: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number | null
+          exhibition_id?: string
+          id?: string
+          image_path?: string
+          image_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_images_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exhibition_media: {
+        Row: {
+          created_at: string
+          display_order: number | null
+          embed_link: string
+          exhibition_id: string
+          id: string
+          media_name: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number | null
+          embed_link: string
+          exhibition_id: string
+          id?: string
+          media_name: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number | null
+          embed_link?: string
+          exhibition_id?: string
+          id?: string
+          media_name?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_media_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exhibitions: {
+        Row: {
+          created_at: string
+          date: string
+          description: string | null
+          id: string
+          location: string
+          theme: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          description?: string | null
+          id?: string
+          location: string
+          theme?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          description?: string | null
+          id?: string
+          location?: string
+          theme?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       media: {
         Row: {
           created_at: string

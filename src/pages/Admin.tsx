@@ -33,6 +33,40 @@ interface Artwork {
   artwork_images: ArtworkImage[];
 }
 
+interface ExhibitionForm {
+  title: string;
+  date: string;
+  location: string;
+  theme: string;
+  description: string;
+}
+
+interface ExhibitionImage {
+  id: string;
+  image_url: string;
+  display_order: number;
+}
+
+interface ExhibitionMedia {
+  id: string;
+  title: string;
+  media_name: string;
+  embed_link: string;
+  display_order: number;
+}
+
+interface Exhibition {
+  id: string;
+  title: string;
+  date: string;
+  location: string;
+  theme: string | null;
+  description: string | null;
+  created_at: string;
+  exhibition_images: ExhibitionImage[];
+  exhibition_media: ExhibitionMedia[];
+}
+
 interface MediaForm {
   title: string;
   media_name: string;
@@ -56,8 +90,13 @@ const Admin = () => {
   const [editingArtwork, setEditingArtwork] = useState<Artwork | null>(null);
   const [media, setMedia] = useState<MediaItem[]>([]);
   const [editingMedia, setEditingMedia] = useState<MediaItem | null>(null);
+  const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
+  const [editingExhibition, setEditingExhibition] = useState<Exhibition | null>(null);
+  const [exhibitionFiles, setExhibitionFiles] = useState<File[]>([]);
+  const [exhibitionPreviews, setExhibitionPreviews] = useState<string[]>([]);
+  const [exhibitionMediaLinks, setExhibitionMediaLinks] = useState<{title: string, media_name: string, embed_link: string}[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'artworks' | 'add-artwork' | 'media' | 'add-media'>('artworks');
+  const [activeTab, setActiveTab] = useState<'artworks' | 'add-artwork' | 'media' | 'add-media' | 'exhibitions' | 'add-exhibition'>('artworks');
   const [previewImages, setPreviewImages] = useState<Record<string, string>>({});
 
   const form = useForm<ArtworkForm>({
@@ -77,9 +116,20 @@ const Admin = () => {
     },
   });
 
+  const exhibitionForm = useForm<ExhibitionForm>({
+    defaultValues: {
+      title: "",
+      date: "",
+      location: "",
+      theme: "",
+      description: "",
+    },
+  });
+
   useEffect(() => {
     fetchArtworks();
     fetchMedia();
+    fetchExhibitions();
   }, []);
 
   useEffect(() => {
@@ -104,6 +154,61 @@ const Admin = () => {
       setActiveTab('add-media');
     }
   }, [editingMedia, mediaForm]);
+
+  useEffect(() => {
+    if (editingExhibition) {
+      exhibitionForm.reset({
+        title: editingExhibition.title,
+        date: editingExhibition.date,
+        location: editingExhibition.location,
+        theme: editingExhibition.theme || "",
+        description: editingExhibition.description || "",
+      });
+      setExhibitionFiles([]);
+      setExhibitionPreviews([]);
+      setExhibitionMediaLinks(editingExhibition.exhibition_media.map(m => ({
+        title: m.title,
+        media_name: m.media_name,
+        embed_link: m.embed_link
+      })));
+      setActiveTab('add-exhibition');
+    }
+  }, [editingExhibition, exhibitionForm]);
+
+  const fetchExhibitions = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('exhibitions')
+        .select(`
+          *,
+          exhibition_images (
+            id,
+            image_url,
+            display_order
+          ),
+          exhibition_media (
+            id,
+            title,
+            media_name,
+            embed_link,
+            display_order
+          )
+        `)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      
+      const sortedExhibitions = data?.map(exhibition => ({
+        ...exhibition,
+        exhibition_images: exhibition.exhibition_images.sort((a: ExhibitionImage, b: ExhibitionImage) => a.display_order - b.display_order),
+        exhibition_media: exhibition.exhibition_media.sort((a: ExhibitionMedia, b: ExhibitionMedia) => a.display_order - b.display_order)
+      })) || [];
+      
+      setExhibitions(sortedExhibitions);
+    } catch (error) {
+      console.error('Error fetching exhibitions:', error);
+    }
+  };
 
   const fetchArtworks = async () => {
     try {
@@ -221,9 +326,69 @@ const Admin = () => {
     });
   };
 
+  const handleExhibitionFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
+    setExhibitionFiles(prev => [...prev, ...files]);
+    
+    // Create previews
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setExhibitionPreviews(prev => [...prev, e.target?.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
   const removeFile = (index: number) => {
     setSelectedFiles(prev => prev.filter((_, i) => i !== index));
     setPreviews(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const removeExhibitionFile = (index: number) => {
+    setExhibitionFiles(prev => prev.filter((_, i) => i !== index));
+    setExhibitionPreviews(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const addExhibitionMediaLink = () => {
+    setExhibitionMediaLinks(prev => [...prev, { title: "", media_name: "", embed_link: "" }]);
+  };
+
+  const removeExhibitionMediaLink = (index: number) => {
+    setExhibitionMediaLinks(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const updateExhibitionMediaLink = (index: number, field: string, value: string) => {
+    setExhibitionMediaLinks(prev => prev.map((link, i) => 
+      i === index ? { ...link, [field]: value } : link
+    ));
+  };
+
+  const uploadExhibitionFile = async (file: File, exhibitionId: string, displayOrder: number) => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${exhibitionId}/${Date.now()}.${fileExt}`;
+
+    const { data, error } = await supabase.storage
+      .from('exhibition-images')
+      .upload(fileName, file);
+
+    if (error) throw error;
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('exhibition-images')
+      .getPublicUrl(fileName);
+
+    // Save image record to database
+    const { error: dbError } = await supabase
+      .from('exhibition_images')
+      .insert({
+        exhibition_id: exhibitionId,
+        image_url: publicUrl,
+        image_path: fileName,
+        display_order: displayOrder,
+      });
+
+    if (dbError) throw dbError;
   };
 
   const uploadFile = async (file: File, artworkId: string, displayOrder: number) => {
@@ -251,6 +416,120 @@ const Admin = () => {
       });
 
     if (dbError) throw dbError;
+  };
+
+  const onSubmitExhibition = async (data: ExhibitionForm) => {
+    if (!editingExhibition && exhibitionFiles.length === 0) {
+      toast.error("Please select at least one image");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      if (editingExhibition) {
+        // Update existing exhibition
+        const { error: exhibitionError } = await supabase
+          .from('exhibitions')
+          .update({
+            title: data.title,
+            date: data.date,
+            location: data.location,
+            theme: data.theme || null,
+            description: data.description,
+          })
+          .eq('id', editingExhibition.id);
+
+        if (exhibitionError) throw exhibitionError;
+
+        // Upload new images if any
+        if (exhibitionFiles.length > 0) {
+          await Promise.all(
+            exhibitionFiles.map((file, index) => 
+              uploadExhibitionFile(file, editingExhibition.id, editingExhibition.exhibition_images.length + index)
+            )
+          );
+        }
+
+        // Update media links
+        if (exhibitionMediaLinks.length > 0) {
+          // Delete existing media links
+          await supabase
+            .from('exhibition_media')
+            .delete()
+            .eq('exhibition_id', editingExhibition.id);
+
+          // Insert new media links
+          await Promise.all(
+            exhibitionMediaLinks.map((link, index) => 
+              supabase
+                .from('exhibition_media')
+                .insert({
+                  exhibition_id: editingExhibition.id,
+                  title: link.title,
+                  media_name: link.media_name,
+                  embed_link: link.embed_link,
+                  display_order: index,
+                })
+            )
+          );
+        }
+
+        toast.success("Exhibition updated successfully!");
+        setEditingExhibition(null);
+      } else {
+        // Create new exhibition
+        const { data: exhibition, error: exhibitionError } = await supabase
+          .from('exhibitions')
+          .insert({
+            title: data.title,
+            date: data.date,
+            location: data.location,
+            theme: data.theme || null,
+            description: data.description,
+          })
+          .select()
+          .single();
+
+        if (exhibitionError) throw exhibitionError;
+
+        // Upload all images
+        await Promise.all(
+          exhibitionFiles.map((file, index) => 
+            uploadExhibitionFile(file, exhibition.id, index)
+          )
+        );
+
+        // Insert media links
+        if (exhibitionMediaLinks.length > 0) {
+          await Promise.all(
+            exhibitionMediaLinks.map((link, index) => 
+              supabase
+                .from('exhibition_media')
+                .insert({
+                  exhibition_id: exhibition.id,
+                  title: link.title,
+                  media_name: link.media_name,
+                  embed_link: link.embed_link,
+                  display_order: index,
+                })
+            )
+          );
+        }
+
+        toast.success("Exhibition added successfully!");
+      }
+
+      exhibitionForm.reset();
+      setExhibitionFiles([]);
+      setExhibitionPreviews([]);
+      setExhibitionMediaLinks([]);
+      fetchExhibitions();
+    } catch (error) {
+      console.error('Error saving exhibition:', error);
+      toast.error("Failed to save exhibition");
+    } finally {
+      setUploading(false);
+    }
   };
 
   const onSubmit = async (data: ArtworkForm) => {
@@ -356,6 +635,62 @@ const Admin = () => {
     } catch (error) {
       console.error('Error saving media:', error);
       toast.error("Failed to save media");
+    }
+  };
+
+  const handleEditExhibition = (exhibition: Exhibition) => {
+    setEditingExhibition(exhibition);
+  };
+
+  const handleCancelEditExhibition = () => {
+    setEditingExhibition(null);
+    exhibitionForm.reset();
+    setExhibitionFiles([]);
+    setExhibitionPreviews([]);
+    setExhibitionMediaLinks([]);
+  };
+
+  const handleDeleteExhibition = async (exhibitionId: string) => {
+    if (!confirm("Are you sure you want to delete this exhibition?")) return;
+
+    try {
+      const { error } = await supabase
+        .from('exhibitions')
+        .delete()
+        .eq('id', exhibitionId);
+
+      if (error) throw error;
+      toast.success("Exhibition deleted successfully!");
+      fetchExhibitions();
+    } catch (error) {
+      console.error('Error deleting exhibition:', error);
+      toast.error("Failed to delete exhibition");
+    }
+  };
+
+  const handleDeleteExhibitionImage = async (imageId: string) => {
+    if (!confirm("Are you sure you want to delete this image?")) return;
+
+    try {
+      const { error } = await supabase
+        .from('exhibition_images')
+        .delete()
+        .eq('id', imageId);
+
+      if (error) throw error;
+      
+      toast.success("Image deleted successfully!");
+      fetchExhibitions();
+      if (editingExhibition) {
+        // Refresh editing exhibition data
+        const updatedExhibition = exhibitions.find(e => e.id === editingExhibition.id);
+        if (updatedExhibition) {
+          setEditingExhibition(updatedExhibition);
+        }
+      }
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      toast.error("Failed to delete image");
     }
   };
 
@@ -474,10 +809,28 @@ const Admin = () => {
               Manage Media
             </Button>
             <Button 
+              variant={activeTab === 'media' ? 'default' : 'outline'} 
+              onClick={() => { setEditingMedia(null); setEditingArtwork(null); setActiveTab('media'); }}
+            >
+              Manage Media
+            </Button>
+            <Button 
               variant={activeTab === 'add-media' ? 'default' : 'outline'} 
               onClick={() => { setEditingMedia(null); setActiveTab('add-media'); }}
             >
               <Plus className="w-4 h-4 mr-2" /> Add Media
+            </Button>
+            <Button 
+              variant={activeTab === 'exhibitions' ? 'default' : 'outline'} 
+              onClick={() => { setEditingExhibition(null); setEditingMedia(null); setEditingArtwork(null); setActiveTab('exhibitions'); }}
+            >
+              Manage Exhibitions
+            </Button>
+            <Button 
+              variant={activeTab === 'add-exhibition' ? 'default' : 'outline'} 
+              onClick={() => { setEditingExhibition(null); setActiveTab('add-exhibition'); }}
+            >
+              <Plus className="w-4 h-4 mr-2" /> Add Exhibition
             </Button>
           </div>
         </div>
@@ -900,7 +1253,7 @@ const Admin = () => {
                               <div className="absolute top-2 right-2">
                                 <a
                                   href={extractEmbedUrl(mediaItem.embed_link)}
-                                  target="_blank"
+                                  target="_blank" 
                                   rel="noopener noreferrer"
                                   className="text-xs bg-black/70 text-white px-2 py-1 rounded"
                                 >
@@ -934,6 +1287,350 @@ const Admin = () => {
                       <p className="text-sm text-muted-foreground">
                         <strong>Embed Link:</strong> {mediaItem.embed_link}
                       </p>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Tab Content - Add/Edit Exhibition */}
+        {activeTab === 'add-exhibition' && (
+          <Card className="max-w-4xl mx-auto">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold text-center">
+                {editingExhibition ? 'Edit Exhibition' : 'Add New Exhibition'}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Form {...exhibitionForm}>
+                <form onSubmit={exhibitionForm.handleSubmit(onSubmitExhibition)} className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <FormField
+                      control={exhibitionForm.control}
+                      name="title"
+                      rules={{ required: "Title is required" }}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Title</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter exhibition title" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={exhibitionForm.control}
+                      name="date"
+                      rules={{ required: "Date is required" }}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Date</FormLabel>
+                          <FormControl>
+                            <Input type="date" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={exhibitionForm.control}
+                      name="location"
+                      rules={{ required: "Location is required" }}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Location</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter exhibition location" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={exhibitionForm.control}
+                      name="theme"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Theme (Optional)</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter exhibition theme" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <FormField
+                    control={exhibitionForm.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Description</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Enter exhibition description" 
+                            className="min-h-[100px]"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Images Section */}
+                  <div className="space-y-4">
+                    <FormLabel>Images</FormLabel>
+                    <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={handleExhibitionFileSelect}
+                        className="hidden"
+                        id="exhibition-file-upload"
+                      />
+                      <label htmlFor="exhibition-file-upload" className="cursor-pointer">
+                        <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-2" />
+                        <p className="text-sm text-muted-foreground">
+                          Click to upload exhibition images or drag and drop
+                        </p>
+                      </label>
+                    </div>
+
+                    {/* Show existing images when editing */}
+                    {editingExhibition && editingExhibition.exhibition_images.length > 0 && (
+                      <div>
+                        <p className="text-sm font-medium mb-2">Current Images:</p>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+                          {editingExhibition.exhibition_images.map((image, index) => (
+                            <div key={image.id} className="relative">
+                              <img
+                                src={image.image_url}
+                                alt={`Current ${index + 1}`}
+                                className="w-full h-32 object-cover rounded-lg"
+                              />
+                              <Button
+                                type="button"
+                                variant="destructive"
+                                size="icon"
+                                className="absolute top-1 right-1 h-6 w-6"
+                                onClick={() => handleDeleteExhibitionImage(image.id)}
+                              >
+                                <X className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Show new image previews */}
+                    {exhibitionPreviews.length > 0 && (
+                      <div>
+                        <p className="text-sm font-medium mb-2">New Images to Upload:</p>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                          {exhibitionPreviews.map((preview, index) => (
+                            <div key={index} className="relative">
+                              <img
+                                src={preview}
+                                alt={`Preview ${index + 1}`}
+                                className="w-full h-32 object-cover rounded-lg"
+                              />
+                              <Button
+                                type="button"
+                                variant="destructive"
+                                size="icon"
+                                className="absolute top-1 right-1 h-6 w-6"
+                                onClick={() => removeExhibitionFile(index)}
+                              >
+                                <X className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Media Coverage Links Section */}
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <FormLabel>Media Coverage Links</FormLabel>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={addExhibitionMediaLink}
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add Media Link
+                      </Button>
+                    </div>
+
+                    {exhibitionMediaLinks.map((link, index) => (
+                      <Card key={index} className="p-4">
+                        <div className="flex justify-between items-center mb-4">
+                          <h4 className="text-sm font-medium">Media Link {index + 1}</h4>
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => removeExhibitionMediaLink(index)}
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        </div>
+                        <div className="grid md:grid-cols-3 gap-4">
+                          <div>
+                            <FormLabel>Title</FormLabel>
+                            <Input
+                              placeholder="Media title"
+                              value={link.title}
+                              onChange={(e) => updateExhibitionMediaLink(index, 'title', e.target.value)}
+                            />
+                          </div>
+                          <div>
+                            <FormLabel>Media Name</FormLabel>
+                            <Input
+                              placeholder="e.g., Armenia TV"
+                              value={link.media_name}
+                              onChange={(e) => updateExhibitionMediaLink(index, 'media_name', e.target.value)}
+                            />
+                          </div>
+                          <div>
+                            <FormLabel>Embed Link</FormLabel>
+                            <Input
+                              placeholder="YouTube URL or article link"
+                              value={link.embed_link}
+                              onChange={(e) => updateExhibitionMediaLink(index, 'embed_link', e.target.value)}
+                            />
+                          </div>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+
+                  <div className="flex gap-4">
+                    {editingExhibition && (
+                      <Button 
+                        type="button" 
+                        variant="outline"
+                        className="flex-1" 
+                        onClick={handleCancelEditExhibition}
+                      >
+                        Cancel
+                      </Button>
+                    )}
+                    <Button 
+                      type="submit" 
+                      className="flex-1" 
+                      disabled={uploading}
+                    >
+                      {uploading 
+                        ? (editingExhibition ? "Updating..." : "Adding...") 
+                        : (editingExhibition ? "Update Exhibition" : "Add Exhibition")
+                      }
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Tab Content - Manage Exhibitions */}
+        {activeTab === 'exhibitions' && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold">Manage Exhibitions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {exhibitions.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">No exhibitions found. Add some using the "Add Exhibition" tab.</p>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {exhibitions.map((exhibition) => (
+                    <Card key={exhibition.id} className="p-6">
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="flex-1">
+                          <h3 className="text-xl font-semibold text-primary mb-1">{exhibition.title}</h3>
+                          <div className="text-muted-foreground mb-2 space-y-1">
+                            <p><strong>Date:</strong> {new Date(exhibition.date).toLocaleDateString()}</p>
+                            <p><strong>Location:</strong> {exhibition.location}</p>
+                            {exhibition.theme && <p><strong>Theme:</strong> {exhibition.theme}</p>}
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEditExhibition(exhibition)}
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleDeleteExhibition(exhibition.id)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+
+                      {exhibition.description && (
+                        <p className="text-sm text-muted-foreground mb-4">{exhibition.description}</p>
+                      )}
+
+                      {/* Images */}
+                      {exhibition.exhibition_images.length > 0 && (
+                        <div className="mb-4">
+                          <p className="text-sm font-medium mb-2">Images ({exhibition.exhibition_images.length}):</p>
+                          <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
+                            {exhibition.exhibition_images.map((image, index) => (
+                              <img
+                                key={image.id}
+                                src={image.image_url}
+                                alt={`${exhibition.title} ${index + 1}`}
+                                className="w-full h-16 object-cover rounded border"
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Media Coverage */}
+                      {exhibition.exhibition_media.length > 0 && (
+                        <div>
+                          <p className="text-sm font-medium mb-2">Media Coverage ({exhibition.exhibition_media.length}):</p>
+                          <div className="space-y-2">
+                            {exhibition.exhibition_media.map((media) => (
+                              <div key={media.id} className="text-xs bg-muted p-2 rounded">
+                                <strong>{media.title}</strong> - {media.media_name}
+                                <br />
+                                <a 
+                                  href={media.embed_link} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="text-primary hover:underline"
+                                >
+                                  {media.embed_link}
+                                </a>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </Card>
                   ))}
                 </div>
