@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { Mail, Phone } from "lucide-react";
-import ContactSection from "@/components/portfolio/ContactSection";
+import { Card } from "@/components/ui/card";
+import { Mail, Phone, Facebook, Instagram, MapPin } from "lucide-react";
 
 const Contact = () => {
   return (
@@ -43,8 +43,102 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* Contact Section */}
-      <ContactSection />
+      {/* Contact Information */}
+      <section className="py-16 px-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Contact Details */}
+            <Card className="p-10 bg-card shadow-card border-0 animate-fade-in">
+              <h2 className="font-display text-3xl font-semibold text-primary mb-8">Get in Touch</h2>
+              
+              <div className="space-y-8">
+                <div className="flex items-start gap-6">
+                  <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-8 h-8 text-accent" />
+                  </div>
+                  <div>
+                    <p className="font-body text-lg font-medium text-muted-foreground mb-2">Email</p>
+                    <a 
+                      href="mailto:contact@shakart.com" 
+                      className="font-body text-xl text-foreground hover:text-accent transition-colors font-medium"
+                    >
+                      contact@shakart.com
+                    </a>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-6">
+                  <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Phone className="w-8 h-8 text-accent" />
+                  </div>
+                  <div>
+                    <p className="font-body text-lg font-medium text-muted-foreground mb-2">Phone</p>
+                    <a 
+                      href="tel:+1234567890" 
+                      className="font-body text-xl text-foreground hover:text-accent transition-colors font-medium"
+                    >
+                      +1 (234) 567-890
+                    </a>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-6">
+                  <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-8 h-8 text-accent" />
+                  </div>
+                  <div>
+                    <p className="font-body text-lg font-medium text-muted-foreground mb-2">Location</p>
+                    <p className="font-body text-xl text-foreground font-medium">
+                      San Francisco, CA
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            {/* Social Media */}
+            <Card className="p-10 bg-card shadow-card border-0 animate-fade-in" style={{ animationDelay: "0.2s" }}>
+              <h2 className="font-display text-3xl font-semibold text-primary mb-8">Follow My Work</h2>
+              
+              <div className="space-y-6">
+                <a
+                  href="https://facebook.com/shakart"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-6 p-6 bg-surface hover:bg-primary/10 rounded-lg transition-all duration-300 hover-lift group"
+                >
+                  <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                    <Facebook className="w-8 h-8 text-accent group-hover:text-primary transition-colors" />
+                  </div>
+                  <div>
+                    <p className="font-body text-lg font-medium text-foreground group-hover:text-primary transition-colors">Facebook</p>
+                    <p className="font-body text-muted-foreground">@shakart</p>
+                  </div>
+                </a>
+                
+                <a
+                  href="https://instagram.com/shakart"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-6 p-6 bg-surface hover:bg-primary/10 rounded-lg transition-all duration-300 hover-lift group"
+                >
+                  <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                    <Instagram className="w-8 h-8 text-accent group-hover:text-primary transition-colors" />
+                  </div>
+                  <div>
+                    <p className="font-body text-lg font-medium text-foreground group-hover:text-primary transition-colors">Instagram</p>
+                    <p className="font-body text-muted-foreground">@shakart_studio</p>
+                  </div>
+                </a>
+              </div>
+              
+              <p className="font-body text-muted-foreground mt-8 leading-relaxed">
+                Stay updated with my latest artworks, exhibitions, and creative process.
+              </p>
+            </Card>
+          </div>
+        </div>
+      </section>
     </main>
   );
 };
