@@ -2,60 +2,61 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Apple-inspired Artist Portfolio Design System */
+/* High-End Art Gallery Design System */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
 
 @layer base {
   :root {
-    /* Core Colors - Sophisticated and Clean */
-    --background: 0 0% 100%;
-    --foreground: 220 13% 18%;
+    /* Gallery Core Colors - Museum Quality */
+    --background: 32 8% 97%;
+    --foreground: 0 0% 15%;
     
-    --surface: 0 0% 98%;
-    --surface-foreground: 220 13% 18%;
+    --surface: 32 10% 95%;
+    --surface-foreground: 0 0% 15%;
     
-    /* Cards and Overlays */
+    /* Cards and Overlays - Pure Gallery White */
     --card: 0 0% 100%;
-    --card-foreground: 220 13% 18%;
+    --card-foreground: 0 0% 15%;
     
     --popover: 0 0% 100%;
-    --popover-foreground: 220 13% 18%;
+    --popover-foreground: 0 0% 15%;
     
     /* Primary - Deep Charcoal */
-    --primary: 220 13% 18%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 0 0% 15%;
+    --primary-foreground: 32 8% 97%;
     
-    /* Secondary - Soft Gray */
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 220 13% 18%;
+    /* Secondary - Gallery Neutral */
+    --secondary: 32 6% 92%;
+    --secondary-foreground: 0 0% 15%;
     
-    /* Muted Tones */
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
+    /* Muted Tones - Sophisticated Beige */
+    --muted: 32 6% 92%;
+    --muted-foreground: 0 0% 45%;
     
-    /* Accent - Sophisticated Gold */
-    --accent: 43 74% 66%;
-    --accent-foreground: 220 13% 18%;
+    /* Accent - Warm Gallery Tone */
+    --accent: 32 15% 75%;
+    --accent-foreground: 0 0% 15%;
     
     /* Destructive */
-    --destructive: 0 84% 60%;
+    --destructive: 0 65% 55%;
     --destructive-foreground: 0 0% 98%;
     
-    /* Borders and Inputs */
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 43 74% 66%;
+    /* Borders and Inputs - Subtle Gallery Lines */
+    --border: 32 6% 88%;
+    --input: 32 6% 88%;
+    --ring: 32 15% 75%;
     
-    /* Elegant Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(220 13% 18%), hsl(220 13% 12%));
-    --gradient-accent: linear-gradient(135deg, hsl(43 74% 66%), hsl(43 74% 56%));
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(220 14% 98%));
+    /* Gallery Gradients - Canvas & Paper Textures */
+    --gradient-canvas: linear-gradient(135deg, hsl(32 8% 98%) 0%, hsl(32 6% 96%) 50%, hsl(32 8% 97%) 100%);
+    --gradient-paper: linear-gradient(180deg, hsl(32 8% 97%) 0%, hsl(32 10% 95%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(32 15% 75%) 0%, hsl(32 20% 65%) 100%);
+    --gradient-frame: linear-gradient(135deg, hsl(0 0% 15%) 0%, hsl(0 0% 25%) 100%);
     
-    /* Elegant Shadows */
-    --shadow-elegant: 0 4px 24px -6px hsl(220 13% 18% / 0.1);
-    --shadow-card: 0 2px 16px -4px hsl(220 13% 18% / 0.08);
-    --shadow-accent: 0 8px 32px -8px hsl(43 74% 66% / 0.3);
+    /* Gallery Shadows - Soft Museum Lighting */
+    --shadow-artwork: 0 8px 32px -8px hsl(0 0% 0% / 0.12);
+    --shadow-frame: 0 4px 20px -4px hsl(0 0% 0% / 0.08);
+    --shadow-subtle: 0 2px 8px -2px hsl(0 0% 0% / 0.06);
 
     --radius: 0.5rem;
 
@@ -123,100 +124,154 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-feature-settings: 'cv11', 'ss01';
-    font-variant-numeric: oldstyle-nums;
+    font-feature-settings: 'kern', 'liga', 'clig', 'calt';
+    font-variant-numeric: lining-nums;
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background: var(--gradient-canvas);
+    background-attachment: fixed;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-weight: 500;
-    letter-spacing: -0.025em;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    line-height: 1.2;
   }
 }
 
 @layer components {
-  /* Typography Utilities */
+  /* Gallery Typography */
   .font-display {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+  }
+  
+  .font-serif {
+    font-family: 'Crimson Text', Georgia, serif;
+    font-weight: 400;
+    line-height: 1.6;
   }
   
   .font-body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.005em;
   }
 
-  /* Elegant Animations */
+  /* Gallery Animations - Subtle & Refined */
   .animate-fade-in {
-    animation: fadeIn 0.6s ease-out forwards;
+    animation: galleryFadeIn 1.2s ease-out forwards;
+    opacity: 0;
   }
   
   .animate-slide-up {
-    animation: slideUp 0.8s ease-out forwards;
+    animation: gallerySlideUp 1s ease-out forwards;
+    opacity: 0;
   }
   
   .animate-float {
-    animation: float 6s ease-in-out infinite;
+    animation: gentleFloat 8s ease-in-out infinite;
   }
 
-  /* Hover Effects */
+  /* Refined Hover Effects */
   .hover-lift {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
   }
   
   .hover-lift:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-elegant);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-artwork);
   }
 
-  /* Glass Morphism */
-  .glass {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+  /* Gallery Frame Effect */
+  .artwork-frame {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, hsl(0 0% 98%) 0%, hsl(0 0% 96%) 100%);
+    border: 1px solid hsl(32 6% 88%);
+    box-shadow: var(--shadow-frame);
+  }
+  
+  .artwork-frame::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    background: var(--gradient-frame);
+    border-radius: inherit;
+    z-index: -1;
+    opacity: 0.8;
   }
 
-  /* Gradient Text */
-  .gradient-text {
+  /* Gallery Glass Effect */
+  .gallery-glass {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px) saturate(1.5);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: var(--shadow-subtle);
+  }
+
+  /* Canvas Texture */
+  .canvas-texture {
+    background-image: 
+      radial-gradient(circle at 1px 1px, rgba(0,0,0,.05) 1px, transparent 0);
+    background-size: 20px 20px;
+  }
+
+  /* Refined Gradient Text */
+  .gallery-accent-text {
     background: var(--gradient-accent);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    font-weight: 500;
   }
 }
 
 @layer utilities {
-  /* Custom Keyframes */
-  @keyframes fadeIn {
+  /* Gallery Keyframes - Refined Animations */
+  @keyframes galleryFadeIn {
     from {
       opacity: 0;
-      transform: translateY(20px);
+      transform: translateY(30px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  
+  @keyframes gallerySlideUp {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+      filter: blur(4px);
     }
     to {
       opacity: 1;
       transform: translateY(0);
+      filter: blur(0);
     }
   }
   
-  @keyframes slideUp {
-    from {
-      opacity: 0;
-      transform: translateY(40px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  @keyframes float {
+  @keyframes gentleFloat {
     0%, 100% {
       transform: translateY(0px);
     }
     50% {
-      transform: translateY(-10px);
+      transform: translateY(-6px);
     }
+  }
+  
+  /* Gallery Spacing Utilities */
+  .gallery-spacing {
+    padding: clamp(2rem, 8vw, 8rem) clamp(1.5rem, 6vw, 6rem);
+  }
+  
+  .artwork-spacing {
+    margin: clamp(1.5rem, 4vw, 4rem) 0;
   }
 }

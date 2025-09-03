@@ -68,23 +68,36 @@ export default {
 				}
 			},
 			fontFamily: {
-				'display': ['Playfair Display', 'Georgia', 'serif'],
-				'body': ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+				'display': ['Cormorant Garamond', 'Georgia', 'serif'],
+				'serif': ['Crimson Text', 'Georgia', 'serif'],
+				'body': ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+			},
+			letterSpacing: {
+				'gallery': '0.01em',
+				'refined': '0.005em',
+			},
+			spacing: {
+				'gallery': 'clamp(2rem, 8vw, 8rem)',
+				'artwork': 'clamp(1.5rem, 4vw, 4rem)',
+			},
+			scale: {
+				'102': '1.02',
 			},
 			backgroundImage: {
-				'gradient-primary': 'var(--gradient-primary)',
+				'gradient-canvas': 'var(--gradient-canvas)',
+				'gradient-paper': 'var(--gradient-paper)',
 				'gradient-accent': 'var(--gradient-accent)',
-				'gradient-subtle': 'var(--gradient-subtle)',
+				'gradient-frame': 'var(--gradient-frame)',
 			},
 			boxShadow: {
-				'elegant': 'var(--shadow-elegant)',
-				'card': 'var(--shadow-card)',
-				'accent': 'var(--shadow-accent)',
+				'artwork': 'var(--shadow-artwork)',
+				'frame': 'var(--shadow-frame)',
+				'subtle': 'var(--shadow-subtle)',
 			},
 			animation: {
-				'fade-in': 'fadeIn 0.6s ease-out forwards',
-				'slide-up': 'slideUp 0.8s ease-out forwards',
-				'float': 'float 6s ease-in-out infinite',
+				'fade-in': 'galleryFadeIn 1.2s ease-out forwards',
+				'slide-up': 'gallerySlideUp 1s ease-out forwards',
+				'float': 'gentleFloat 8s ease-in-out infinite',
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out'
 			},
@@ -94,17 +107,17 @@ export default {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			keyframes: {
-				fadeIn: {
-					from: { opacity: '0', transform: 'translateY(20px)' },
-					to: { opacity: '1', transform: 'translateY(0)' }
+				galleryFadeIn: {
+					from: { opacity: '0', transform: 'translateY(30px) scale(0.98)' },
+					to: { opacity: '1', transform: 'translateY(0) scale(1)' }
 				},
-				slideUp: {
-					from: { opacity: '0', transform: 'translateY(40px)' },
-					to: { opacity: '1', transform: 'translateY(0)' }
+				gallerySlideUp: {
+					from: { opacity: '0', transform: 'translateY(50px)', filter: 'blur(4px)' },
+					to: { opacity: '1', transform: 'translateY(0)', filter: 'blur(0)' }
 				},
-				float: {
+				gentleFloat: {
 					'0%, 100%': { transform: 'translateY(0px)' },
-					'50%': { transform: 'translateY(-10px)' }
+					'50%': { transform: 'translateY(-6px)' }
 				},
 				'accordion-down': {
 					from: { height: '0' },

@@ -13,29 +13,32 @@ const Navigation = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md">
-      <div className="max-w-6xl mx-auto px-6 py-4">
+    <nav className="fixed top-0 left-0 right-0 z-50 gallery-glass border-b border-border/20">
+      <div className="max-w-7xl mx-auto px-8 py-6">
         <div className="flex items-center justify-between">
-          <Link to="/" className="font-display text-2xl font-semibold text-primary">
+          <Link to="/" className="font-display text-3xl text-primary tracking-gallery hover:text-accent transition-colors duration-500">
             Shakart
           </Link>
           
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <Button
+              <Link
                 key={link.href}
-                variant={location.pathname === link.href ? "default" : "ghost"}
-                size="sm"
-                asChild
+                to={link.href}
+                className={`font-body text-sm uppercase tracking-widest transition-all duration-500 hover:text-accent ${
+                  location.pathname === link.href 
+                    ? "text-primary border-b-2 border-accent pb-1" 
+                    : "text-muted-foreground hover:text-primary"
+                }`}
               >
-                <Link to={link.href}>{link.label}</Link>
-              </Button>
+                {link.label}
+              </Link>
             ))}
           </div>
           
-          {/* Mobile menu button - you can expand this later */}
+          {/* Mobile menu button */}
           <div className="md:hidden">
-            <Button variant="outline" size="sm">
+            <Button variant="ghost" size="sm" className="font-body text-xs uppercase tracking-widest">
               Menu
             </Button>
           </div>

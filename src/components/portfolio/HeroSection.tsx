@@ -5,46 +5,49 @@ import heroImage from "@/assets/hero-bg.jpg";
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image */}
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden canvas-texture">
+      {/* Background Image with refined overlay */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${heroImage})` }}
       >
-        <div className="absolute inset-0 bg-background/30 backdrop-blur-[2px]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/40 to-background/60" />
       </div>
       
       {/* Content */}
-      <div className="relative z-10 text-center max-w-4xl mx-auto px-6 animate-fade-in" style={{ marginTop: "6rem" }}>
-        <h1 className="font-display text-6xl md:text-8xl font-semibold text-primary mb-6 tracking-tight">
+      <div className="relative z-10 text-center max-w-5xl mx-auto gallery-spacing animate-fade-in" style={{ marginTop: "4rem", animationDelay: "0.3s" }}>
+        <h1 className="font-display text-7xl md:text-9xl text-primary mb-8 tracking-gallery leading-none">
           Shakart
         </h1>
-        <p className="font-body text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
-          Contemporary painter exploring the intersection of emotion and abstraction
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <div className="max-w-2xl mx-auto mb-12">
+          <p className="font-serif text-xl md:text-2xl text-muted-foreground leading-relaxed italic">
+            Contemporary painter exploring the intersection of emotion and abstraction through the language of color and form
+          </p>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
           <Button 
-            variant="default" 
+            variant="ghost" 
             size="lg"
-            className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium px-8"
+            className="font-body text-sm uppercase tracking-widest border border-primary/30 hover:border-primary hover:bg-primary/5 px-12 py-4 transition-all duration-500"
             asChild
           >
-            <Link to="/gallery">View Gallery</Link>
+            <Link to="/gallery">Explore Gallery</Link>
           </Button>
           <Button 
-            variant="outline" 
+            variant="ghost" 
             size="lg"
-            className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+            className="font-body text-sm uppercase tracking-widest text-muted-foreground hover:text-primary px-8 py-4 transition-all duration-500"
             asChild
           >
-            <Link to="/about">About My Work</Link>
+            <Link to="/about">About the Artist</Link>
           </Button>
         </div>
       </div>
       
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-float">
-        <ArrowDown className="w-6 h-6 text-muted-foreground" />
+      {/* Refined Scroll Indicator */}
+      <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 animate-float">
+        <div className="w-px h-16 bg-gradient-to-b from-transparent via-muted-foreground/30 to-transparent mb-4"></div>
+        <ArrowDown className="w-4 h-4 text-muted-foreground/60" />
       </div>
     </section>
   );
