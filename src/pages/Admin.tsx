@@ -9,6 +9,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Upload, X, Edit, Trash2, Plus } from "lucide-react";
+import { AdminLanguageSwitcher } from "@/components/AdminLanguageSwitcher";
+import { Language } from "@/contexts/LanguageContext";
+import { getLanguageField, getLanguageValue, createArtworkUpdate, createExhibitionUpdate, createMediaUpdate } from "@/utils/adminLanguageHelpers";
 
 interface ArtworkForm {
   title: string;
@@ -98,6 +101,7 @@ const Admin = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'artworks' | 'add-artwork' | 'media' | 'add-media' | 'exhibitions' | 'add-exhibition'>('artworks');
   const [previewImages, setPreviewImages] = useState<Record<string, string>>({});
+  const [adminLanguage, setAdminLanguage] = useState<Language>('en');
 
   const form = useForm<ArtworkForm>({
     defaultValues: {
@@ -132,37 +136,71 @@ const Admin = () => {
     fetchExhibitions();
   }, []);
 
+  // Reset forms when admin language changes
   useEffect(() => {
     if (editingArtwork) {
       form.reset({
-        title: editingArtwork.title,
-        description: editingArtwork.description || "",
+        title: getLanguageValue(editingArtwork, 'title', adminLanguage),
+        description: getLanguageValue(editingArtwork, 'description', adminLanguage),
+        price: editingArtwork.price?.toString() || "",
+        category: editingArtwork.category as "painting" | "sculpture" | "streetart",
+      });
+    }
+  }, [adminLanguage, editingArtwork, form]);
+
+  useEffect(() => {
+    if (editingMedia) {
+      mediaForm.reset({
+        title: getLanguageValue(editingMedia, 'title', adminLanguage),
+        media_name: getLanguageValue(editingMedia, 'media_name', adminLanguage),
+        embed_link: editingMedia.embed_link,
+      });
+    }
+  }, [adminLanguage, editingMedia, mediaForm]);
+
+  useEffect(() => {
+    if (editingExhibition) {
+      exhibitionForm.reset({
+        title: getLanguageValue(editingExhibition, 'title', adminLanguage),
+        date: editingExhibition.date,
+        location: getLanguageValue(editingExhibition, 'location', adminLanguage),
+        theme: getLanguageValue(editingExhibition, 'theme', adminLanguage),
+        description: getLanguageValue(editingExhibition, 'description', adminLanguage),
+      });
+    }
+  }, [adminLanguage, editingExhibition, exhibitionForm]);
+
+  useEffect(() => {
+    if (editingArtwork) {
+      form.reset({
+        title: getLanguageValue(editingArtwork, 'title', adminLanguage),
+        description: getLanguageValue(editingArtwork, 'description', adminLanguage),
         price: editingArtwork.price?.toString() || "",
         category: editingArtwork.category as "painting" | "sculpture" | "streetart",
       });
       setActiveTab('add-artwork');
     }
-  }, [editingArtwork, form]);
+  }, [editingArtwork, form, adminLanguage]);
 
   useEffect(() => {
     if (editingMedia) {
       mediaForm.reset({
-        title: editingMedia.title,
-        media_name: editingMedia.media_name,
+        title: getLanguageValue(editingMedia, 'title', adminLanguage),
+        media_name: getLanguageValue(editingMedia, 'media_name', adminLanguage),
         embed_link: editingMedia.embed_link,
       });
       setActiveTab('add-media');
     }
-  }, [editingMedia, mediaForm]);
+  }, [editingMedia, mediaForm, adminLanguage]);
 
   useEffect(() => {
     if (editingExhibition) {
       exhibitionForm.reset({
-        title: editingExhibition.title,
+        title: getLanguageValue(editingExhibition, 'title', adminLanguage),
         date: editingExhibition.date,
-        location: editingExhibition.location,
-        theme: editingExhibition.theme || "",
-        description: editingExhibition.description || "",
+        location: getLanguageValue(editingExhibition, 'location', adminLanguage),
+        theme: getLanguageValue(editingExhibition, 'theme', adminLanguage),
+        description: getLanguageValue(editingExhibition, 'description', adminLanguage),
       });
       setExhibitionFiles([]);
       setExhibitionPreviews([]);
@@ -173,7 +211,7 @@ const Admin = () => {
       })));
       setActiveTab('add-exhibition');
     }
-  }, [editingExhibition, exhibitionForm]);
+  }, [editingExhibition, exhibitionForm, adminLanguage]);
 
   const fetchExhibitions = async () => {
     try {
@@ -428,15 +466,16 @@ const Admin = () => {
     try {
       if (editingExhibition) {
         // Update existing exhibition
+        const updateData = createExhibitionUpdate({
+          title: data.title,
+          location: data.location,
+          theme: data.theme || null,
+          description: data.description,
+        }, adminLanguage, data.date);
+
         const { error: exhibitionError } = await supabase
           .from('exhibitions')
-          .update({
-            title: data.title,
-            date: data.date,
-            location: data.location,
-            theme: data.theme || null,
-            description: data.description,
-          })
+          .update(updateData)
           .eq('id', editingExhibition.id);
 
         if (exhibitionError) throw exhibitionError;
@@ -478,15 +517,16 @@ const Admin = () => {
         setEditingExhibition(null);
       } else {
         // Create new exhibition
+        const insertData = createExhibitionUpdate({
+          title: data.title,
+          location: data.location,
+          theme: data.theme || null,
+          description: data.description,
+        }, adminLanguage, data.date);
+
         const { data: exhibition, error: exhibitionError } = await supabase
           .from('exhibitions')
-          .insert({
-            title: data.title,
-            date: data.date,
-            location: data.location,
-            theme: data.theme || null,
-            description: data.description,
-          })
+          .insert(insertData)
           .select()
           .single();
 
@@ -542,14 +582,14 @@ const Admin = () => {
     try {
       if (editingArtwork) {
         // Update existing artwork
+        const updateData = createArtworkUpdate({
+          title: data.title,
+          description: data.description,
+        }, adminLanguage, parseFloat(data.price), data.category);
+
         const { error: artworkError } = await supabase
           .from('artworks')
-          .update({
-            title: data.title,
-            description: data.description,
-            price: parseFloat(data.price),
-            category: data.category,
-          })
+          .update(updateData)
           .eq('id', editingArtwork.id);
 
         if (artworkError) throw artworkError;
@@ -567,14 +607,14 @@ const Admin = () => {
         setEditingArtwork(null);
       } else {
         // Create new artwork
+        const insertData = createArtworkUpdate({
+          title: data.title,
+          description: data.description,
+        }, adminLanguage, parseFloat(data.price), data.category);
+
         const { data: artwork, error: artworkError } = await supabase
           .from('artworks')
-          .insert({
-            title: data.title,
-            description: data.description,
-            price: parseFloat(data.price),
-            category: data.category,
-          })
+          .insert(insertData)
           .select()
           .single();
 
@@ -605,26 +645,28 @@ const Admin = () => {
   const onSubmitMedia = async (data: MediaForm) => {
     try {
       if (editingMedia) {
+        const updateData = createMediaUpdate({
+          title: data.title,
+          media_name: data.media_name,
+        }, adminLanguage, data.embed_link);
+
         const { error } = await supabase
           .from('media')
-          .update({
-            title: data.title,
-            media_name: data.media_name,
-            embed_link: data.embed_link,
-          })
+          .update(updateData)
           .eq('id', editingMedia.id);
 
         if (error) throw error;
         toast.success("Media updated successfully!");
         setEditingMedia(null);
       } else {
+        const insertData = createMediaUpdate({
+          title: data.title,
+          media_name: data.media_name,
+        }, adminLanguage, data.embed_link);
+
         const { error } = await supabase
           .from('media')
-          .insert({
-            title: data.title,
-            media_name: data.media_name,
-            embed_link: data.embed_link,
-          });
+          .insert(insertData);
 
         if (error) throw error;
         toast.success("Media added successfully!");
@@ -787,6 +829,12 @@ const Admin = () => {
           <h1 className="text-3xl font-bold text-primary mb-4">Admin Panel</h1>
         </div>
         
+        {/* Language Switcher */}
+        <AdminLanguageSwitcher 
+          currentLanguage={adminLanguage}
+          onLanguageChange={setAdminLanguage}
+        />
+        
         {/* Navigation Tabs */}
         <div className="mb-8">
           <div className="flex flex-wrap gap-2 mb-4">
@@ -852,7 +900,7 @@ const Admin = () => {
                     rules={{ required: "Title is required" }}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Title</FormLabel>
+                        <FormLabel>Title ({adminLanguage.toUpperCase()})</FormLabel>
                         <FormControl>
                           <Input placeholder="Enter artwork title" {...field} />
                         </FormControl>
@@ -866,7 +914,7 @@ const Admin = () => {
                     name="description"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Description</FormLabel>
+                        <FormLabel>Description ({adminLanguage.toUpperCase()})</FormLabel>
                         <FormControl>
                           <Textarea 
                             placeholder="Enter artwork description" 
@@ -1047,7 +1095,7 @@ const Admin = () => {
                     rules={{ required: "Title is required" }}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Title</FormLabel>
+                        <FormLabel>Title ({adminLanguage.toUpperCase()})</FormLabel>
                         <FormControl>
                           <Input placeholder="Enter interview/media title" {...field} />
                         </FormControl>
@@ -1062,7 +1110,7 @@ const Admin = () => {
                     rules={{ required: "Media name is required" }}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Media Name</FormLabel>
+                        <FormLabel>Media Name ({adminLanguage.toUpperCase()})</FormLabel>
                         <FormControl>
                           <Input placeholder="e.g., Armenia TV, Yerevan Arts Radio" {...field} />
                         </FormControl>
@@ -1133,13 +1181,13 @@ const Admin = () => {
                         <div className="w-32 h-32 flex-shrink-0">
                           <img
                             src={artwork.artwork_images[0]?.image_url || '/placeholder.svg'}
-                            alt={artwork.title}
+                            alt={getLanguageValue(artwork, 'title', adminLanguage)}
                             className="w-full h-full object-cover rounded-lg"
                           />
                         </div>
                         <div className="flex-1">
                           <div className="flex justify-between items-start mb-2">
-                            <h3 className="text-xl font-semibold text-primary">{artwork.title}</h3>
+                            <h3 className="text-xl font-semibold text-primary">{getLanguageValue(artwork, 'title', adminLanguage)}</h3>
                             <div className="flex gap-2">
                               <Button
                                 variant="outline"
@@ -1160,7 +1208,7 @@ const Admin = () => {
                           <p className="text-muted-foreground mb-2 capitalize">{artwork.category}</p>
                           <p className="text-foreground mb-2">${artwork.price?.toFixed(2) || 'Price on request'}</p>
                           <p className="text-sm text-muted-foreground line-clamp-2">
-                            {artwork.description || 'No description'}
+                            {getLanguageValue(artwork, 'description', adminLanguage) || 'No description'}
                           </p>
                           
                           {artwork.artwork_images.length > 1 && (
@@ -1171,7 +1219,7 @@ const Admin = () => {
                                   <div key={image.id} className="relative">
                                     <img
                                       src={image.image_url}
-                                      alt={`${artwork.title} ${index + 1}`}
+                                      alt={`${getLanguageValue(artwork, 'title', adminLanguage)} ${index + 1}`}
                                       className="w-16 h-16 object-cover rounded border"
                                     />
                                   </div>
@@ -1206,9 +1254,11 @@ const Admin = () => {
                     <Card key={mediaItem.id} className="p-6">
                       <div className="flex justify-between items-start mb-4">
                         <div className="flex-1">
-                          <h3 className="text-xl font-semibold text-primary mb-1">{mediaItem.title}</h3>
+                          <h3 className="text-xl font-semibold text-primary mb-1">
+                            {getLanguageValue(mediaItem, 'title', adminLanguage)}
+                          </h3>
                           <p className="text-muted-foreground mb-2">
-                            {mediaItem.media_name}
+                            {getLanguageValue(mediaItem, 'media_name', adminLanguage)}
                           </p>
                         </div>
                         <div className="flex gap-2">
@@ -1313,7 +1363,7 @@ const Admin = () => {
                       rules={{ required: "Title is required" }}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Title</FormLabel>
+                          <FormLabel>Title ({adminLanguage.toUpperCase()})</FormLabel>
                           <FormControl>
                             <Input placeholder="Enter exhibition title" {...field} />
                           </FormControl>
@@ -1343,7 +1393,7 @@ const Admin = () => {
                       rules={{ required: "Location is required" }}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Location</FormLabel>
+                          <FormLabel>Location ({adminLanguage.toUpperCase()})</FormLabel>
                           <FormControl>
                             <Input placeholder="Enter exhibition location" {...field} />
                           </FormControl>
@@ -1357,7 +1407,7 @@ const Admin = () => {
                       name="theme"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Theme (Optional)</FormLabel>
+                          <FormLabel>Theme ({adminLanguage.toUpperCase()}) (Optional)</FormLabel>
                           <FormControl>
                             <Input placeholder="Enter exhibition theme" {...field} />
                           </FormControl>
@@ -1372,7 +1422,7 @@ const Admin = () => {
                     name="description"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Description</FormLabel>
+                        <FormLabel>Description ({adminLanguage.toUpperCase()})</FormLabel>
                         <FormControl>
                           <Textarea 
                             placeholder="Enter exhibition description" 
@@ -1563,11 +1613,11 @@ const Admin = () => {
                     <Card key={exhibition.id} className="p-6">
                       <div className="flex justify-between items-start mb-4">
                         <div className="flex-1">
-                          <h3 className="text-xl font-semibold text-primary mb-1">{exhibition.title}</h3>
+                          <h3 className="text-xl font-semibold text-primary mb-1">{getLanguageValue(exhibition, 'title', adminLanguage)}</h3>
                           <div className="text-muted-foreground mb-2 space-y-1">
                             <p><strong>Date:</strong> {new Date(exhibition.date).toLocaleDateString()}</p>
-                            <p><strong>Location:</strong> {exhibition.location}</p>
-                            {exhibition.theme && <p><strong>Theme:</strong> {exhibition.theme}</p>}
+                            <p><strong>Location:</strong> {getLanguageValue(exhibition, 'location', adminLanguage)}</p>
+                            {exhibition.theme && <p><strong>Theme:</strong> {getLanguageValue(exhibition, 'theme', adminLanguage)}</p>}
                           </div>
                         </div>
                         <div className="flex gap-2">
@@ -1601,7 +1651,7 @@ const Admin = () => {
                               <img
                                 key={image.id}
                                 src={image.image_url}
-                                alt={`${exhibition.title} ${index + 1}`}
+                                alt={`${getLanguageValue(exhibition, 'title', adminLanguage)} ${index + 1}`}
                                 className="w-full h-16 object-cover rounded border"
                               />
                             ))}
