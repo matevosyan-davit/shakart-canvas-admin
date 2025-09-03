@@ -35,7 +35,6 @@ interface Artwork {
 
 interface MediaForm {
   title: string;
-  date: string;
   media_name: string;
   embed_link: string;
 }
@@ -43,7 +42,6 @@ interface MediaForm {
 interface MediaItem {
   id: string;
   title: string;
-  date: string;
   media_name: string;
   embed_link: string;
   type: string;
@@ -73,7 +71,6 @@ const Admin = () => {
   const mediaForm = useForm<MediaForm>({
     defaultValues: {
       title: "",
-      date: "",
       media_name: "",
       embed_link: "",
     },
@@ -100,7 +97,6 @@ const Admin = () => {
     if (editingMedia) {
       mediaForm.reset({
         title: editingMedia.title,
-        date: editingMedia.date,
         media_name: editingMedia.media_name,
         embed_link: editingMedia.embed_link,
       });
@@ -142,7 +138,7 @@ const Admin = () => {
       const { data, error } = await supabase
         .from('media')
         .select('*')
-        .order('date', { ascending: false });
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
       setMedia(data || []);
@@ -274,7 +270,6 @@ const Admin = () => {
           .from('media')
           .update({
             title: data.title,
-            date: data.date,
             media_name: data.media_name,
             embed_link: data.embed_link,
           })
@@ -288,7 +283,6 @@ const Admin = () => {
           .from('media')
           .insert({
             title: data.title,
-            date: data.date,
             media_name: data.media_name,
             embed_link: data.embed_link,
           });
@@ -651,21 +645,6 @@ const Admin = () => {
 
                   <FormField
                     control={mediaForm.control}
-                    name="date"
-                    rules={{ required: "Date is required" }}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Date</FormLabel>
-                        <FormControl>
-                          <Input type="date" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={mediaForm.control}
                     name="media_name"
                     rules={{ required: "Media name is required" }}
                     render={({ field }) => (
@@ -816,7 +795,7 @@ const Admin = () => {
                         <div className="flex-1">
                           <h3 className="text-xl font-semibold text-primary mb-1">{mediaItem.title}</h3>
                           <p className="text-muted-foreground mb-2">
-                            {mediaItem.media_name} • {new Date(mediaItem.date).toLocaleDateString()}
+                            {mediaItem.media_name}
                           </p>
                         </div>
                         <div className="flex gap-2">

@@ -82,7 +82,6 @@ export type Database = {
       media: {
         Row: {
           created_at: string
-          date: string
           embed_link: string
           id: string
           media_name: string
@@ -92,7 +91,6 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          date: string
           embed_link: string
           id?: string
           media_name: string
@@ -102,7 +100,6 @@ export type Database = {
         }
         Update: {
           created_at?: string
-          date?: string
           embed_link?: string
           id?: string
           media_name?: string

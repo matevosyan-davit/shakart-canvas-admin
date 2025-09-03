@@ -6,7 +6,6 @@ import { Play } from "lucide-react";
 interface MediaItem {
   id: string;
   title: string;
-  date: string;
   media_name: string;
   embed_link: string;
   type: string;
@@ -42,7 +41,7 @@ const Media = () => {
       const { data, error } = await supabase
         .from('media')
         .select('*')
-        .order('date', { ascending: false });
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
       setMedia(data || []);
@@ -114,13 +113,6 @@ const Media = () => {
                       <div className="space-y-2 mb-6">
                         <p className="font-body text-muted-foreground">
                           <strong>Media:</strong> {mediaItem.media_name}
-                        </p>
-                        <p className="font-body text-muted-foreground">
-                          <strong>Date:</strong> {new Date(mediaItem.date).toLocaleDateString('en-US', { 
-                            year: 'numeric', 
-                            month: 'long', 
-                            day: 'numeric' 
-                          })}
                         </p>
                       </div>
                     </div>
