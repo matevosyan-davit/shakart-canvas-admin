@@ -1,37 +1,7 @@
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { Facebook, Instagram, Mail, MapPin, Phone } from "lucide-react";
-import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
 
 const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: ""
-  });
-  const { toast } = useToast();
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission here
-    toast({
-      title: "Message sent!",
-      description: "Thank you for your message. I'll get back to you soon.",
-    });
-    setFormData({ name: "", email: "", subject: "", message: "" });
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
-  };
 
   return (
     <main className="min-h-screen bg-surface pt-24">
@@ -55,75 +25,10 @@ const Contact = () => {
 
       {/* Contact Content */}
       <section className="py-8 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12">
-            {/* Contact Form */}
-            <Card className="p-8 bg-card shadow-card border-0 animate-fade-in" style={{ animationDelay: "0.3s" }}>
-              <h2 className="font-display text-2xl font-semibold text-primary mb-6">Send a Message</h2>
-              
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name" className="font-body text-sm text-foreground">Name</Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                      className="border-border/20 focus:border-accent"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email" className="font-body text-sm text-foreground">Email</Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                      className="border-border/20 focus:border-accent"
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="subject" className="font-body text-sm text-foreground">Subject</Label>
-                  <Input
-                    id="subject"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
-                    required
-                    className="border-border/20 focus:border-accent"
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="message" className="font-body text-sm text-foreground">Message</Label>
-                  <Textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    required
-                    rows={6}
-                    className="border-border/20 focus:border-accent resize-none"
-                  />
-                </div>
-                
-                <Button 
-                  type="submit" 
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-body"
-                >
-                  Send Message
-                </Button>
-              </form>
-            </Card>
-
+        <div className="max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-8">
             {/* Contact Information */}
-            <div className="space-y-8 animate-fade-in" style={{ animationDelay: "0.4s" }}>
+            <div className="space-y-8 animate-fade-in" style={{ animationDelay: "0.3s" }}>
               {/* Contact Details */}
               <Card className="p-8 bg-card shadow-card border-0">
                 <h2 className="font-display text-2xl font-semibold text-primary mb-6">Get in Touch</h2>
