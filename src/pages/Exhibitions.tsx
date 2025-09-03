@@ -228,7 +228,7 @@ const Exhibitions = () => {
                    {exhibition.exhibition_images.length > 0 && (
                      <div>
                        <h3 className="font-display text-lg font-medium text-primary mb-4">Exhibition Highlights</h3>
-                       <Carousel className="w-full">
+                       <Carousel className="w-full relative">
                          <CarouselContent>
                            {exhibition.exhibition_images.map((image, idx) => (
                              <CarouselItem key={image.id}>
@@ -244,8 +244,8 @@ const Exhibitions = () => {
                          </CarouselContent>
                          {exhibition.exhibition_images.length > 1 && (
                            <>
-                             <CarouselPrevious />
-                             <CarouselNext />
+                             <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-10" />
+                             <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-10" />
                            </>
                          )}
                        </Carousel>
