@@ -176,41 +176,50 @@ const Gallery = () => {
           className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4"
           onClick={() => setSelectedArtwork(null)}
         >
-          <div className="w-[80vw] h-[80vh] glass rounded-lg p-8 overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <div className="flex justify-end mb-4">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setSelectedArtwork(null)}
-                className="rounded-full w-10 h-10 p-0"
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
-            
-            <div className="grid lg:grid-cols-2 gap-8 h-[calc(100%-4rem)]">
-              <div className="flex items-center justify-center">
+          <div className="w-[80vw] h-[80vh] glass rounded-lg overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            <div className="flex h-full">
+              {/* Image Section - Left Side */}
+              <div className="flex-1 bg-black/20 flex items-center justify-center p-8">
                 <img
                   src={selectedArtwork.image}
                   alt={selectedArtwork.title}
-                  className="max-w-full max-h-full object-contain rounded-lg"
+                  className="max-w-full max-h-full object-contain"
                 />
               </div>
-              <div className="flex flex-col justify-center space-y-6">
-                <h3 className="font-display text-3xl font-semibold text-primary">
-                  {selectedArtwork.title}
-                </h3>
-                <div className="font-body text-muted-foreground space-y-2">
-                  <p className="text-lg">{selectedArtwork.year} • {selectedArtwork.medium}</p>
-                  <p>{selectedArtwork.dimensions}</p>
+              
+              {/* Content Section - Right Side */}
+              <div className="w-96 bg-card/95 p-8 flex flex-col justify-between">
+                <div className="space-y-6">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <h3 className="font-display text-2xl font-semibold text-primary mb-3">
+                        {selectedArtwork.title}
+                      </h3>
+                      <div className="font-body text-muted-foreground space-y-1">
+                        <p className="text-base">{selectedArtwork.year} • {selectedArtwork.medium}</p>
+                        <p className="text-sm">{selectedArtwork.dimensions}</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setSelectedArtwork(null)}
+                      className="text-muted-foreground hover:text-primary transition-colors p-2"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  
+                  <div className="w-16 h-px bg-accent"></div>
+                  
+                  <p className="font-body text-foreground leading-relaxed">
+                    {selectedArtwork.description}
+                  </p>
                 </div>
-                <div className="font-display text-2xl text-primary font-semibold">
-                  {selectedArtwork.price}
+                
+                <div className="pt-6 border-t border-border/20">
+                  <div className="font-display text-2xl text-primary font-semibold">
+                    {selectedArtwork.price}
+                  </div>
                 </div>
-                <div className="w-16 h-px bg-accent"></div>
-                <p className="font-body text-foreground leading-relaxed">
-                  {selectedArtwork.description}
-                </p>
               </div>
             </div>
           </div>
