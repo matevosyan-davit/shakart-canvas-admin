@@ -1,41 +1,70 @@
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
-const exhibitions = [
-  {
-    id: 1,
-    title: "Echoes of Heritage",
-    gallery: "National Gallery of Armenia",
-    location: "Yerevan, Armenia",
-    date: "2019",
-    type: "Solo Exhibition",
-    status: "Past",
-    link: "/exhibitions/armenia-2019"
-  },
-  {
-    id: 2,
-    title: "Mediterranean Dialogues",
-    gallery: "Contemporary Arts Center",
-    location: "Rome, Italy",
-    date: "2020",
-    type: "Group Exhibition",
-    status: "Past",
-    link: "/exhibitions/italy-2020"
-  },
-  {
-    id: 3,
-    title: "Urban Visions",
-    gallery: "Yerevan Modern Gallery",
-    location: "Yerevan, Armenia",
-    date: "2022",
-    type: "Solo Exhibition",
-    status: "Past",
-    link: "/exhibitions/armenia-2022"
-  }
-];
+interface Exhibition {
+  id: string;
+  title: string;
+  date: string;
+  location: string;
+  theme: string | null;
+  description: string | null;
+  created_at: string;
+}
 
 const ExhibitionsSection = () => {
+  const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchExhibitions();
+  }, []);
+
+  const fetchExhibitions = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('exhibitions')
+        .select('*')
+        .order('date', { ascending: false });
+
+      if (error) throw error;
+      setExhibitions(data || []);
+    } catch (error) {
+      console.error('Error fetching exhibitions:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <section className="py-24 px-6 bg-surface">
+        <div className="max-w-6xl mx-auto text-center">
+          <p className="text-muted-foreground">Loading exhibitions...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (exhibitions.length === 0) {
+    return (
+      <section className="py-24 px-6 bg-surface">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16 animate-slide-up">
+            <h2 className="font-display text-4xl md:text-5xl font-semibold text-primary mb-6">
+              Exhibitions
+            </h2>
+            <p className="font-body text-lg text-muted-foreground max-w-2xl mx-auto">
+              Stay tuned for upcoming exhibitions and artistic showcases.
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-24 px-6 bg-surface">
       <div className="max-w-6xl mx-auto">
@@ -52,7 +81,7 @@ const ExhibitionsSection = () => {
           {exhibitions.map((exhibition, index) => (
             <Card 
               key={exhibition.id}
-              className="p-8 border-0 shadow-card hover-lift bg-card"
+              className="p-8 border-0 shadow-card hover-lift bg-card animate-slide-up"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
@@ -61,27 +90,26 @@ const ExhibitionsSection = () => {
                     <h3 className="font-display text-2xl font-medium text-primary">
                       {exhibition.title}
                     </h3>
-                    {exhibition.status === "Current" && (
+                    {exhibition.theme && (
                       <span className="px-3 py-1 bg-accent text-accent-foreground text-sm font-medium rounded-full">
-                        Current
+                        {exhibition.theme}
                       </span>
                     )}
                   </div>
                   <div className="font-body text-muted-foreground space-y-1">
-                    <p className="text-lg">{exhibition.gallery}</p>
-                    <p>{exhibition.location}</p>
+                    <p className="text-lg">{exhibition.location}</p>
+                    {exhibition.description && (
+                      <p className="text-sm">{exhibition.description}</p>
+                    )}
                   </div>
                 </div>
                 
                 <div className="flex flex-col lg:items-end gap-2">
                   <span className="font-body text-primary font-medium text-lg">
-                    {exhibition.date}
-                  </span>
-                  <span className="font-body text-sm text-muted-foreground">
-                    {exhibition.type}
+                    {new Date(exhibition.date).getFullYear()}
                   </span>
                   <Link 
-                    to={exhibition.link}
+                    to="/exhibitions"
                     className="mt-2"
                   >
                     <Button variant="outline" size="sm">
@@ -95,6 +123,9 @@ const ExhibitionsSection = () => {
         </div>
         
         <div className="text-center mt-12">
+          <Link to="/exhibitions">
+            <Button className="mb-4">View All Exhibitions</Button>
+          </Link>
           <p className="font-body text-muted-foreground">
             For exhibition inquiries and collaboration opportunities, please{" "}
             <Link to="/contact" className="text-accent hover:text-accent/80 font-medium transition-colors duration-300">
