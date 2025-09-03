@@ -33,14 +33,33 @@ interface Artwork {
   artwork_images: ArtworkImage[];
 }
 
+interface MediaForm {
+  title: string;
+  date: string;
+  media_name: string;
+  embed_link: string;
+}
+
+interface MediaItem {
+  id: string;
+  title: string;
+  date: string;
+  media_name: string;
+  embed_link: string;
+  type: string;
+  created_at: string;
+}
+
 const Admin = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
   const [previews, setPreviews] = useState<string[]>([]);
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [editingArtwork, setEditingArtwork] = useState<Artwork | null>(null);
+  const [media, setMedia] = useState<MediaItem[]>([]);
+  const [editingMedia, setEditingMedia] = useState<MediaItem | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'add' | 'manage'>('manage');
+  const [activeTab, setActiveTab] = useState<'artworks' | 'add-artwork' | 'media' | 'add-media'>('artworks');
 
   const form = useForm<ArtworkForm>({
     defaultValues: {
@@ -51,8 +70,18 @@ const Admin = () => {
     },
   });
 
+  const mediaForm = useForm<MediaForm>({
+    defaultValues: {
+      title: "",
+      date: "",
+      media_name: "",
+      embed_link: "",
+    },
+  });
+
   useEffect(() => {
     fetchArtworks();
+    fetchMedia();
   }, []);
 
   useEffect(() => {
@@ -63,9 +92,21 @@ const Admin = () => {
         price: editingArtwork.price?.toString() || "",
         category: editingArtwork.category as "painting" | "sculpture" | "streetart",
       });
-      setActiveTab('add'); // Switch to add tab when editing
+      setActiveTab('add-artwork');
     }
   }, [editingArtwork, form]);
+
+  useEffect(() => {
+    if (editingMedia) {
+      mediaForm.reset({
+        title: editingMedia.title,
+        date: editingMedia.date,
+        media_name: editingMedia.media_name,
+        embed_link: editingMedia.embed_link,
+      });
+      setActiveTab('add-media');
+    }
+  }, [editingMedia, mediaForm]);
 
   const fetchArtworks = async () => {
     try {
@@ -93,6 +134,20 @@ const Admin = () => {
       console.error('Error fetching artworks:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchMedia = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('media')
+        .select('*')
+        .order('date', { ascending: false });
+
+      if (error) throw error;
+      setMedia(data || []);
+    } catch (error) {
+      console.error('Error fetching media:', error);
     }
   };
 
@@ -212,6 +267,44 @@ const Admin = () => {
     }
   };
 
+  const onSubmitMedia = async (data: MediaForm) => {
+    try {
+      if (editingMedia) {
+        const { error } = await supabase
+          .from('media')
+          .update({
+            title: data.title,
+            date: data.date,
+            media_name: data.media_name,
+            embed_link: data.embed_link,
+          })
+          .eq('id', editingMedia.id);
+
+        if (error) throw error;
+        toast.success("Media updated successfully!");
+        setEditingMedia(null);
+      } else {
+        const { error } = await supabase
+          .from('media')
+          .insert({
+            title: data.title,
+            date: data.date,
+            media_name: data.media_name,
+            embed_link: data.embed_link,
+          });
+
+        if (error) throw error;
+        toast.success("Media added successfully!");
+      }
+
+      mediaForm.reset();
+      fetchMedia();
+    } catch (error) {
+      console.error('Error saving media:', error);
+      toast.error("Failed to save media");
+    }
+  };
+
   const handleEdit = (artwork: Artwork) => {
     setEditingArtwork(artwork);
     setSelectedFiles([]);
@@ -223,6 +316,33 @@ const Admin = () => {
     form.reset();
     setSelectedFiles([]);
     setPreviews([]);
+  };
+
+  const handleEditMedia = (mediaItem: MediaItem) => {
+    setEditingMedia(mediaItem);
+  };
+
+  const handleCancelEditMedia = () => {
+    setEditingMedia(null);
+    mediaForm.reset();
+  };
+
+  const handleDeleteMedia = async (mediaId: string) => {
+    if (!confirm("Are you sure you want to delete this media item?")) return;
+
+    try {
+      const { error } = await supabase
+        .from('media')
+        .delete()
+        .eq('id', mediaId);
+
+      if (error) throw error;
+      toast.success("Media deleted successfully!");
+      fetchMedia();
+    } catch (error) {
+      console.error('Error deleting media:', error);
+      toast.error("Failed to delete media");
+    }
   };
 
   const handleDelete = async (artworkId: string) => {
@@ -278,21 +398,38 @@ const Admin = () => {
           <h1 className="text-3xl font-bold text-primary mb-4">Admin Panel</h1>
         </div>
         
-        {/* Actions */}
-        <div className="mb-8 flex justify-end">
-          {activeTab === 'manage' ? (
-            <Button onClick={() => { setEditingArtwork(null); setActiveTab('add'); }}>
+        {/* Navigation Tabs */}
+        <div className="mb-8">
+          <div className="flex flex-wrap gap-2 mb-4">
+            <Button 
+              variant={activeTab === 'artworks' ? 'default' : 'outline'} 
+              onClick={() => { setEditingArtwork(null); setEditingMedia(null); setActiveTab('artworks'); }}
+            >
+              Manage Artworks
+            </Button>
+            <Button 
+              variant={activeTab === 'add-artwork' ? 'default' : 'outline'} 
+              onClick={() => { setEditingArtwork(null); setActiveTab('add-artwork'); }}
+            >
               <Plus className="w-4 h-4 mr-2" /> Add Artwork
             </Button>
-          ) : (
-            <Button variant="outline" onClick={() => setActiveTab('manage')}>
-              Back to list
+            <Button 
+              variant={activeTab === 'media' ? 'default' : 'outline'} 
+              onClick={() => { setEditingMedia(null); setEditingArtwork(null); setActiveTab('media'); }}
+            >
+              Manage Media
             </Button>
-          )}
+            <Button 
+              variant={activeTab === 'add-media' ? 'default' : 'outline'} 
+              onClick={() => { setEditingMedia(null); setActiveTab('add-media'); }}
+            >
+              <Plus className="w-4 h-4 mr-2" /> Add Media
+            </Button>
+          </div>
         </div>
 
         {/* Tab Content - Add/Edit Artwork */}
-        {activeTab === 'add' && (
+        {activeTab === 'add-artwork' && (
           <Card className="max-w-2xl mx-auto">
             <CardHeader>
               <CardTitle className="text-2xl font-bold text-center">
@@ -486,8 +623,103 @@ const Admin = () => {
           </Card>
         )}
 
+        {/* Tab Content - Add/Edit Media */}
+        {activeTab === 'add-media' && (
+          <Card className="max-w-2xl mx-auto">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold text-center">
+                {editingMedia ? 'Edit Media' : 'Add New Media'}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Form {...mediaForm}>
+                <form onSubmit={mediaForm.handleSubmit(onSubmitMedia)} className="space-y-6">
+                  <FormField
+                    control={mediaForm.control}
+                    name="title"
+                    rules={{ required: "Title is required" }}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Title</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter interview/media title" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={mediaForm.control}
+                    name="date"
+                    rules={{ required: "Date is required" }}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Date</FormLabel>
+                        <FormControl>
+                          <Input type="date" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={mediaForm.control}
+                    name="media_name"
+                    rules={{ required: "Media name is required" }}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Media Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="e.g., Armenia TV, Yerevan Arts Radio" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={mediaForm.control}
+                    name="embed_link"
+                    rules={{ required: "Embed link is required" }}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Embed Link</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="YouTube embed URL (e.g., https://www.youtube.com/embed/VIDEO_ID)" 
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="flex gap-4">
+                    {editingMedia && (
+                      <Button 
+                        type="button" 
+                        variant="outline"
+                        className="flex-1" 
+                        onClick={handleCancelEditMedia}
+                      >
+                        Cancel
+                      </Button>
+                    )}
+                    <Button type="submit" className="flex-1">
+                      {editingMedia ? "Update Media" : "Add Media"}
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Tab Content - Manage Artworks */}
-        {activeTab === 'manage' && (
+        {activeTab === 'artworks' && (
           <Card>
             <CardHeader>
               <CardTitle className="text-2xl font-bold">Manage Artworks</CardTitle>
@@ -557,6 +789,68 @@ const Admin = () => {
                           )}
                         </div>
                       </div>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Tab Content - Manage Media */}
+        {activeTab === 'media' && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold">Manage Media</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {media.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">No media items found. Add some using the "Add Media" tab.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {media.map((mediaItem) => (
+                    <Card key={mediaItem.id} className="p-6">
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="flex-1">
+                          <h3 className="text-xl font-semibold text-primary mb-1">{mediaItem.title}</h3>
+                          <p className="text-muted-foreground mb-2">
+                            {mediaItem.media_name} • {new Date(mediaItem.date).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEditMedia(mediaItem)}
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleDeleteMedia(mediaItem.id)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                      
+                      <div className="aspect-video bg-muted rounded-lg overflow-hidden mb-4">
+                        <iframe
+                          src={mediaItem.embed_link}
+                          title={mediaItem.title}
+                          className="w-full h-full"
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                      </div>
+                      
+                      <p className="text-sm text-muted-foreground">
+                        <strong>Embed Link:</strong> {mediaItem.embed_link}
+                      </p>
                     </Card>
                   ))}
                 </div>

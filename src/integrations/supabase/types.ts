@@ -79,6 +79,39 @@ export type Database = {
         }
         Relationships: []
       }
+      media: {
+        Row: {
+          created_at: string
+          date: string
+          embed_link: string
+          id: string
+          media_name: string
+          title: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          embed_link: string
+          id?: string
+          media_name: string
+          title: string
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          embed_link?: string
+          id?: string
+          media_name?: string
+          title?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
