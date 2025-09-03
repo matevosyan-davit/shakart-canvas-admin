@@ -104,7 +104,7 @@ const Media = () => {
   return (
     <main className="min-h-screen bg-surface">
       {/* Navigation */}
-      <div className="p-6">
+      <div className="sticky top-0 z-40 bg-surface p-6">
         <Link to="/">
           <Button variant="outline" className="mb-8">
             <ArrowLeft className="w-4 h-4 mr-2" />
