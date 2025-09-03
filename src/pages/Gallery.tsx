@@ -109,25 +109,11 @@ const Gallery = () => {
             onClick={() => handleArtworkClick(artwork)}
           >
             <div className="aspect-square overflow-hidden relative">
-              <Carousel opts={{ loop: true }} className="h-full">
-                <CarouselContent>
-                  {(artwork.artwork_images.length ? artwork.artwork_images : [{ id: 'placeholder', image_url: '/placeholder.svg', display_order: 0 } as any]).map((img) => (
-                    <CarouselItem key={img.id}>
-                      <img
-                        src={img.image_url}
-                        alt={artwork.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                {artwork.artwork_images.length > 1 && (
-                  <>
-                    <CarouselPrevious className="left-2 top-1/2 -translate-y-1/2" />
-                    <CarouselNext className="right-2 top-1/2 -translate-y-1/2" />
-                  </>
-                )}
-              </Carousel>
+              <img
+                src={artwork.artwork_images[0]?.image_url || '/placeholder.svg'}
+                alt={artwork.title}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
             </div>
             <div className="p-4">
               <h3 className="font-display text-lg font-medium text-primary mb-2">
@@ -136,11 +122,6 @@ const Gallery = () => {
               <div className="font-body text-sm text-muted-foreground">
                 <p>${artwork.price?.toFixed(2) || 'Price on request'}</p>
                 <p className="mt-1 capitalize">{artwork.category}</p>
-                {artwork.artwork_images.length > 1 && (
-                  <p className="text-xs text-accent mt-1">
-                    +{artwork.artwork_images.length - 1} more images
-                  </p>
-                )}
               </div>
             </div>
           </Card>
@@ -213,8 +194,8 @@ const Gallery = () => {
         >
           <div className="w-[90vw] h-[90vh] glass rounded-lg overflow-hidden" onClick={(e) => e.stopPropagation()}>
             <div className="flex h-full">
-              {/* Image Section - Left Side */}
-              <div className="flex-1 bg-black/20 flex items-center justify-center p-8 relative">
+            {/* Image Section - Left Side */}
+            <div className="flex-1 bg-black/20 flex items-center justify-center p-8 relative group">
                 <img
                   src={selectedArtwork.artwork_images[currentImageIndex]?.image_url || '/placeholder.svg'}
                   alt={selectedArtwork.title}
@@ -223,25 +204,23 @@ const Gallery = () => {
                 
                 {/* Image Navigation */}
                 {selectedArtwork.artwork_images.length > 1 && (
-                  <>
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                     <button
                       onClick={prevImage}
-                      className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-1 rounded transition-colors"
                     >
-                      <ChevronLeft className="w-6 h-6" />
+                      <ChevronLeft className="w-4 h-4" />
                     </button>
                     <button
                       onClick={nextImage}
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-1 rounded transition-colors"
                     >
-                      <ChevronRight className="w-6 h-6" />
+                      <ChevronRight className="w-4 h-4" />
                     </button>
-                    
-                    {/* Image Counter */}
-                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/30 text-white px-2 py-0.5 rounded text-xs">
                       {currentImageIndex + 1} / {selectedArtwork.artwork_images.length}
                     </div>
-                  </>
+                  </div>
                 )}
               </div>
               
