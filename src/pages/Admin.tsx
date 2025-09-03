@@ -147,6 +147,22 @@ const Admin = () => {
     }
   };
 
+  const extractEmbedUrl = (embedLink: string): string => {
+    // If it's already a URL, return it
+    if (embedLink.startsWith('http')) {
+      return embedLink;
+    }
+    
+    // If it's iframe HTML, extract the src URL
+    const srcMatch = embedLink.match(/src="([^"]+)"/);
+    if (srcMatch && srcMatch[1]) {
+      return srcMatch[1];
+    }
+    
+    // Fallback to the original link
+    return embedLink;
+  };
+
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
     setSelectedFiles(prev => [...prev, ...files]);
@@ -818,7 +834,7 @@ const Admin = () => {
                       
                       <div className="aspect-video bg-muted rounded-lg overflow-hidden mb-4">
                         <iframe
-                          src={mediaItem.embed_link}
+                          src={extractEmbedUrl(mediaItem.embed_link)}
                           title={mediaItem.title}
                           className="w-full h-full"
                           frameBorder="0"
