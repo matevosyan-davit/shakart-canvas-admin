@@ -142,7 +142,7 @@ const Gallery = () => {
       <section className="py-8 px-6">
         <div className="max-w-6xl mx-auto">
           <Tabs defaultValue="paintings" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-12 bg-card shadow-card">
+            <TabsList className="sticky top-0 z-40 grid w-full grid-cols-3 mb-12 bg-card shadow-card">
               <TabsTrigger value="paintings" className="font-body text-base">Paintings</TabsTrigger>
               <TabsTrigger value="sculpture" className="font-body text-base">Sculpture</TabsTrigger>
               <TabsTrigger value="streetart" className="font-body text-base">Street Art</TabsTrigger>
