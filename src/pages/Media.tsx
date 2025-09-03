@@ -15,10 +15,32 @@ interface MediaItem {
 const Media = () => {
   const [media, setMedia] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [previewImages, setPreviewImages] = useState<Record<string, string>>({});
 
   useEffect(() => {
     fetchMedia();
   }, []);
+
+  useEffect(() => {
+    // Fetch preview images for non-video URLs
+    media.forEach(async (mediaItem) => {
+      const url = extractEmbedUrl(mediaItem.embed_link);
+      if (!isVideoUrl(url) && !previewImages[mediaItem.id]) {
+        try {
+          const response = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}&screenshot=true&meta=false&embed=screenshot.url`);
+          const data = await response.json();
+          if (data.status === 'success' && data.data.screenshot?.url) {
+            setPreviewImages(prev => ({
+              ...prev,
+              [mediaItem.id]: data.data.screenshot.url
+            }));
+          }
+        } catch (error) {
+          console.error('Failed to fetch preview for:', url);
+        }
+      }
+    });
+  }, [media, previewImages]);
 
   const extractEmbedUrl = (embedLink: string): string => {
     // If it's already a URL, return it
@@ -122,27 +144,54 @@ const Media = () => {
                         />
                       </div>
                     ) : (
-                      <div className="aspect-video bg-muted rounded-lg overflow-hidden flex items-center justify-center border-2 border-dashed border-border">
-                        <div className="text-center p-6">
-                          <div className="mb-4">
-                            <svg className="w-16 h-16 mx-auto text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
+                      <div className="aspect-video bg-muted rounded-lg overflow-hidden">
+                        {previewImages[mediaItem.id] ? (
+                          <div className="relative w-full h-full group">
+                            <img 
+                              src={previewImages[mediaItem.id]} 
+                              alt={`Preview of ${mediaItem.title}`}
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                              <a
+                                href={extractEmbedUrl(mediaItem.embed_link)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+                              >
+                                Read Article
+                                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                              </a>
+                            </div>
                           </div>
-                          <h3 className="font-medium text-foreground mb-2">Article Link</h3>
-                          <p className="text-sm text-muted-foreground mb-4">This content is available as an external article</p>
-                          <a
-                            href={extractEmbedUrl(mediaItem.embed_link)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
-                          >
-                            Read Article
-                            <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                          </a>
-                        </div>
+                        ) : (
+                          <div className="flex items-center justify-center border-2 border-dashed border-border h-full">
+                            <div className="text-center p-6">
+                              <div className="mb-4">
+                                <div className="w-16 h-16 mx-auto bg-muted-foreground/10 rounded-lg flex items-center justify-center">
+                                  <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                  </svg>
+                                </div>
+                              </div>
+                              <h3 className="font-medium text-foreground mb-2">Article Link</h3>
+                              <p className="text-sm text-muted-foreground mb-4">Loading preview...</p>
+                              <a
+                                href={extractEmbedUrl(mediaItem.embed_link)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+                              >
+                                Read Article
+                                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                              </a>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                     

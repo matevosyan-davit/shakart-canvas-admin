@@ -58,6 +58,7 @@ const Admin = () => {
   const [editingMedia, setEditingMedia] = useState<MediaItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'artworks' | 'add-artwork' | 'media' | 'add-media'>('artworks');
+  const [previewImages, setPreviewImages] = useState<Record<string, string>>({});
 
   const form = useForm<ArtworkForm>({
     defaultValues: {
@@ -142,6 +143,27 @@ const Admin = () => {
 
       if (error) throw error;
       setMedia(data || []);
+      
+      // Fetch preview images for non-video URLs
+      if (data) {
+        data.forEach(async (mediaItem: MediaItem) => {
+          const url = extractEmbedUrl(mediaItem.embed_link);
+          if (!isVideoUrl(url) && !previewImages[mediaItem.id]) {
+            try {
+              const response = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}&screenshot=true&meta=false&embed=screenshot.url`);
+              const apiData = await response.json();
+              if (apiData.status === 'success' && apiData.data.screenshot?.url) {
+                setPreviewImages(prev => ({
+                  ...prev,
+                  [mediaItem.id]: apiData.data.screenshot.url
+                }));
+              }
+            } catch (error) {
+              console.error('Failed to fetch preview for:', url);
+            }
+          }
+        });
+      }
     } catch (error) {
       console.error('Error fetching media:', error);
     }
@@ -867,23 +889,45 @@ const Admin = () => {
                           />
                         </div>
                       ) : (
-                        <div className="aspect-video bg-muted rounded-lg overflow-hidden mb-4 flex items-center justify-center border-2 border-dashed border-border">
-                          <div className="text-center p-4">
-                            <div className="mb-2">
-                              <svg className="w-12 h-12 mx-auto text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                              </svg>
+                        <div className="aspect-video bg-muted rounded-lg overflow-hidden mb-4">
+                          {previewImages[mediaItem.id] ? (
+                            <div className="relative w-full h-full">
+                              <img 
+                                src={previewImages[mediaItem.id]} 
+                                alt={`Preview of ${mediaItem.title}`}
+                                className="w-full h-full object-cover"
+                              />
+                              <div className="absolute top-2 right-2">
+                                <a
+                                  href={extractEmbedUrl(mediaItem.embed_link)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-xs bg-black/70 text-white px-2 py-1 rounded"
+                                >
+                                  View Article
+                                </a>
+                              </div>
                             </div>
-                            <p className="text-sm text-muted-foreground mb-2">Article Link</p>
-                            <a
-                              href={extractEmbedUrl(mediaItem.embed_link)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs text-primary hover:underline"
-                            >
-                              View Article
-                            </a>
-                          </div>
+                          ) : (
+                            <div className="flex items-center justify-center border-2 border-dashed border-border h-full">
+                              <div className="text-center p-4">
+                                <div className="mb-2">
+                                  <svg className="w-12 h-12 mx-auto text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                  </svg>
+                                </div>
+                                <p className="text-sm text-muted-foreground mb-2">Article Link</p>
+                                <a
+                                  href={extractEmbedUrl(mediaItem.embed_link)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-xs text-primary hover:underline"
+                                >
+                                  View Article
+                                </a>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       )}
                       
