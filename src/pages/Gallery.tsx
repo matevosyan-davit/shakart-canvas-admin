@@ -16,6 +16,7 @@ const artworks = {
       year: "2024",
       medium: "Oil on Canvas",
       dimensions: "48\" × 36\"",
+      price: "$3,200",
       image: artwork1,
       description: "An exploration of color harmony and emotional depth through abstract forms. This piece represents the convergence of different life experiences into a single moment of clarity and understanding."
     },
@@ -25,6 +26,7 @@ const artworks = {
       year: "2023",
       medium: "Acrylic on Canvas",
       dimensions: "60\" × 40\"",
+      price: "$4,500",
       image: artwork2,
       description: "Capturing the subtle conversations between light and shadow in nature. This painting invites viewers to listen to the quiet stories that landscapes tell when we take time to truly observe."
     },
@@ -34,6 +36,7 @@ const artworks = {
       year: "2024",
       medium: "Mixed Media",
       dimensions: "36\" × 48\"",
+      price: "$2,800",
       image: artwork3,
       description: "The pulse and energy of city life translated into geometric abstraction. Each layer represents a different aspect of urban existence, from the rush of daily commutes to quiet moments of reflection."
     }
@@ -45,6 +48,7 @@ const artworks = {
       year: "2023",
       medium: "Bronze and Steel",
       dimensions: "72\" × 24\" × 18\"",
+      price: "$8,500",
       image: artwork1,
       description: "A sculptural exploration of transformation and growth. The interplay between bronze and steel represents the balance between tradition and modernity in contemporary life."
     },
@@ -54,6 +58,7 @@ const artworks = {
       year: "2022",
       medium: "Marble and Wood",
       dimensions: "48\" × 48\" × 36\"",
+      price: "$12,000",
       image: artwork2,
       description: "This piece examines how individual fragments can come together to form a cohesive whole, much like communities and relationships in our interconnected world."
     }
@@ -65,6 +70,7 @@ const artworks = {
       year: "2024",
       medium: "Spray Paint and Stencil",
       dimensions: "12' × 8'",
+      price: "Commission Only",
       image: artwork3,
       description: "A large-scale mural that transforms an urban wall into a vibrant narrative about community, hope, and artistic expression in public spaces."
     },
@@ -74,6 +80,7 @@ const artworks = {
       year: "2023",
       medium: "Mixed Media Street Art",
       dimensions: "8' × 20'",
+      price: "Commission Only",
       image: artwork1,
       description: "An interactive street art installation that incorporates elements of the surrounding architecture to create a dialogue between the artwork and its environment."
     }
@@ -166,10 +173,10 @@ const Gallery = () => {
       {/* Artwork Modal */}
       {selectedArtwork && (
         <div 
-          className="fixed inset-0 bg-primary/80 backdrop-blur-md z-50 flex items-center justify-center p-6"
+          className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4"
           onClick={() => setSelectedArtwork(null)}
         >
-          <div className="max-w-5xl mx-auto glass rounded-lg p-8 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+          <div className="w-[80vw] h-[80vh] glass rounded-lg p-8 overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-end mb-4">
               <Button
                 variant="outline"
@@ -181,20 +188,26 @@ const Gallery = () => {
               </Button>
             </div>
             
-            <div className="grid lg:grid-cols-2 gap-8 items-start">
-              <img
-                src={selectedArtwork.image}
-                alt={selectedArtwork.title}
-                className="w-full rounded-lg shadow-elegant"
-              />
-              <div>
-                <h3 className="font-display text-3xl font-semibold text-primary mb-4">
+            <div className="grid lg:grid-cols-2 gap-8 h-[calc(100%-4rem)]">
+              <div className="flex items-center justify-center">
+                <img
+                  src={selectedArtwork.image}
+                  alt={selectedArtwork.title}
+                  className="max-w-full max-h-full object-contain rounded-lg"
+                />
+              </div>
+              <div className="flex flex-col justify-center space-y-6">
+                <h3 className="font-display text-3xl font-semibold text-primary">
                   {selectedArtwork.title}
                 </h3>
-                <div className="font-body text-muted-foreground mb-6 space-y-2">
+                <div className="font-body text-muted-foreground space-y-2">
                   <p className="text-lg">{selectedArtwork.year} • {selectedArtwork.medium}</p>
                   <p>{selectedArtwork.dimensions}</p>
                 </div>
+                <div className="font-display text-2xl text-primary font-semibold">
+                  {selectedArtwork.price}
+                </div>
+                <div className="w-16 h-px bg-accent"></div>
                 <p className="font-body text-foreground leading-relaxed">
                   {selectedArtwork.description}
                 </p>

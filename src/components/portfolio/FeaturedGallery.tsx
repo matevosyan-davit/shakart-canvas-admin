@@ -11,6 +11,7 @@ const artworks = [
     year: "2024",
     medium: "Oil on Canvas",
     dimensions: "48\" × 36\"",
+    price: "$3,200",
     image: artwork1,
     description: "An exploration of color harmony and emotional depth through abstract forms."
   },
@@ -20,6 +21,7 @@ const artworks = [
     year: "2023",
     medium: "Acrylic on Canvas",
     dimensions: "60\" × 40\"",
+    price: "$4,500",
     image: artwork2,
     description: "Capturing the subtle conversations between light and shadow in nature."
   },
@@ -29,6 +31,7 @@ const artworks = [
     year: "2024",
     medium: "Mixed Media",
     dimensions: "36\" × 48\"",
+    price: "$2,800",
     image: artwork3,
     description: "The pulse and energy of city life translated into geometric abstraction."
   }
@@ -95,21 +98,21 @@ const FeaturedGallery = () => {
       {/* Refined Gallery Modal */}
       {selectedArtwork && (
         <div 
-          className="fixed inset-0 bg-primary/70 backdrop-blur-xl z-50 flex items-center justify-center p-8"
+          className="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4"
           onClick={() => setSelectedArtwork(null)}
         >
-          <div className="max-w-6xl mx-auto gallery-glass rounded-none p-12 animate-fade-in" onClick={(e) => e.stopPropagation()}>
-            <div className="grid lg:grid-cols-2 gap-16 items-start">
-              <div className="artwork-frame">
+          <div className="w-[80vw] h-[80vh] gallery-glass rounded-lg p-8 animate-fade-in overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="grid lg:grid-cols-2 gap-8 h-full">
+              <div className="flex items-center justify-center">
                 <img
                   src={selectedArtwork.image}
                   alt={selectedArtwork.title}
-                  className="w-full aspect-square object-cover"
+                  className="max-w-full max-h-full object-contain rounded-lg"
                 />
               </div>
-              <div className="space-y-8">
+              <div className="flex flex-col justify-center space-y-6">
                 <div>
-                  <h3 className="font-display text-4xl text-primary mb-6 tracking-gallery">
+                  <h3 className="font-display text-3xl text-primary mb-4 tracking-gallery">
                     {selectedArtwork.title}
                   </h3>
                   <div className="font-body text-muted-foreground space-y-2 text-sm uppercase tracking-wider">
@@ -121,9 +124,12 @@ const FeaturedGallery = () => {
                 <p className="font-serif text-lg text-foreground leading-relaxed">
                   {selectedArtwork.description}
                 </p>
+                <div className="font-display text-2xl text-primary font-semibold">
+                  {selectedArtwork.price}
+                </div>
                 <button 
                   onClick={() => setSelectedArtwork(null)}
-                  className="font-body text-xs uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors duration-300"
+                  className="font-body text-xs uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors duration-300 self-start"
                 >
                   Close
                 </button>
