@@ -40,7 +40,7 @@ const Admin = () => {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [editingArtwork, setEditingArtwork] = useState<Artwork | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'add' | 'manage'>('add');
+  const [activeTab, setActiveTab] = useState<'add' | 'manage'>('manage');
 
   const form = useForm<ArtworkForm>({
     defaultValues: {
@@ -278,34 +278,17 @@ const Admin = () => {
           <h1 className="text-3xl font-bold text-primary mb-4">Admin Panel</h1>
         </div>
         
-        {/* Tab Navigation */}
-        <div className="mb-8">
-          <div className="flex justify-center">
-            <div className="inline-flex h-12 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground border">
-              <button 
-                className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-4 py-2 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                  activeTab === 'add' 
-                    ? 'bg-background text-foreground shadow-sm border' 
-                    : 'hover:bg-background/50'
-                }`}
-                onClick={() => setActiveTab('add')}
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Add Artwork
-              </button>
-              <button 
-                className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-4 py-2 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                  activeTab === 'manage' 
-                    ? 'bg-background text-foreground shadow-sm border' 
-                    : 'hover:bg-background/50'
-                }`}
-                onClick={() => setActiveTab('manage')}
-              >
-                <Edit className="w-4 h-4 mr-2" />
-                Manage Artworks
-              </button>
-            </div>
-          </div>
+        {/* Actions */}
+        <div className="mb-8 flex justify-end">
+          {activeTab === 'manage' ? (
+            <Button onClick={() => { setEditingArtwork(null); setActiveTab('add'); }}>
+              <Plus className="w-4 h-4 mr-2" /> Add Artwork
+            </Button>
+          ) : (
+            <Button variant="outline" onClick={() => setActiveTab('manage')}>
+              Back to list
+            </Button>
+          )}
         </div>
 
         {/* Tab Content - Add/Edit Artwork */}

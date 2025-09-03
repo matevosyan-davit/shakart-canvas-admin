@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface ArtworkImage {
   id: string;
@@ -21,6 +23,7 @@ interface Artwork {
 const FeaturedGallery = () => {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
     fetchFeaturedArtworks();
@@ -81,15 +84,29 @@ const FeaturedGallery = () => {
                 key={artwork.id}
                 className="group cursor-pointer animate-fade-in"
                 style={{ animationDelay: `${index * 0.3}s` }}
-                onClick={() => setSelectedArtwork(artwork)}
+                onClick={() => { setSelectedArtwork(artwork); setCurrentImageIndex(0); }}
               >
                 <div className="artwork-frame hover-lift mb-6">
-                  <div className="aspect-square overflow-hidden">
-                    <img
-                      src={artwork.artwork_images[0]?.image_url || '/placeholder.svg'}
-                      alt={artwork.title}
-                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-102"
-                    />
+                  <div className="aspect-square overflow-hidden relative">
+                    <Carousel opts={{ loop: true }} className="h-full">
+                      <CarouselContent>
+                        {(artwork.artwork_images.length ? artwork.artwork_images : [{ id: 'placeholder', image_url: '/placeholder.svg', display_order: 0 } as any]).map((img) => (
+                          <CarouselItem key={img.id}>
+                            <img
+                              src={img.image_url}
+                              alt={artwork.title}
+                              className="w-full h-full object-cover transition-all duration-700 group-hover:scale-102"
+                            />
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      {artwork.artwork_images.length > 1 && (
+                        <>
+                          <CarouselPrevious className="left-2 top-1/2 -translate-y-1/2" />
+                          <CarouselNext className="right-2 top-1/2 -translate-y-1/2" />
+                        </>
+                      )}
+                    </Carousel>
                   </div>
                 </div>
                 <div className="text-center space-y-3">
@@ -125,12 +142,31 @@ const FeaturedGallery = () => {
           <div className="w-[90vw] h-[90vh] gallery-glass rounded-lg overflow-hidden animate-fade-in" onClick={(e) => e.stopPropagation()}>
             <div className="flex h-full">
               {/* Image Section - Left Side */}
-              <div className="flex-1 bg-black/20 flex items-center justify-center p-8">
+              <div className="flex-1 bg-black/20 flex items-center justify-center p-8 relative">
                 <img
-                  src={selectedArtwork.artwork_images[0]?.image_url || '/placeholder.svg'}
+                  src={selectedArtwork.artwork_images[currentImageIndex]?.image_url || '/placeholder.svg'}
                   alt={selectedArtwork.title}
                   className="max-w-full max-h-full object-contain"
                 />
+                {selectedArtwork.artwork_images.length > 1 && (
+                  <>
+                    <button
+                      onClick={() => setCurrentImageIndex(prev => prev === 0 ? selectedArtwork.artwork_images.length - 1 : prev - 1)}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+                    >
+                      <ChevronLeft className="w-6 h-6" />
+                    </button>
+                    <button
+                      onClick={() => setCurrentImageIndex(prev => prev === selectedArtwork.artwork_images.length - 1 ? 0 : prev + 1)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+                    >
+                      <ChevronRight className="w-6 h-6" />
+                    </button>
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                      {currentImageIndex + 1} / {selectedArtwork.artwork_images.length}
+                    </div>
+                  </>
+                )}
               </div>
               
               {/* Content Section - Right Side */}

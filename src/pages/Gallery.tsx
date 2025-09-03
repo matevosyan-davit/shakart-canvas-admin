@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 interface ArtworkImage {
   id: string;
@@ -107,12 +108,26 @@ const Gallery = () => {
             style={{ animationDelay: `${index * 0.1}s` }}
             onClick={() => handleArtworkClick(artwork)}
           >
-            <div className="aspect-square overflow-hidden">
-              <img
-                src={artwork.artwork_images[0]?.image_url || '/placeholder.svg'}
-                alt={artwork.title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              />
+            <div className="aspect-square overflow-hidden relative">
+              <Carousel opts={{ loop: true }} className="h-full">
+                <CarouselContent>
+                  {(artwork.artwork_images.length ? artwork.artwork_images : [{ id: 'placeholder', image_url: '/placeholder.svg', display_order: 0 } as any]).map((img) => (
+                    <CarouselItem key={img.id}>
+                      <img
+                        src={img.image_url}
+                        alt={artwork.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                {artwork.artwork_images.length > 1 && (
+                  <>
+                    <CarouselPrevious className="left-2 top-1/2 -translate-y-1/2" />
+                    <CarouselNext className="right-2 top-1/2 -translate-y-1/2" />
+                  </>
+                )}
+              </Carousel>
             </div>
             <div className="p-4">
               <h3 className="font-display text-lg font-medium text-primary mb-2">
