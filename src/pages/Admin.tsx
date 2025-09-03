@@ -150,12 +150,12 @@ const Admin = () => {
           const url = extractEmbedUrl(mediaItem.embed_link);
           if (!isVideoUrl(url) && !previewImages[mediaItem.id]) {
             try {
-              const response = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}&screenshot=true&meta=false`);
+              const response = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}`);
               const apiData = await response.json();
-              if (apiData.status === 'success' && apiData.data?.screenshot?.url) {
+              if (apiData.status === 'success' && apiData.data?.image?.url) {
                 setPreviewImages(prev => ({
                   ...prev,
-                  [mediaItem.id]: apiData.data.screenshot.url
+                  [mediaItem.id]: apiData.data.image.url
                 }));
               }
             } catch (error) {
