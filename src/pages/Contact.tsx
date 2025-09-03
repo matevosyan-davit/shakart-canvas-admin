@@ -99,29 +99,6 @@ const Contact = () => {
                 </p>
               </Card>
 
-              {/* Studio Hours */}
-              <Card className="p-8 bg-card shadow-card border-0">
-                <h2 className="font-display text-2xl font-semibold text-primary mb-6">Studio Hours</h2>
-                
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="font-body text-sm text-muted-foreground">Monday - Friday</span>
-                    <span className="font-body text-sm text-foreground">9:00 AM - 6:00 PM</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-body text-sm text-muted-foreground">Saturday</span>
-                    <span className="font-body text-sm text-foreground">10:00 AM - 4:00 PM</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-body text-sm text-muted-foreground">Sunday</span>
-                    <span className="font-body text-sm text-foreground">By Appointment</span>
-                  </div>
-                </div>
-                
-                <p className="font-body text-xs text-muted-foreground mt-4">
-                  * Studio visits welcome by appointment
-                </p>
-              </Card>
             </div>
           </div>
         </div>
