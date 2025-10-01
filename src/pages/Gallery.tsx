@@ -6,6 +6,8 @@ import { ArrowLeft, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslatedField } from "@/utils/multiLanguageHelpers";
 
 interface ArtworkImage {
   id: string;
@@ -24,6 +26,7 @@ interface Artwork {
 }
 
 const Gallery = () => {
+  const { t, currentLanguage } = useLanguage();
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
@@ -94,7 +97,7 @@ const Gallery = () => {
     if (categoryArtworks.length === 0) {
       return (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">No artworks in this category yet.</p>
+          <p className="text-muted-foreground">{t('gallery.noArtworks')}</p>
         </div>
       );
     }
@@ -111,16 +114,16 @@ const Gallery = () => {
             <div className="aspect-square overflow-hidden relative">
               <img
                 src={artwork.artwork_images[0]?.image_url || '/placeholder.svg'}
-                alt={artwork.title}
+                alt={getTranslatedField(artwork, 'title', currentLanguage)}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
             </div>
             <div className="p-4">
               <h3 className="font-display text-lg font-medium text-primary mb-2">
-                {artwork.title}
+                {getTranslatedField(artwork, 'title', currentLanguage)}
               </h3>
               <div className="font-body text-sm text-muted-foreground">
-                <p>${artwork.price?.toFixed(2) || 'Price on request'}</p>
+                <p>${artwork.price?.toFixed(2) || t('gallery.priceOnRequest')}</p>
                 <p className="mt-1 capitalize">{artwork.category}</p>
               </div>
             </div>
@@ -137,7 +140,7 @@ const Gallery = () => {
         <Link to="/">
           <Button variant="outline" className="mb-8">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Home
+            {t('common.backHome')}
           </Button>
         </Link>
       </div>
@@ -146,11 +149,10 @@ const Gallery = () => {
       <section className="py-16 px-6">
         <div className="max-w-6xl mx-auto text-center">
           <h1 className="font-display text-5xl md:text-6xl font-semibold text-primary mb-6 animate-slide-up">
-            Gallery
+            {t('gallery.page.title')}
           </h1>
           <p className="font-body text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: "0.2s" }}>
-            Explore my artistic journey through paintings, sculptures, and street art. 
-            Each piece tells a story of emotion, technique, and creative expression.
+            {t('gallery.page.description')}
           </p>
         </div>
       </section>
@@ -160,14 +162,14 @@ const Gallery = () => {
         <div className="max-w-6xl mx-auto">
           {loading ? (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">Loading artworks...</p>
+              <p className="text-muted-foreground">{t('gallery.loadingArtworks')}</p>
             </div>
           ) : (
             <Tabs defaultValue="painting" className="w-full">
               <TabsList className="sticky top-0 z-40 grid w-full grid-cols-3 mb-12 bg-card shadow-card">
-                <TabsTrigger value="painting" className="font-body text-base">Paintings</TabsTrigger>
-                <TabsTrigger value="sculpture" className="font-body text-base">Sculpture</TabsTrigger>
-                <TabsTrigger value="streetart" className="font-body text-base">Street Art</TabsTrigger>
+                <TabsTrigger value="painting" className="font-body text-base">{t('gallery.paintings')}</TabsTrigger>
+                <TabsTrigger value="sculpture" className="font-body text-base">{t('gallery.sculpture')}</TabsTrigger>
+                <TabsTrigger value="streetart" className="font-body text-base">{t('gallery.streetart')}</TabsTrigger>
               </TabsList>
               
               <TabsContent value="painting">
@@ -230,7 +232,7 @@ const Gallery = () => {
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <h3 className="font-display text-2xl font-semibold text-primary mb-3">
-                        {selectedArtwork.title}
+                        {getTranslatedField(selectedArtwork, 'title', currentLanguage)}
                       </h3>
                       <div className="font-body text-muted-foreground space-y-1">
                         <p className="text-base capitalize">{selectedArtwork.category}</p>
@@ -250,13 +252,13 @@ const Gallery = () => {
                   <div className="w-16 h-px bg-accent"></div>
                   
                   <p className="font-body text-foreground leading-relaxed">
-                    {selectedArtwork.description || 'No description available.'}
+                    {getTranslatedField(selectedArtwork, 'description', currentLanguage) || t('gallery.noDescription')}
                   </p>
                 </div>
                 
                 <div className="pt-6 border-t border-border/20">
                   <div className="font-display text-2xl text-primary font-semibold">
-                    ${selectedArtwork.price?.toFixed(2) || 'Price on request'}
+                    ${selectedArtwork.price?.toFixed(2) || t('gallery.priceOnRequest')}
                   </div>
                 </div>
               </div>

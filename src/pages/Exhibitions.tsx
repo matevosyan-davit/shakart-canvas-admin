@@ -5,6 +5,8 @@ import { ArrowLeft, ExternalLink, Play } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslatedField } from "@/utils/multiLanguageHelpers";
 
 interface ExhibitionImage {
   id: string;
@@ -33,6 +35,7 @@ interface Exhibition {
 }
 
 const Exhibitions = () => {
+  const { t, currentLanguage } = useLanguage();
   const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -115,7 +118,7 @@ const Exhibitions = () => {
         <Link to="/">
           <Button variant="outline" className="mb-8">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Home
+            {t('common.backHome')}
           </Button>
         </Link>
       </div>
@@ -124,11 +127,10 @@ const Exhibitions = () => {
       <section className="py-16 px-6">
         <div className="max-w-6xl mx-auto text-center">
           <h1 className="font-display text-5xl md:text-6xl font-semibold text-primary mb-6 animate-slide-up">
-            Exhibitions
+            {t('exhibitions.page.title')}
           </h1>
           <p className="font-body text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: "0.2s" }}>
-            A journey through major exhibitions that have shaped my artistic career, 
-            featuring highlights from shows in Armenia and around the world.
+            {t('exhibitions.page.description')}
           </p>
         </div>
       </section>
@@ -138,11 +140,11 @@ const Exhibitions = () => {
         <div className="max-w-6xl mx-auto space-y-16">
           {loading ? (
             <div className="text-center py-8">
-              <p className="text-muted-foreground">Loading exhibitions...</p>
+              <p className="text-muted-foreground">{t('exhibitions.loadingExhibitions')}</p>
             </div>
           ) : exhibitions.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-muted-foreground">No exhibitions found.</p>
+              <p className="text-muted-foreground">{t('exhibitions.noExhibitions')}</p>
             </div>
           ) : (
             exhibitions.map((exhibition, index) => (
@@ -156,28 +158,28 @@ const Exhibitions = () => {
                   <div>
                     <div className="mb-6">
                       <h2 className="font-display text-3xl font-semibold text-primary mb-2">
-                        {exhibition.title}
+                        {getTranslatedField(exhibition, 'title', currentLanguage)}
                       </h2>
                       <p className="font-body text-accent text-lg font-medium">
-                        {exhibition.location} • {new Date(exhibition.date).getFullYear()}
+                        {getTranslatedField(exhibition, 'location', currentLanguage)} • {new Date(exhibition.date).getFullYear()}
                       </p>
                       {exhibition.theme && (
                         <p className="font-body text-muted-foreground italic mt-1">
-                          Theme: {exhibition.theme}
+                          {t('exhibitions.theme')}: {getTranslatedField(exhibition, 'theme', currentLanguage)}
                         </p>
                       )}
                     </div>
                     
                     {exhibition.description && (
                       <p className="font-body text-foreground leading-relaxed mb-6">
-                        {exhibition.description}
+                        {getTranslatedField(exhibition, 'description', currentLanguage)}
                       </p>
                     )}
                     
                     {/* Media Coverage */}
                     {exhibition.exhibition_media.length > 0 && (
                       <div className="mb-6">
-                        <h3 className="font-display text-lg font-medium text-primary mb-3">Media Coverage</h3>
+                        <h3 className="font-display text-lg font-medium text-primary mb-3">{t('exhibitions.mediaCoverage')}</h3>
                         <div className="space-y-3">
                           {exhibition.exhibition_media.map((media) => (
                             <div key={media.id} className="border border-border rounded-lg p-4">
@@ -212,7 +214,7 @@ const Exhibitions = () => {
                                     target="_blank" 
                                     rel="noopener noreferrer"
                                   >
-                                    Read Article
+                                    {t('exhibitions.readArticle')}
                                     <ExternalLink className="w-3 h-3" />
                                   </a>
                                 </Button>
@@ -227,7 +229,7 @@ const Exhibitions = () => {
                    {/* Exhibition Images */}
                    {exhibition.exhibition_images.length > 0 && (
                      <div>
-                       <h3 className="font-display text-lg font-medium text-primary mb-4">Exhibition Highlights</h3>
+                       <h3 className="font-display text-lg font-medium text-primary mb-4">{t('exhibitions.exhibitionHighlights')}</h3>
                        <Carousel className="w-full relative">
                          <CarouselContent>
                            {exhibition.exhibition_images.map((image, idx) => (
@@ -263,15 +265,14 @@ const Exhibitions = () => {
         <div className="max-w-4xl mx-auto text-center">
           <Card className="p-8 bg-card shadow-card">
             <h2 className="font-display text-2xl font-medium text-primary mb-4">
-              Exhibition Inquiries
+              {t('exhibitions.inquiries')}
             </h2>
             <p className="font-body text-muted-foreground mb-6">
-              Interested in featuring my work in your gallery or collaborating on an exhibition? 
-              I'm always open to discussing new opportunities and artistic partnerships.
+              {t('exhibitions.inquiriesText')}
             </p>
             <Link to="/contact">
               <Button className="font-body">
-                Get in Touch
+                {t('exhibitions.getInTouch')}
               </Button>
             </Link>
           </Card>

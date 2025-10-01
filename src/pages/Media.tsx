@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { Play } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslatedField } from "@/utils/multiLanguageHelpers";
 
 interface MediaItem {
   id: string;
@@ -13,6 +15,7 @@ interface MediaItem {
 }
 
 const Media = () => {
+  const { t, currentLanguage } = useLanguage();
   const [media, setMedia] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [previewImages, setPreviewImages] = useState<Record<string, string>>({});
@@ -102,11 +105,10 @@ const Media = () => {
       <section className="py-16 px-6">
         <div className="max-w-6xl mx-auto text-center">
           <h1 className="font-display text-5xl md:text-6xl font-semibold text-primary mb-6 animate-slide-up">
-            Media & Interviews
+            {t('media.page.title')}
           </h1>
           <p className="font-body text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: "0.2s" }}>
-            Interviews and media coverage exploring my artistic journey 
-            and contributions to contemporary art.
+            {t('media.page.description')}
           </p>
         </div>
       </section>
@@ -116,11 +118,11 @@ const Media = () => {
         <div className="max-w-6xl mx-auto">
           {loading ? (
             <div className="text-center py-8">
-              <p className="text-muted-foreground">Loading media...</p>
+              <p className="text-muted-foreground">{t('media.loadingMedia')}</p>
             </div>
           ) : media.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-muted-foreground">No media content available at the moment.</p>
+              <p className="text-muted-foreground">{t('media.noMedia')}</p>
             </div>
           ) : (
             <div className="space-y-8">
@@ -159,7 +161,7 @@ const Media = () => {
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
                               >
-                                Read Article
+                                {t('media.readArticle')}
                                 <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                                 </svg>
@@ -176,15 +178,15 @@ const Media = () => {
                                   </svg>
                                 </div>
                               </div>
-                              <h3 className="font-medium text-foreground mb-2">Article Link</h3>
-                              <p className="text-sm text-muted-foreground mb-4">Loading preview...</p>
+                              <h3 className="font-medium text-foreground mb-2">{t('media.articleLink')}</h3>
+                              <p className="text-sm text-muted-foreground mb-4">{t('media.loadingPreview')}</p>
                               <a
                                 href={extractEmbedUrl(mediaItem.embed_link)}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
                               >
-                                Read Article
+                                {t('media.readArticle')}
                                 <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                                 </svg>
@@ -199,16 +201,16 @@ const Media = () => {
                     <div className="flex flex-col justify-center">
                       <div className="flex items-center gap-3 mb-4">
                         <Play className="w-6 h-6 text-accent" />
-                        <span className="font-body text-sm text-muted-foreground">Interview</span>
+                        <span className="font-body text-sm text-muted-foreground">{t('media.interview')}</span>
                       </div>
                       
                       <h2 className="font-display text-2xl font-medium text-primary mb-4">
-                        {mediaItem.title}
+                        {getTranslatedField(mediaItem, 'title', currentLanguage)}
                       </h2>
                       
                       <div className="space-y-2 mb-6">
                         <p className="font-body text-muted-foreground">
-                          <strong>Media:</strong> {mediaItem.media_name}
+                          <strong>{t('media.mediaLabel')}:</strong> {getTranslatedField(mediaItem, 'media_name', currentLanguage)}
                         </p>
                       </div>
                     </div>
