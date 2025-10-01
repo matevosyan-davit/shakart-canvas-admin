@@ -167,15 +167,7 @@ const ContactSection = () => {
               </div>
             </div>
             
-            <div className="pt-8">
-              <h4 className="font-display text-xl font-medium text-primary mb-4">
-                Studio Visits
-              </h4>
-              <p className="font-body text-muted-foreground leading-relaxed">
-                Studio visits are available by appointment. I enjoy sharing my creative process 
-                and discussing my work with collectors, fellow artists, and art enthusiasts.
-              </p>
-            </div>
+        
           </div>
         </div>
       </div>
