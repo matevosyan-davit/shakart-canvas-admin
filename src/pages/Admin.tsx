@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Upload, X, Edit, Trash2, Plus } from "lucide-react";
+import { Upload, X, CreditCard as Edit, Trash2, Plus } from "lucide-react";
 import { AdminLanguageSwitcher } from "@/components/AdminLanguageSwitcher";
 import { Language } from "@/contexts/LanguageContext";
 import { getLanguageField, getLanguageValue, createArtworkUpdate, createExhibitionUpdate, createMediaUpdate } from "@/utils/adminLanguageHelpers";
