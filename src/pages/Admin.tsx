@@ -99,7 +99,8 @@ const Admin = () => {
   const [exhibitionPreviews, setExhibitionPreviews] = useState<string[]>([]);
   const [exhibitionMediaLinks, setExhibitionMediaLinks] = useState<{title: string, media_name: string, embed_link: string}[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'artworks' | 'add-artwork' | 'media' | 'add-media' | 'exhibitions' | 'add-exhibition'>('artworks');
+  const [activeTab, setActiveTab] = useState<'artworks' | 'media' | 'exhibitions'>('artworks');
+  const [showAddForm, setShowAddForm] = useState(false);
   const [previewImages, setPreviewImages] = useState<Record<string, string>>({});
   const [adminLanguage, setAdminLanguage] = useState<Language>('en');
 
@@ -178,7 +179,7 @@ const Admin = () => {
         price: editingArtwork.price?.toString() || "",
         category: editingArtwork.category as "painting" | "sculpture" | "streetart",
       });
-      setActiveTab('add-artwork');
+      setShowAddForm(true);
     }
   }, [editingArtwork, form, adminLanguage]);
 
@@ -189,7 +190,7 @@ const Admin = () => {
         media_name: getLanguageValue(editingMedia, 'media_name', adminLanguage),
         embed_link: editingMedia.embed_link,
       });
-      setActiveTab('add-media');
+      setShowAddForm(true);
     }
   }, [editingMedia, mediaForm, adminLanguage]);
 
@@ -209,7 +210,7 @@ const Admin = () => {
         media_name: m.media_name,
         embed_link: m.embed_link
       })));
-      setActiveTab('add-exhibition');
+      setShowAddForm(true);
     }
   }, [editingExhibition, exhibitionForm, adminLanguage]);
 
@@ -515,6 +516,7 @@ const Admin = () => {
 
         toast.success("Exhibition updated successfully!");
         setEditingExhibition(null);
+        setShowAddForm(false);
       } else {
         // Create new exhibition
         const insertData = createExhibitionUpdate({
@@ -563,6 +565,7 @@ const Admin = () => {
       setExhibitionFiles([]);
       setExhibitionPreviews([]);
       setExhibitionMediaLinks([]);
+      setShowAddForm(false);
       fetchExhibitions();
     } catch (error) {
       console.error('Error saving exhibition:', error);
@@ -605,6 +608,7 @@ const Admin = () => {
 
         toast.success("Artwork updated successfully!");
         setEditingArtwork(null);
+        setShowAddForm(false);
       } else {
         // Create new artwork
         const insertData = createArtworkUpdate({
@@ -633,6 +637,7 @@ const Admin = () => {
       form.reset();
       setSelectedFiles([]);
       setPreviews([]);
+      setShowAddForm(false);
       fetchArtworks();
     } catch (error) {
       console.error('Error saving artwork:', error);
@@ -658,6 +663,7 @@ const Admin = () => {
         if (error) throw error;
         toast.success("Media updated successfully!");
         setEditingMedia(null);
+        setShowAddForm(false);
       } else {
         const insertData = createMediaUpdate({
           title: data.title,
@@ -673,6 +679,7 @@ const Admin = () => {
       }
 
       mediaForm.reset();
+      setShowAddForm(false);
       fetchMedia();
     } catch (error) {
       console.error('Error saving media:', error);
@@ -690,6 +697,7 @@ const Admin = () => {
     setExhibitionFiles([]);
     setExhibitionPreviews([]);
     setExhibitionMediaLinks([]);
+    setShowAddForm(false);
   };
 
   const handleDeleteExhibition = async (exhibitionId: string) => {
@@ -747,6 +755,7 @@ const Admin = () => {
     form.reset();
     setSelectedFiles([]);
     setPreviews([]);
+    setShowAddForm(false);
   };
 
   const handleEditMedia = (mediaItem: MediaItem) => {
@@ -756,6 +765,7 @@ const Admin = () => {
   const handleCancelEditMedia = () => {
     setEditingMedia(null);
     mediaForm.reset();
+    setShowAddForm(false);
   };
 
   const handleDeleteMedia = async (mediaId: string) => {
@@ -843,55 +853,163 @@ const Admin = () => {
         {/* Navigation Tabs */}
         <div className="mb-10">
           <div className="bg-card border border-border/50 rounded-lg p-2">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               <Button
                 variant={activeTab === 'artworks' ? 'default' : 'ghost'}
-                onClick={() => { setEditingArtwork(null); setEditingMedia(null); setActiveTab('artworks'); }}
-                className="font-body text-xs uppercase tracking-wider justify-start"
+                onClick={() => {
+                  setEditingArtwork(null);
+                  setEditingMedia(null);
+                  setEditingExhibition(null);
+                  setShowAddForm(false);
+                  setActiveTab('artworks');
+                }}
+                className="font-body text-xs uppercase tracking-wider"
               >
                 Artworks
               </Button>
               <Button
-                variant={activeTab === 'add-artwork' ? 'default' : 'ghost'}
-                onClick={() => { setEditingArtwork(null); setActiveTab('add-artwork'); }}
-                className="font-body text-xs uppercase tracking-wider justify-start"
-              >
-                <Plus className="w-3 h-3 mr-1.5" /> New Artwork
-              </Button>
-              <Button
                 variant={activeTab === 'media' ? 'default' : 'ghost'}
-                onClick={() => { setEditingMedia(null); setEditingArtwork(null); setActiveTab('media'); }}
-                className="font-body text-xs uppercase tracking-wider justify-start"
+                onClick={() => {
+                  setEditingMedia(null);
+                  setEditingArtwork(null);
+                  setEditingExhibition(null);
+                  setShowAddForm(false);
+                  setActiveTab('media');
+                }}
+                className="font-body text-xs uppercase tracking-wider"
               >
                 Media
               </Button>
               <Button
-                variant={activeTab === 'add-media' ? 'default' : 'ghost'}
-                onClick={() => { setEditingMedia(null); setActiveTab('add-media'); }}
-                className="font-body text-xs uppercase tracking-wider justify-start"
-              >
-                <Plus className="w-3 h-3 mr-1.5" /> New Media
-              </Button>
-              <Button
                 variant={activeTab === 'exhibitions' ? 'default' : 'ghost'}
-                onClick={() => { setEditingExhibition(null); setEditingMedia(null); setEditingArtwork(null); setActiveTab('exhibitions'); }}
-                className="font-body text-xs uppercase tracking-wider justify-start"
+                onClick={() => {
+                  setEditingExhibition(null);
+                  setEditingMedia(null);
+                  setEditingArtwork(null);
+                  setShowAddForm(false);
+                  setActiveTab('exhibitions');
+                }}
+                className="font-body text-xs uppercase tracking-wider"
               >
                 Exhibitions
-              </Button>
-              <Button
-                variant={activeTab === 'add-exhibition' ? 'default' : 'ghost'}
-                onClick={() => { setEditingExhibition(null); setActiveTab('add-exhibition'); }}
-                className="font-body text-xs uppercase tracking-wider justify-start"
-              >
-                <Plus className="w-3 h-3 mr-1.5" /> New Exhibition
               </Button>
             </div>
           </div>
         </div>
 
-        {/* Tab Content - Add/Edit Artwork */}
-        {activeTab === 'add-artwork' && (
+        {/* Artworks Section */}
+        {activeTab === 'artworks' && !showAddForm && (
+          <Card className="border-border/50 shadow-lg">
+            <CardHeader className="border-b border-border/30 pb-6">
+              <div className="flex justify-between items-start">
+                <div>
+                  <CardTitle className="font-display text-3xl text-primary tracking-tight">Manage Artworks</CardTitle>
+                  <p className="font-body text-sm text-muted-foreground mt-2">View and edit your artwork collection</p>
+                </div>
+                <Button
+                  onClick={() => {
+                    setEditingArtwork(null);
+                    form.reset();
+                    setSelectedFiles([]);
+                    setPreviews([]);
+                    setShowAddForm(true);
+                  }}
+                  className="font-body text-xs uppercase tracking-wider"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  New Artwork
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-6">
+              {loading ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">Loading artworks...</p>
+                </div>
+              ) : artworks.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">No artworks found. Click "New Artwork" to add one.</p>
+                </div>
+              ) : (
+                <div className="grid gap-6">
+                  {artworks.map((artwork) => (
+                    <Card key={artwork.id} className="group hover:border-accent/30 transition-all duration-300 overflow-hidden">
+                      <div className="flex flex-col md:flex-row gap-6 p-6">
+                        <div className="w-full md:w-48 h-48 flex-shrink-0">
+                          <img
+                            src={artwork.artwork_images[0]?.image_url || '/placeholder.svg'}
+                            alt={getLanguageValue(artwork, 'title', adminLanguage)}
+                            className="w-full h-full object-cover rounded-lg border border-border/50 group-hover:scale-[1.02] transition-transform duration-300"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between items-start mb-4">
+                            <div className="flex-1 min-w-0 mr-4">
+                              <h3 className="font-display text-2xl text-primary mb-2 tracking-tight truncate">
+                                {getLanguageValue(artwork, 'title', adminLanguage)}
+                              </h3>
+                              <div className="flex flex-wrap gap-3 items-center">
+                                <span className="inline-flex items-center px-3 py-1 bg-accent/10 text-accent-foreground text-xs font-body uppercase tracking-wider rounded-full">
+                                  {artwork.category}
+                                </span>
+                                <span className="font-body text-sm font-semibold text-primary">
+                                  ${artwork.price?.toFixed(2) || 'Price on request'}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="flex gap-2 flex-shrink-0">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleEdit(artwork)}
+                                className="hover:border-accent hover:text-accent"
+                              >
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => handleDelete(artwork.id)}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </div>
+
+                          <p className="font-serif text-sm text-foreground/70 line-clamp-2 mb-4 leading-relaxed">
+                            {getLanguageValue(artwork, 'description', adminLanguage) || 'No description'}
+                          </p>
+
+                          {artwork.artwork_images.length > 1 && (
+                            <div className="mt-4 pt-4 border-t border-border/30">
+                              <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-3">
+                                {artwork.artwork_images.length} Images
+                              </p>
+                              <div className="flex gap-2 flex-wrap">
+                                {artwork.artwork_images.map((image, index) => (
+                                  <div key={image.id} className="relative group/img">
+                                    <img
+                                      src={image.image_url}
+                                      alt={`${getLanguageValue(artwork, 'title', adminLanguage)} ${index + 1}`}
+                                      className="w-20 h-20 object-cover rounded border border-border/50 group-hover/img:border-accent/50 transition-colors"
+                                    />
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Add/Edit Artwork Form */}
+        {activeTab === 'artworks' && showAddForm && (
           <Card className="max-w-3xl mx-auto border-border/50 shadow-lg">
             <CardHeader className="border-b border-border/30 pb-6">
               <CardTitle className="font-display text-3xl text-primary tracking-tight">
@@ -1086,8 +1204,8 @@ const Admin = () => {
           </Card>
         )}
 
-        {/* Tab Content - Add/Edit Media */}
-        {activeTab === 'add-media' && (
+        {/* Add/Edit Media Form */}
+        {activeTab === 'media' && showAddForm && (
           <Card className="max-w-3xl mx-auto border-border/50 shadow-lg">
             <CardHeader className="border-b border-border/30 pb-6">
               <CardTitle className="font-display text-3xl text-primary tracking-tight">
@@ -1167,111 +1285,32 @@ const Admin = () => {
           </Card>
         )}
 
-        {/* Tab Content - Manage Artworks */}
-        {activeTab === 'artworks' && (
+        {/* Manage Media Section */}
+        {activeTab === 'media' && !showAddForm && (
           <Card className="border-border/50 shadow-lg">
             <CardHeader className="border-b border-border/30 pb-6">
-              <CardTitle className="font-display text-3xl text-primary tracking-tight">Manage Artworks</CardTitle>
-              <p className="font-body text-sm text-muted-foreground mt-2">View and edit your artwork collection</p>
+              <div className="flex justify-between items-start">
+                <div>
+                  <CardTitle className="font-display text-3xl text-primary tracking-tight">Manage Media</CardTitle>
+                  <p className="font-body text-sm text-muted-foreground mt-2">View and edit media coverage</p>
+                </div>
+                <Button
+                  onClick={() => {
+                    setEditingMedia(null);
+                    mediaForm.reset();
+                    setShowAddForm(true);
+                  }}
+                  className="font-body text-xs uppercase tracking-wider"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  New Media
+                </Button>
+              </div>
             </CardHeader>
-            <CardContent>
-              {loading ? (
-                <div className="text-center py-8">
-                  <p className="text-muted-foreground">Loading artworks...</p>
-                </div>
-              ) : artworks.length === 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-muted-foreground">No artworks found. Add some using the "Add Artwork" tab.</p>
-                </div>
-              ) : (
-                <div className="grid gap-6">
-                  {artworks.map((artwork) => (
-                    <Card key={artwork.id} className="group hover:border-accent/30 transition-all duration-300 overflow-hidden">
-                      <div className="flex flex-col md:flex-row gap-6 p-6">
-                        <div className="w-full md:w-48 h-48 flex-shrink-0">
-                          <img
-                            src={artwork.artwork_images[0]?.image_url || '/placeholder.svg'}
-                            alt={getLanguageValue(artwork, 'title', adminLanguage)}
-                            className="w-full h-full object-cover rounded-lg border border-border/50 group-hover:scale-[1.02] transition-transform duration-300"
-                          />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex justify-between items-start mb-4">
-                            <div className="flex-1 min-w-0 mr-4">
-                              <h3 className="font-display text-2xl text-primary mb-2 tracking-tight truncate">
-                                {getLanguageValue(artwork, 'title', adminLanguage)}
-                              </h3>
-                              <div className="flex flex-wrap gap-3 items-center">
-                                <span className="inline-flex items-center px-3 py-1 bg-accent/10 text-accent-foreground text-xs font-body uppercase tracking-wider rounded-full">
-                                  {artwork.category}
-                                </span>
-                                <span className="font-body text-sm font-semibold text-primary">
-                                  ${artwork.price?.toFixed(2) || 'Price on request'}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="flex gap-2 flex-shrink-0">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleEdit(artwork)}
-                                className="hover:border-accent hover:text-accent"
-                              >
-                                <Edit className="w-4 h-4" />
-                              </Button>
-                              <Button
-                                variant="destructive"
-                                size="sm"
-                                onClick={() => handleDelete(artwork.id)}
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          </div>
-
-                          <p className="font-serif text-sm text-foreground/70 line-clamp-2 mb-4 leading-relaxed">
-                            {getLanguageValue(artwork, 'description', adminLanguage) || 'No description'}
-                          </p>
-
-                          {artwork.artwork_images.length > 1 && (
-                            <div className="mt-4 pt-4 border-t border-border/30">
-                              <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-3">
-                                {artwork.artwork_images.length} Images
-                              </p>
-                              <div className="flex gap-2 flex-wrap">
-                                {artwork.artwork_images.map((image, index) => (
-                                  <div key={image.id} className="relative group/img">
-                                    <img
-                                      src={image.image_url}
-                                      alt={`${getLanguageValue(artwork, 'title', adminLanguage)} ${index + 1}`}
-                                      className="w-20 h-20 object-cover rounded border border-border/50 group-hover/img:border-accent/50 transition-colors"
-                                    />
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Tab Content - Manage Media */}
-        {activeTab === 'media' && (
-          <Card className="border-border/50 shadow-lg">
-            <CardHeader className="border-b border-border/30 pb-6">
-              <CardTitle className="font-display text-3xl text-primary tracking-tight">Manage Media</CardTitle>
-              <p className="font-body text-sm text-muted-foreground mt-2">View and edit media coverage</p>
-            </CardHeader>
-            <CardContent>
+            <CardContent className="pt-6">
               {media.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-muted-foreground">No media items found. Add some using the "Add Media" tab.</p>
+                  <p className="text-muted-foreground">No media items found. Click "New Media" to add one.</p>
                 </div>
               ) : (
                 <div className="grid md:grid-cols-2 gap-6">
@@ -1382,8 +1421,8 @@ const Admin = () => {
           </Card>
         )}
 
-        {/* Tab Content - Add/Edit Exhibition */}
-        {activeTab === 'add-exhibition' && (
+        {/* Add/Edit Exhibition Form */}
+        {activeTab === 'exhibitions' && showAddForm && (
           <Card className="max-w-4xl mx-auto border-border/50 shadow-lg">
             <CardHeader className="border-b border-border/30 pb-6">
               <CardTitle className="font-display text-3xl text-primary tracking-tight">
@@ -1634,17 +1673,35 @@ const Admin = () => {
           </Card>
         )}
 
-        {/* Tab Content - Manage Exhibitions */}
-        {activeTab === 'exhibitions' && (
+        {/* Manage Exhibitions Section */}
+        {activeTab === 'exhibitions' && !showAddForm && (
           <Card className="border-border/50 shadow-lg">
             <CardHeader className="border-b border-border/30 pb-6">
-              <CardTitle className="font-display text-3xl text-primary tracking-tight">Manage Exhibitions</CardTitle>
-              <p className="font-body text-sm text-muted-foreground mt-2">View and edit your exhibitions</p>
+              <div className="flex justify-between items-start">
+                <div>
+                  <CardTitle className="font-display text-3xl text-primary tracking-tight">Manage Exhibitions</CardTitle>
+                  <p className="font-body text-sm text-muted-foreground mt-2">View and edit your exhibitions</p>
+                </div>
+                <Button
+                  onClick={() => {
+                    setEditingExhibition(null);
+                    exhibitionForm.reset();
+                    setExhibitionFiles([]);
+                    setExhibitionPreviews([]);
+                    setExhibitionMediaLinks([]);
+                    setShowAddForm(true);
+                  }}
+                  className="font-body text-xs uppercase tracking-wider"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  New Exhibition
+                </Button>
+              </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-6">
               {exhibitions.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-muted-foreground">No exhibitions found. Add some using the "Add Exhibition" tab.</p>
+                  <p className="text-muted-foreground">No exhibitions found. Click "New Exhibition" to add one.</p>
                 </div>
               ) : (
                 <div className="grid gap-6">
