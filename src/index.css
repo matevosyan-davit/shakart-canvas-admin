@@ -146,44 +146,44 @@
   .font-display {
     font-family: 'Cormorant Garamond', Georgia, serif;
     font-weight: 400;
-    letter-spacing: 0.01em;
+    letter-spacing: -0.01em;
   }
-  
+
   .font-serif {
     font-family: 'Crimson Text', Georgia, serif;
     font-weight: 400;
-    line-height: 1.6;
+    line-height: 1.7;
   }
-  
+
   .font-body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-weight: 400;
-    letter-spacing: 0.005em;
+    letter-spacing: 0.01em;
   }
 
   /* Gallery Animations - Subtle & Refined */
   .animate-fade-in {
-    animation: galleryFadeIn 1.2s ease-out forwards;
+    animation: galleryFadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     opacity: 0;
   }
-  
+
   .animate-slide-up {
-    animation: gallerySlideUp 1s ease-out forwards;
+    animation: gallerySlideUp 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     opacity: 0;
   }
-  
+
   .animate-float {
-    animation: gentleFloat 8s ease-in-out infinite;
+    animation: gentleFloat 6s ease-in-out infinite;
   }
 
   /* Refined Hover Effects */
   .hover-lift {
-    transition: all 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
+
   .hover-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-artwork);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px -12px hsl(0 0% 0% / 0.15);
   }
 
   /* Gallery Frame Effect */
@@ -236,19 +236,19 @@
   @keyframes galleryFadeIn {
     from {
       opacity: 0;
-      transform: translateY(30px) scale(0.98);
+      transform: translateY(24px) scale(0.98);
     }
     to {
       opacity: 1;
       transform: translateY(0) scale(1);
     }
   }
-  
+
   @keyframes gallerySlideUp {
     from {
       opacity: 0;
-      transform: translateY(50px);
-      filter: blur(4px);
+      transform: translateY(40px);
+      filter: blur(2px);
     }
     to {
       opacity: 1;
@@ -256,13 +256,13 @@
       filter: blur(0);
     }
   }
-  
+
   @keyframes gentleFloat {
     0%, 100% {
       transform: translateY(0px);
     }
     50% {
-      transform: translateY(-6px);
+      transform: translateY(-8px);
     }
   }
   

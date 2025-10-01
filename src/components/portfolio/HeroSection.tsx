@@ -7,50 +7,70 @@ import heroImage from "@/assets/hero-bg.jpg";
 const HeroSection = () => {
   const { t } = useLanguage();
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden canvas-texture">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with refined overlay */}
-      <div 
+      <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${heroImage})` }}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/40 to-background/60" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background/70 backdrop-blur-[2px]" />
       </div>
-      
+
+      {/* Decorative top border */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-accent to-transparent opacity-50" />
+
       {/* Content */}
-      <div className="relative z-10 text-center max-w-5xl mx-auto gallery-spacing animate-fade-in" style={{ marginTop: "4rem", animationDelay: "0.3s" }}>
-        <h1 className="font-display text-7xl md:text-9xl text-primary mb-8 tracking-gallery leading-none">
+      <div className="relative z-10 text-center max-w-6xl mx-auto px-6 py-20 animate-fade-in" style={{ animationDelay: "0.2s" }}>
+        <div className="mb-6">
+          <div className="inline-block px-4 py-1.5 border border-accent/30 rounded-full mb-8">
+            <span className="font-body text-xs uppercase tracking-[0.2em] text-muted-foreground">Contemporary Art</span>
+          </div>
+        </div>
+
+        <h1 className="font-display text-6xl md:text-8xl lg:text-9xl text-primary mb-10 leading-[0.95] tracking-tight">
           {t('hero.title')}
         </h1>
-        <div className="max-w-2xl mx-auto mb-12">
-          <p className="font-serif text-xl md:text-2xl text-muted-foreground leading-relaxed italic">
+
+        <div className="max-w-2xl mx-auto mb-14">
+          <div className="h-px w-16 bg-accent mx-auto mb-8" />
+          <p className="font-serif text-xl md:text-2xl text-foreground/80 leading-relaxed">
             {t('hero.description')}
           </p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-          <Button 
-            variant="ghost" 
+
+        <div className="flex flex-col sm:flex-row gap-5 justify-center items-center">
+          <Button
+            variant="ghost"
             size="lg"
-            className="font-body text-sm uppercase tracking-widest border border-primary/30 hover:border-primary hover:bg-primary/5 px-12 py-4 transition-all duration-500"
+            className="group font-body text-xs uppercase tracking-[0.2em] border-2 border-primary/20 hover:border-primary hover:bg-primary hover:text-primary-foreground px-10 py-6 transition-all duration-300 rounded-none"
             asChild
           >
-            <Link to="/gallery">{t('hero.explore')}</Link>
+            <Link to="/gallery">
+              <span>{t('hero.explore')}</span>
+            </Link>
           </Button>
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             size="lg"
-            className="font-body text-sm uppercase tracking-widest text-muted-foreground hover:text-primary px-8 py-4 transition-all duration-500"
+            className="font-body text-xs uppercase tracking-[0.2em] text-muted-foreground hover:text-primary px-10 py-6 transition-all duration-300 rounded-none border-2 border-transparent hover:border-primary/20"
             asChild
           >
             <Link to="/about">{t('hero.about')}</Link>
           </Button>
         </div>
       </div>
-      
+
       {/* Refined Scroll Indicator */}
-      <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 animate-float">
-        <div className="w-px h-16 bg-gradient-to-b from-transparent via-muted-foreground/30 to-transparent mb-4"></div>
-        <ArrowDown className="w-4 h-4 text-muted-foreground/60" />
+      <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 animate-float opacity-60">
+        <div className="flex flex-col items-center gap-3">
+          <span className="font-body text-[10px] uppercase tracking-widest text-muted-foreground">Scroll</span>
+          <div className="w-px h-12 bg-gradient-to-b from-muted-foreground/40 to-transparent" />
+          <ArrowDown className="w-3 h-3 text-muted-foreground/70" />
+        </div>
       </div>
+
+      {/* Decorative bottom border */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-accent to-transparent opacity-50" />
     </section>
   );
 };

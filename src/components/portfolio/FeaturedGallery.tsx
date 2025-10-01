@@ -62,14 +62,26 @@ const FeaturedGallery = () => {
   };
 
   return (
-    <section className="gallery-spacing bg-surface">
+    <section className="py-32 px-6 bg-surface relative">
+      {/* Decorative side elements */}
+      <div className="absolute left-8 top-1/2 -translate-y-1/2 hidden lg:block">
+        <div className="w-px h-32 bg-gradient-to-b from-transparent via-accent/30 to-transparent" />
+      </div>
+      <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden lg:block">
+        <div className="w-px h-32 bg-gradient-to-b from-transparent via-accent/30 to-transparent" />
+      </div>
+
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-20 animate-slide-up">
-          <h2 className="font-display text-5xl md:text-6xl text-primary mb-8 tracking-gallery">
+        <div className="text-center mb-24 animate-slide-up">
+          <div className="mb-6">
+            <span className="font-body text-xs uppercase tracking-[0.25em] text-muted-foreground">Curated Collection</span>
+          </div>
+          <h2 className="font-display text-5xl md:text-7xl text-primary mb-10 tracking-tight leading-tight">
             {t('gallery.featuredWorks')}
           </h2>
-          <div className="max-w-3xl mx-auto">
-            <p className="font-serif text-xl text-muted-foreground leading-relaxed italic">
+          <div className="h-px w-24 bg-accent mx-auto mb-10" />
+          <div className="max-w-2xl mx-auto">
+            <p className="font-serif text-lg md:text-xl text-foreground/70 leading-relaxed">
               {t('gallery.featuredDescription')}
             </p>
           </div>
@@ -85,25 +97,35 @@ const FeaturedGallery = () => {
               <div
                 key={artwork.id}
                 className="group cursor-pointer animate-fade-in"
-                style={{ animationDelay: `${index * 0.3}s` }}
+                style={{ animationDelay: `${index * 0.2}s` }}
                 onClick={() => { setSelectedArtwork(artwork); setCurrentImageIndex(0); }}
               >
-                <div className="artwork-frame hover-lift mb-6">
-                  <div className="aspect-square overflow-hidden relative">
+                <div className="relative mb-8 overflow-hidden bg-card">
+                  <div className="aspect-[4/5] overflow-hidden relative border border-border/50">
                     <img
                       src={artwork.artwork_images[0]?.image_url || '/placeholder.svg'}
                       alt={getTranslatedField(artwork, 'title', currentLanguage)}
-                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-102"
+                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-95"
                     />
+                    <div className="absolute inset-0 border-2 border-transparent group-hover:border-accent/20 transition-all duration-500" />
                   </div>
+                  <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </div>
-                <div className="text-center space-y-3">
-                  <h3 className="font-display text-2xl text-primary tracking-gallery">
-                    {getTranslatedField(artwork, 'title', currentLanguage)}
-                  </h3>
-                  <div className="font-body text-sm text-muted-foreground uppercase tracking-wider space-y-1">
-                    <p>{new Date(artwork.created_at).getFullYear()} • {artwork.category}</p>
-                    <p>${artwork.price?.toFixed(2) || t('gallery.priceOnRequest')}</p>
+                <div className="space-y-4">
+                  <div className="text-center space-y-2">
+                    <h3 className="font-display text-2xl md:text-3xl text-primary tracking-tight">
+                      {getTranslatedField(artwork, 'title', currentLanguage)}
+                    </h3>
+                    <div className="font-body text-xs text-muted-foreground uppercase tracking-[0.15em]">
+                      <span>{new Date(artwork.created_at).getFullYear()}</span>
+                      <span className="mx-2">•</span>
+                      <span>{artwork.category}</span>
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <span className="font-body text-sm text-foreground/80">
+                      ${artwork.price?.toFixed(2) || t('gallery.priceOnRequest')}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -111,12 +133,15 @@ const FeaturedGallery = () => {
           )}
         </div>
         
-        <div className="text-center mt-20">
-          <Link 
+        <div className="text-center mt-24">
+          <div className="h-px w-16 bg-accent/50 mx-auto mb-8" />
+          <Link
             to="/gallery"
-            className="font-body text-sm uppercase tracking-widest text-muted-foreground hover:text-primary border-b border-transparent hover:border-primary transition-all duration-500 pb-1"
+            className="inline-block font-body text-xs uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-all duration-300 group"
           >
-            {t('gallery.viewCompleteGallery')}
+            <span className="border-b-2 border-transparent group-hover:border-primary pb-1 transition-all duration-300">
+              {t('gallery.viewCompleteGallery')}
+            </span>
           </Link>
         </div>
       </div>
