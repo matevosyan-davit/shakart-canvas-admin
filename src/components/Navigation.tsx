@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const Navigation = () => {
   const location = useLocation();
@@ -38,6 +39,7 @@ const Navigation = () => {
                 {link.label}
               </Link>
             ))}
+            <LanguageSwitcher />
           </div>
           
           {/* Mobile menu button */}
