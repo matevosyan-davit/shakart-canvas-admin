@@ -57,12 +57,15 @@ const translations = {
     // Contact Section
     'contact.title': "Let's Connect",
     'contact.subtitle': 'Ready to discuss a project or learn more about my work?',
+    'contact.hero.description': 'Ready to discuss your vision? I\'d love to hear about your project and explore how we can bring your ideas to life through art.',
     'contact.email': 'Email Me Directly',
     'contact.call': 'Call Me Now',
-    'contact.info': 'Contact Information',
+    'contact.info': 'Get in Touch',
     'contact.phone': 'Phone',
     'contact.location': 'Location',
     'contact.social': 'Follow My Work',
+    'contact.socialDescription': 'Stay updated with my latest artworks, exhibitions, and creative process.',
+    'contact.emailLabel': 'Email',
 
     // Gallery Page
     'gallery.page.title': 'Gallery',
@@ -150,12 +153,15 @@ const translations = {
     // Contact Section
     'contact.title': 'Եկեք Կապվենք',
     'contact.subtitle': 'Պատրա՞ստ եք քննարկել նախագիծ կամ իմանալ իմ աշխատանքի մասին:',
+    'contact.hero.description': 'Պատրա՞ստ եք քննարկել ձեր տեսլականը: Ես կցանկանայի լսել ձեր նախագծի մասին և ուսումնասիրել, թե ինչպես կարող ենք ձեր գաղափարները կյանքի կոչել արվեստի միջոցով:',
     'contact.email': 'Գրել Իմեյլ',
-    'contact.call': 'Զանգահարել',
-    'contact.info': 'Կապի Տվյալներ',
+    'contact.call': 'Զանգահարել Հիմա',
+    'contact.info': 'Կապ Հաստատել',
     'contact.phone': 'Հեռախոս',
     'contact.location': 'Գտնվելու Վայր',
     'contact.social': 'Հետևել Իմ Աշխատանքին',
+    'contact.socialDescription': 'Տեղեկացեք իմ վերջին ստեղծագործությունների, ցուցահանդեսների և ստեղծագործական գործընթացի մասին:',
+    'contact.emailLabel': 'Էլ. Փոստ',
 
     // Gallery Page
     'gallery.page.title': 'Պատկերասրահ',
@@ -243,12 +249,15 @@ const translations = {
     // Contact Section
     'contact.title': 'Давайте Свяжемся',
     'contact.subtitle': 'Готовы обсудить проект или узнать больше о моей работе?',
+    'contact.hero.description': 'Готовы обсудить ваше видение? Я хотел бы услышать о вашем проекте и изучить, как мы можем воплотить ваши идеи в жизнь через искусство.',
     'contact.email': 'Написать Email',
-    'contact.call': 'Позвонить',
-    'contact.info': 'Контактная Информация',
+    'contact.call': 'Позвонить Сейчас',
+    'contact.info': 'Связаться',
     'contact.phone': 'Телефон',
     'contact.location': 'Местоположение',
     'contact.social': 'Следить за Моей Работой',
+    'contact.socialDescription': 'Будьте в курсе моих последних работ, выставок и творческого процесса.',
+    'contact.emailLabel': 'Email',
 
     // Gallery Page
     'gallery.page.title': 'Галерея',

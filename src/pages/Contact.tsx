@@ -1,18 +1,21 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Mail, Phone, Facebook, Instagram, MapPin } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Contact = () => {
+  const { t } = useLanguage();
+
   return (
     <main className="min-h-screen bg-surface pt-24">
       {/* Hero Header */}
       <section className="py-20 px-6">
         <div className="max-w-6xl mx-auto text-center">
           <h1 className="font-display text-6xl md:text-7xl font-bold text-primary mb-8 animate-slide-up">
-            Let's Connect
+            {t('contact.title')}
           </h1>
           <p className="font-body text-2xl md:text-3xl text-muted-foreground max-w-3xl mx-auto mb-12 animate-fade-in leading-relaxed" style={{ animationDelay: "0.2s" }}>
-            Ready to discuss your vision? I'd love to hear about your project and explore how we can bring your ideas to life through art.
+            {t('contact.hero.description')}
           </p>
           
           {/* Quick Action Buttons */}
@@ -24,7 +27,7 @@ const Contact = () => {
             >
               <a href="mailto:contact@shakart.com" className="flex items-center gap-3">
                 <Mail className="w-6 h-6" />
-                Email Me Directly
+                {t('contact.email')}
               </a>
             </Button>
             
@@ -36,7 +39,7 @@ const Contact = () => {
             >
               <a href="tel:+1234567890" className="flex items-center gap-3">
                 <Phone className="w-6 h-6" />
-                Call Me Now
+                {t('contact.call')}
               </a>
             </Button>
           </div>
@@ -49,7 +52,7 @@ const Contact = () => {
           <div className="grid md:grid-cols-2 gap-8">
             {/* Contact Details */}
             <Card className="p-10 bg-card shadow-card border-0 animate-fade-in">
-              <h2 className="font-display text-3xl font-semibold text-primary mb-8">Get in Touch</h2>
+              <h2 className="font-display text-3xl font-semibold text-primary mb-8">{t('contact.info')}</h2>
               
               <div className="space-y-8">
                 <div className="flex items-start gap-6">
@@ -57,7 +60,7 @@ const Contact = () => {
                     <Mail className="w-8 h-8 text-accent" />
                   </div>
                   <div>
-                    <p className="font-body text-lg font-medium text-muted-foreground mb-2">Email</p>
+                    <p className="font-body text-lg font-medium text-muted-foreground mb-2">{t('contact.emailLabel')}</p>
                     <a 
                       href="mailto:contact@shakart.com" 
                       className="font-body text-xl text-foreground hover:text-accent transition-colors font-medium"
@@ -72,7 +75,7 @@ const Contact = () => {
                     <Phone className="w-8 h-8 text-accent" />
                   </div>
                   <div>
-                    <p className="font-body text-lg font-medium text-muted-foreground mb-2">Phone</p>
+                    <p className="font-body text-lg font-medium text-muted-foreground mb-2">{t('contact.phone')}</p>
                     <a 
                       href="tel:+1234567890" 
                       className="font-body text-xl text-foreground hover:text-accent transition-colors font-medium"
@@ -87,7 +90,7 @@ const Contact = () => {
                     <MapPin className="w-8 h-8 text-accent" />
                   </div>
                   <div>
-                    <p className="font-body text-lg font-medium text-muted-foreground mb-2">Location</p>
+                    <p className="font-body text-lg font-medium text-muted-foreground mb-2">{t('contact.location')}</p>
                     <p className="font-body text-xl text-foreground font-medium">
                       San Francisco, CA
                     </p>
@@ -98,7 +101,7 @@ const Contact = () => {
 
             {/* Social Media */}
             <Card className="p-10 bg-card shadow-card border-0 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-              <h2 className="font-display text-3xl font-semibold text-primary mb-8">Follow My Work</h2>
+              <h2 className="font-display text-3xl font-semibold text-primary mb-8">{t('contact.social')}</h2>
               
               <div className="space-y-6">
                 <a
@@ -133,7 +136,7 @@ const Contact = () => {
               </div>
               
               <p className="font-body text-muted-foreground mt-8 leading-relaxed">
-                Stay updated with my latest artworks, exhibitions, and creative process.
+                {t('contact.socialDescription')}
               </p>
             </Card>
           </div>
