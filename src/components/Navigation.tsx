@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const Navigation = () => {
   const location = useLocation();
@@ -31,15 +30,14 @@ const Navigation = () => {
                 key={link.href}
                 to={link.href}
                 className={`font-body text-sm uppercase tracking-widest transition-all duration-500 hover:text-accent ${
-                  location.pathname === link.href 
-                    ? "text-primary border-b-2 border-accent pb-1" 
+                  location.pathname === link.href
+                    ? "text-primary border-b-2 border-accent pb-1"
                     : "text-muted-foreground hover:text-primary"
                 }`}
               >
                 {link.label}
               </Link>
             ))}
-            <LanguageSwitcher />
           </div>
           
           {/* Mobile menu button */}
