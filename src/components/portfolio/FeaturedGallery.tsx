@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslatedField } from "@/utils/multiLanguageHelpers";
 
 interface ArtworkImage {
   id: string;
@@ -21,6 +23,7 @@ interface Artwork {
 }
 
 const FeaturedGallery = () => {
+  const { t, currentLanguage } = useLanguage();
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -63,12 +66,11 @@ const FeaturedGallery = () => {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-20 animate-slide-up">
           <h2 className="font-display text-5xl md:text-6xl text-primary mb-8 tracking-gallery">
-            Featured Works
+            {t('gallery.featuredWorks')}
           </h2>
           <div className="max-w-3xl mx-auto">
             <p className="font-serif text-xl text-muted-foreground leading-relaxed italic">
-              A curated selection of recent paintings that showcase my artistic journey and evolving vision, 
-              each piece telling its own story through color, texture, and emotion.
+              {t('gallery.featuredDescription')}
             </p>
           </div>
         </div>
@@ -76,7 +78,7 @@ const FeaturedGallery = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
           {artworks.length === 0 ? (
             <div className="col-span-full text-center py-12">
-              <p className="text-muted-foreground">No featured artworks yet. Add some through the admin panel!</p>
+              <p className="text-muted-foreground">{t('gallery.noFeaturedArtworks')}</p>
             </div>
           ) : (
             artworks.map((artwork, index) => (
@@ -90,18 +92,18 @@ const FeaturedGallery = () => {
                   <div className="aspect-square overflow-hidden relative">
                     <img
                       src={artwork.artwork_images[0]?.image_url || '/placeholder.svg'}
-                      alt={artwork.title}
+                      alt={getTranslatedField(artwork, 'title', currentLanguage)}
                       className="w-full h-full object-cover transition-all duration-700 group-hover:scale-102"
                     />
                   </div>
                 </div>
                 <div className="text-center space-y-3">
                   <h3 className="font-display text-2xl text-primary tracking-gallery">
-                    {artwork.title}
+                    {getTranslatedField(artwork, 'title', currentLanguage)}
                   </h3>
                   <div className="font-body text-sm text-muted-foreground uppercase tracking-wider space-y-1">
                     <p>{new Date(artwork.created_at).getFullYear()} • {artwork.category}</p>
-                    <p>${artwork.price?.toFixed(2) || 'Price on request'}</p>
+                    <p>${artwork.price?.toFixed(2) || t('gallery.priceOnRequest')}</p>
                   </div>
                 </div>
               </div>
@@ -114,7 +116,7 @@ const FeaturedGallery = () => {
             to="/gallery"
             className="font-body text-sm uppercase tracking-widest text-muted-foreground hover:text-primary border-b border-transparent hover:border-primary transition-all duration-500 pb-1"
           >
-            View Complete Gallery
+            {t('gallery.viewCompleteGallery')}
           </Link>
         </div>
       </div>
@@ -131,7 +133,7 @@ const FeaturedGallery = () => {
               <div className="flex-1 bg-black/20 flex items-center justify-center p-8 relative group">
                 <img
                   src={selectedArtwork.artwork_images[currentImageIndex]?.image_url || '/placeholder.svg'}
-                  alt={selectedArtwork.title}
+                  alt={getTranslatedField(selectedArtwork, 'title', currentLanguage)}
                   className="max-w-full max-h-full object-contain"
                 />
                 {selectedArtwork.artwork_images.length > 1 && (
@@ -161,7 +163,7 @@ const FeaturedGallery = () => {
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <h3 className="font-display text-2xl text-primary mb-3 tracking-gallery">
-                        {selectedArtwork.title}
+                        {getTranslatedField(selectedArtwork, 'title', currentLanguage)}
                       </h3>
                       <div className="font-body text-muted-foreground space-y-1 text-sm uppercase tracking-wider">
                         <p>{new Date(selectedArtwork.created_at).getFullYear()} • {selectedArtwork.category}</p>
@@ -178,13 +180,13 @@ const FeaturedGallery = () => {
                   <div className="w-16 h-px bg-accent"></div>
                   
                   <p className="font-serif text-base text-foreground leading-relaxed">
-                    {selectedArtwork.description || 'No description available.'}
+                    {getTranslatedField(selectedArtwork, 'description', currentLanguage) || t('gallery.noDescription')}
                   </p>
                 </div>
                 
                 <div className="pt-6 border-t border-border/20">
                   <div className="font-display text-2xl text-primary font-semibold">
-                    ${selectedArtwork.price?.toFixed(2) || 'Price on request'}
+                    ${selectedArtwork.price?.toFixed(2) || t('gallery.priceOnRequest')}
                   </div>
                 </div>
               </div>

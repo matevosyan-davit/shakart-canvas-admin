@@ -44,6 +44,10 @@ const translations = {
     'gallery.title': 'Featured Artworks',
     'gallery.subtitle': 'A curated selection of recent works',
     'gallery.viewAll': 'View All Artworks',
+    'gallery.featuredWorks': 'Featured Works',
+    'gallery.featuredDescription': 'A curated selection of recent paintings that showcase my artistic journey and evolving vision, each piece telling its own story through color, texture, and emotion.',
+    'gallery.noFeaturedArtworks': 'No featured artworks yet. Add some through the admin panel!',
+    'gallery.viewCompleteGallery': 'View Complete Gallery',
 
     // Exhibitions Section
     'exhibitions.title': 'Recent Exhibitions',
@@ -133,6 +137,10 @@ const translations = {
     'gallery.title': 'Ընտրված Ստեղծագործություններ',
     'gallery.subtitle': 'Վերջին աշխատանքների ընտրանի',
     'gallery.viewAll': 'Դիտել Բոլոր Ստեղծագործությունները',
+    'gallery.featuredWorks': 'Ընտրված Աշխատանքներ',
+    'gallery.featuredDescription': 'Վերջին նկարների ընտրանի, որոնք ցուցադրում են իմ գեղարվեստական ճանապարհորդությունը և զարգացող տեսլականը, յուրաքանչյուր ստեղծագործություն պատմում է իր պատմությունը գույների, հյուսվածքի և հույզերի միջոցով:',
+    'gallery.noFeaturedArtworks': 'Ընտրված ստեղծագործություններ դեռ չկան: Ավելացրեք դրանք ադմինիստրատորի վահանակի միջոցով:',
+    'gallery.viewCompleteGallery': 'Դիտել Ամբողջական Պատկերասրահը',
 
     // Exhibitions Section
     'exhibitions.title': 'Վերջին Ցուցահանդեսներ',
@@ -222,6 +230,10 @@ const translations = {
     'gallery.title': 'Избранные Произведения',
     'gallery.subtitle': 'Курированная подборка недавних работ',
     'gallery.viewAll': 'Смотреть Все Произведения',
+    'gallery.featuredWorks': 'Избранные Работы',
+    'gallery.featuredDescription': 'Курированная подборка недавних картин, демонстрирующих мое художественное путешествие и развивающееся видение, каждая работа рассказывает свою историю через цвет, текстуру и эмоции.',
+    'gallery.noFeaturedArtworks': 'Избранных работ пока нет. Добавьте их через панель администратора!',
+    'gallery.viewCompleteGallery': 'Смотреть Полную Галерею',
 
     // Exhibitions Section
     'exhibitions.title': 'Недавние Выставки',
