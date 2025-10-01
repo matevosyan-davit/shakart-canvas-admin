@@ -30,15 +30,19 @@ export const createArtworkUpdate = (
     category,
     language,
   };
-  
+
   if (language === 'en') {
     update.title = data.title;
     update.description = data.description;
   } else {
+    // For non-English languages, store the translation in language-specific field
+    // and also store it in the base field as fallback (required by database)
+    update.title = data.title;
+    update.description = data.description;
     update[`title_${language}`] = data.title;
     update[`description_${language}`] = data.description;
   }
-  
+
   return update;
 };
 
@@ -49,24 +53,30 @@ export const createExhibitionUpdate = (
   date: string
 ) => {
   console.log('Creating exhibition update for language:', language, 'with data:', data);
-  
+
   const update: any = {
     date,
     language,
   };
-  
+
   if (language === 'en') {
     update.title = data.title;
     update.location = data.location;
     update.theme = data.theme;
     update.description = data.description;
   } else {
+    // For non-English languages, store the translation in language-specific field
+    // and also store it in the base field as fallback (required by database)
+    update.title = data.title;
+    update.location = data.location;
+    update.theme = data.theme;
+    update.description = data.description;
     update[`title_${language}`] = data.title;
     update[`location_${language}`] = data.location;
     update[`theme_${language}`] = data.theme;
     update[`description_${language}`] = data.description;
   }
-  
+
   console.log('Final update object:', update);
   return update;
 };
@@ -81,14 +91,18 @@ export const createMediaUpdate = (
     embed_link,
     language,
   };
-  
+
   if (language === 'en') {
     update.title = data.title;
     update.media_name = data.media_name;
   } else {
+    // For non-English languages, store the translation in language-specific field
+    // and also store it in the base field as fallback (required by database)
+    update.title = data.title;
+    update.media_name = data.media_name;
     update[`title_${language}`] = data.title;
     update[`media_name_${language}`] = data.media_name;
   }
-  
+
   return update;
 };
