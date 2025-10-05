@@ -9,7 +9,7 @@ interface AdminLanguageSwitcherProps {
 }
 
 const languages = {
-  en: { name: 'English', flag: '🇺🇸' },
+  en: { name: 'English', flag: '🇬🇧' },
   am: { name: 'Հայերեն', flag: '🇦🇲' },
   ru: { name: 'Русский', flag: '🇷🇺' },
 };
