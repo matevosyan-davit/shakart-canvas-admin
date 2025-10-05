@@ -8,7 +8,6 @@ const Navigation = () => {
   const { t } = useLanguage();
   
   const navLinks = [
-    { href: "/", label: t('nav.home') },
     { href: "/about", label: t('nav.about') },
     { href: "/gallery", label: t('nav.gallery') },
     { href: "/exhibitions", label: t('nav.exhibitions') },
