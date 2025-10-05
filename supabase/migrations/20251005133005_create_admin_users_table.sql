@@ -22,7 +22,6 @@
   - Password is stored as bcrypt hash (handled by application layer)
   
   ## Initial Data
-  - Creates initial admin user: shant101094@gmail.com
   - Password will be set via application on first use
   
   ## Notes
