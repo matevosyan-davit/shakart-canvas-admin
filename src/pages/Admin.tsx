@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,10 +9,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Upload, X, CreditCard as Edit, Trash2, Plus } from "lucide-react";
+import { Upload, X, CreditCard as Edit, Trash2, Plus, LogOut } from "lucide-react";
 import { AdminLanguageSwitcher } from "@/components/AdminLanguageSwitcher";
 import { Language } from "@/contexts/LanguageContext";
 import { getLanguageField, getLanguageValue, createArtworkUpdate, createExhibitionUpdate, createMediaUpdate } from "@/utils/adminLanguageHelpers";
+import { useAdminAuth } from "@/contexts/AdminAuthContext";
 
 interface ArtworkForm {
   title: string;
@@ -86,6 +88,8 @@ interface MediaItem {
 }
 
 const Admin = () => {
+  const navigate = useNavigate();
+  const { admin, logout } = useAdminAuth();
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
   const [previews, setPreviews] = useState<string[]>([]);
@@ -103,6 +107,12 @@ const Admin = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [previewImages, setPreviewImages] = useState<Record<string, string>>({});
   const [adminLanguage, setAdminLanguage] = useState<Language>('en');
+
+  const handleLogout = () => {
+    logout();
+    navigate('/admin-shant');
+    toast.success('Logged out successfully');
+  };
 
   const form = useForm<ArtworkForm>({
     defaultValues: {
@@ -839,13 +849,26 @@ const Admin = () => {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
             <div>
               <h1 className="font-display text-4xl md:text-5xl text-primary mb-2 tracking-tight">Admin Panel</h1>
-              <p className="font-body text-sm text-muted-foreground">Manage your portfolio content</p>
+              <p className="font-body text-sm text-muted-foreground">
+                Welcome, {admin?.full_name || admin?.email}
+              </p>
             </div>
-            {/* Language Switcher */}
-            <AdminLanguageSwitcher
-              currentLanguage={adminLanguage}
-              onLanguageChange={setAdminLanguage}
-            />
+            <div className="flex items-center gap-4">
+              {/* Language Switcher */}
+              <AdminLanguageSwitcher
+                currentLanguage={adminLanguage}
+                onLanguageChange={setAdminLanguage}
+              />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleLogout}
+                className="gap-2"
+              >
+                <LogOut className="h-4 w-4" />
+                Logout
+              </Button>
+            </div>
           </div>
           <div className="h-px w-full bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
         </div>

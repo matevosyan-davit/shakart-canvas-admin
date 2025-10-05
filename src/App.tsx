@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { AdminAuthProvider } from "@/contexts/AdminAuthContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Navigation from "@/components/Navigation";
 import Index from "./pages/Index";
 import About from "./pages/About";
@@ -12,6 +14,7 @@ import Exhibitions from "./pages/Exhibitions";
 import Media from "./pages/Media";
 import Contact from "./pages/Contact";
 import Admin from "./pages/Admin";
+import AdminLogin from "./pages/AdminLogin";
 import Armenia2019 from "./pages/exhibitions/Armenia2019";
 import Italy2020 from "./pages/exhibitions/Italy2020";
 import Armenia2022 from "./pages/exhibitions/Armenia2022";
@@ -22,27 +25,33 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <LanguageProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Navigation />
-          <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/gallery" element={<Gallery />} />
-          <Route path="/exhibitions" element={<Exhibitions />} />
-          <Route path="/exhibitions/armenia-2019" element={<Armenia2019 />} />
-          <Route path="/exhibitions/italy-2020" element={<Italy2020 />} />
-          <Route path="/exhibitions/armenia-2022" element={<Armenia2022 />} />
-          <Route path="/media" element={<Media />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/admin" element={<Admin />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+      <AdminAuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/" element={<><Navigation /><Index /></>} />
+              <Route path="/about" element={<><Navigation /><About /></>} />
+              <Route path="/gallery" element={<><Navigation /><Gallery /></>} />
+              <Route path="/exhibitions" element={<><Navigation /><Exhibitions /></>} />
+              <Route path="/exhibitions/armenia-2019" element={<><Navigation /><Armenia2019 /></>} />
+              <Route path="/exhibitions/italy-2020" element={<><Navigation /><Italy2020 /></>} />
+              <Route path="/exhibitions/armenia-2022" element={<><Navigation /><Armenia2022 /></>} />
+              <Route path="/media" element={<><Navigation /><Media /></>} />
+              <Route path="/contact" element={<><Navigation /><Contact /></>} />
+
+              {/* Admin routes */}
+              <Route path="/admin-shant" element={<AdminLogin />} />
+              <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
+
+              {/* 404 - ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<><Navigation /><NotFound /></>} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AdminAuthProvider>
     </LanguageProvider>
   </QueryClientProvider>
 );
