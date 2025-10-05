@@ -13,8 +13,7 @@ const Navigation = () => {
     { href: "/gallery", label: t('nav.gallery') },
     { href: "/exhibitions", label: t('nav.exhibitions') },
     { href: "/media", label: t('nav.media') },
-    { href: "/contact", label: t('nav.contact') },
-    { href: "/admin", label: t('nav.admin') }
+    { href: "/contact", label: t('nav.contact') }
   ];
 
   return (
