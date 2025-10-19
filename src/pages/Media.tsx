@@ -62,25 +62,43 @@ const Media = () => {
   };
 
   const convertToEmbedUrl = (url: string): string => {
-    // Handle YouTube URLs
-    const youtubeRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/;
-    const match = url.match(youtubeRegex);
-    if (match) {
-      return `https://www.youtube.com/embed/${match[1]}`;
-    }
-    
-    // If it's already an embed URL, return as is
-    if (url.includes('/embed/')) {
+    try {
+      // Clean the URL
+      const cleanUrl = url.trim();
+
+      // Handle YouTube URLs - improved regex to capture video ID more accurately
+      const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+      const match = cleanUrl.match(youtubeRegex);
+
+      if (match && match[1]) {
+        // Return embed URL with additional parameters for better compatibility
+        return `https://www.youtube-nocookie.com/embed/${match[1]}?rel=0&modestbranding=1`;
+      }
+
+      // If it's already an embed URL, return as is
+      if (cleanUrl.includes('/embed/')) {
+        return cleanUrl;
+      }
+
+      // For other URLs, return as is (we'll handle them differently in the display)
+      return cleanUrl;
+    } catch (error) {
+      console.error('Error converting URL:', error);
       return url;
     }
-    
-    // For other URLs, return as is (we'll handle them differently in the display)
-    return url;
   };
 
   const isVideoUrl = (url: string): boolean => {
-    return url.includes('youtube.com') || url.includes('youtu.be') || 
-           url.includes('vimeo.com') || url.includes('/embed/');
+    try {
+      const lowerUrl = url.toLowerCase().trim();
+      return lowerUrl.includes('youtube.com') ||
+             lowerUrl.includes('youtu.be') ||
+             lowerUrl.includes('vimeo.com') ||
+             lowerUrl.includes('/embed/') ||
+             lowerUrl.includes('youtube-nocookie.com');
+    } catch (error) {
+      return false;
+    }
   };
 
   const fetchMedia = async () => {
