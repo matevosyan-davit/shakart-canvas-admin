@@ -174,77 +174,82 @@ const Gallery = () => {
 
       {/* Artwork Modal */}
       {selectedArtwork && (
-        <div 
-          className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4"
+        <div
+          className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-0 md:p-4"
           onClick={() => setSelectedArtwork(null)}
         >
-          <div className="w-[90vw] h-[90vh] glass rounded-lg overflow-hidden" onClick={(e) => e.stopPropagation()}>
-            <div className="flex h-full">
-            {/* Image Section - Left Side */}
-            <div className="flex-1 bg-black/20 flex items-center justify-center p-8 relative group">
-                <img
-                  src={selectedArtwork.artwork_images[currentImageIndex]?.image_url || '/placeholder.svg'}
-                  alt={selectedArtwork.title}
-                  className="max-w-full max-h-full object-contain"
-                />
-                
-                {/* Image Navigation */}
-                {selectedArtwork.artwork_images.length > 1 && (
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <button
-                      onClick={prevImage}
-                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-1 rounded transition-colors"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={nextImage}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-1 rounded transition-colors"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/30 text-white px-2 py-0.5 rounded text-xs">
-                      {currentImageIndex + 1} / {selectedArtwork.artwork_images.length}
-                    </div>
+          <div
+            className="w-full h-full md:w-[90vw] md:h-[90vh] md:max-w-6xl glass md:rounded-lg overflow-hidden flex flex-col md:flex-row"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Image Section - Top on mobile, Left on desktop */}
+            <div className="flex-1 bg-black/20 flex items-center justify-center relative group">
+              <img
+                src={selectedArtwork.artwork_images[currentImageIndex]?.image_url || '/placeholder.svg'}
+                alt={selectedArtwork.title}
+                className="w-full h-full object-contain p-4 md:p-8"
+              />
+
+              {/* Image Navigation */}
+              {selectedArtwork.artwork_images.length > 1 && (
+                <>
+                  <button
+                    onClick={prevImage}
+                    className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 md:p-3 rounded-full transition-colors z-10"
+                  >
+                    <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
+                  </button>
+                  <button
+                    onClick={nextImage}
+                    className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 md:p-3 rounded-full transition-colors z-10"
+                  >
+                    <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+                  </button>
+                  <div className="absolute bottom-2 md:bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-white px-3 py-1.5 rounded-full text-sm">
+                    {currentImageIndex + 1} / {selectedArtwork.artwork_images.length}
                   </div>
-                )}
-              </div>
-              
-              {/* Content Section - Right Side */}
-              <div className="w-96 bg-card/95 p-8 flex flex-col justify-between">
-                <div className="space-y-6">
+                </>
+              )}
+            </div>
+
+            {/* Content Section - Bottom on mobile, Right on desktop */}
+            <div className="w-full md:w-96 bg-card/95 backdrop-blur-sm overflow-y-auto">
+              <div className="p-6 md:p-8 flex flex-col min-h-full">
+                <div className="flex-1 space-y-4 md:space-y-6">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <h3 className="font-display text-2xl font-semibold text-primary mb-3">
+                      <h3 className="font-display text-xl md:text-2xl font-semibold text-primary mb-2 md:mb-3">
                         {getTranslatedField(selectedArtwork, 'title', currentLanguage)}
                       </h3>
                       <div className="font-body text-muted-foreground space-y-1">
-                        <p className="text-base capitalize">{selectedArtwork.category}</p>
-                        <p className="text-sm">
+                        <p className="text-sm md:text-base capitalize">{selectedArtwork.category}</p>
+                        <p className="text-xs md:text-sm">
                           {new Date(selectedArtwork.created_at).getFullYear()}
                         </p>
                       </div>
                     </div>
                     <button
                       onClick={() => setSelectedArtwork(null)}
-                      className="text-muted-foreground hover:text-primary transition-colors p-2"
+                      className="text-muted-foreground hover:text-primary transition-colors p-2 -mt-2 -mr-2"
                     >
-                      ✕
+                      <span className="text-xl md:text-2xl">✕</span>
                     </button>
                   </div>
-                  
+
                   <div className="w-16 h-px bg-accent"></div>
-                  
-                  <p className="font-body text-foreground leading-relaxed">
-                    {getTranslatedField(selectedArtwork, 'description', currentLanguage) || t('gallery.noDescription')}
-                  </p>
+
+                  {getTranslatedField(selectedArtwork, 'description', currentLanguage) && (
+                    <p className="font-body text-sm md:text-base text-foreground leading-relaxed">
+                      {getTranslatedField(selectedArtwork, 'description', currentLanguage)}
+                    </p>
+                  )}
 
                   {(selectedArtwork.width_cm || selectedArtwork.height_cm || selectedArtwork.depth_cm) && (
-                    <div className="mt-4 pt-4 border-t border-border/10">
+                    <div className="pt-4 border-t border-border/10">
                       <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-2">
                         {t('gallery.dimensions')}
                       </p>
-                      <p className="font-body text-sm text-foreground">
+                      <p className="font-body text-sm md:text-base text-foreground">
                         {selectedArtwork.width_cm && `${selectedArtwork.width_cm} ${t('gallery.cm')}`}
                         {selectedArtwork.width_cm && selectedArtwork.height_cm && ' × '}
                         {selectedArtwork.height_cm && `${selectedArtwork.height_cm} ${t('gallery.cm')}`}
@@ -254,10 +259,16 @@ const Gallery = () => {
                   )}
                 </div>
 
-                <div className="pt-6 border-t border-border/20">
-                  <div className="font-display text-2xl text-primary font-semibold">
-                    ${selectedArtwork.price?.toFixed(2) || t('gallery.priceOnRequest')}
-                  </div>
+                <div className="pt-4 md:pt-6 mt-4 md:mt-6 border-t border-border/20">
+                  {selectedArtwork.is_sold ? (
+                    <div className="inline-block bg-red-600 text-white px-4 py-2 rounded-md font-body text-sm font-semibold uppercase tracking-wider">
+                      {t('gallery.sold')}
+                    </div>
+                  ) : (
+                    <div className="font-display text-xl md:text-2xl text-primary font-semibold">
+                      ${selectedArtwork.price?.toFixed(2) || t('gallery.priceOnRequest')}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
