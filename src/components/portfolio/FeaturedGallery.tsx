@@ -223,10 +223,10 @@ const FeaturedGallery = () => {
                         {t('gallery.dimensions')}
                       </p>
                       <p className="font-body text-sm text-foreground">
-                        {selectedArtwork.width_cm && `${selectedArtwork.width_cm} cm`}
+                        {selectedArtwork.width_cm && `${selectedArtwork.width_cm} ${t('gallery.cm')}`}
                         {selectedArtwork.width_cm && selectedArtwork.height_cm && ' × '}
-                        {selectedArtwork.height_cm && `${selectedArtwork.height_cm} cm`}
-                        {selectedArtwork.depth_cm && ` × ${selectedArtwork.depth_cm} cm`}
+                        {selectedArtwork.height_cm && `${selectedArtwork.height_cm} ${t('gallery.cm')}`}
+                        {selectedArtwork.depth_cm && ` × ${selectedArtwork.depth_cm} ${t('gallery.cm')}`}
                       </p>
                     </div>
                   )}
