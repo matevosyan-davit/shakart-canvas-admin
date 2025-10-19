@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,6 +21,7 @@ interface ArtworkForm {
   description: string;
   price: string;
   category: "painting" | "sculpture" | "streetart";
+  is_sold: boolean;
 }
 
 interface ArtworkImage {
@@ -34,6 +36,7 @@ interface Artwork {
   description: string | null;
   price: number | null;
   category: string;
+  is_sold: boolean;
   created_at: string;
   artwork_images: ArtworkImage[];
 }
@@ -120,6 +123,7 @@ const Admin = () => {
       description: "",
       price: "",
       category: "painting",
+      is_sold: false,
     },
   });
 
@@ -155,6 +159,7 @@ const Admin = () => {
         description: getLanguageValue(editingArtwork, 'description', adminLanguage),
         price: editingArtwork.price?.toString() || "",
         category: editingArtwork.category as "painting" | "sculpture" | "streetart",
+        is_sold: editingArtwork.is_sold || false,
       });
     }
   }, [adminLanguage, editingArtwork, form]);
@@ -188,6 +193,7 @@ const Admin = () => {
         description: getLanguageValue(editingArtwork, 'description', adminLanguage),
         price: editingArtwork.price?.toString() || "",
         category: editingArtwork.category as "painting" | "sculpture" | "streetart",
+        is_sold: editingArtwork.is_sold || false,
       });
       setShowAddForm(true);
     }
@@ -598,7 +604,7 @@ const Admin = () => {
         const updateData = createArtworkUpdate({
           title: data.title,
           description: data.description,
-        }, adminLanguage, parseFloat(data.price), data.category);
+        }, adminLanguage, parseFloat(data.price), data.category, data.is_sold);
 
         const { error: artworkError } = await supabase
           .from('artworks')
@@ -624,7 +630,7 @@ const Admin = () => {
         const insertData = createArtworkUpdate({
           title: data.title,
           description: data.description,
-        }, adminLanguage, parseFloat(data.price), data.category);
+        }, adminLanguage, parseFloat(data.price), data.category, data.is_sold);
 
         const { data: artwork, error: artworkError } = await supabase
           .from('artworks')
@@ -1121,6 +1127,27 @@ const Admin = () => {
                           </SelectContent>
                         </Select>
                         <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="is_sold"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border border-border p-4">
+                        <div className="space-y-0.5">
+                          <FormLabel className="text-base">Sold Status</FormLabel>
+                          <div className="text-sm text-muted-foreground">
+                            Mark this artwork as sold
+                          </div>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
                       </FormItem>
                     )}
                   />

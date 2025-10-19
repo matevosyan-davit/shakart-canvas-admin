@@ -23,12 +23,14 @@ export const createArtworkUpdate = (
   data: { title: string; description: string },
   language: Language,
   price: number,
-  category: string
+  category: string,
+  is_sold: boolean = false
 ) => {
   const update: any = {
     price,
     category,
     language,
+    is_sold,
   };
 
   if (language === 'en') {

@@ -77,6 +77,7 @@ const translations = {
     'gallery.loadingArtworks': 'Loading artworks...',
     'gallery.priceOnRequest': 'Price on request',
     'gallery.noDescription': 'No description available.',
+    'gallery.sold': 'Sold',
 
     // Exhibitions Page
     'exhibitions.page.title': 'Exhibitions',
@@ -173,6 +174,7 @@ const translations = {
     'gallery.loadingArtworks': 'Բեռնվում են ստեղծագործությունները...',
     'gallery.priceOnRequest': 'Գինը՝ ըստ պահանջի',
     'gallery.noDescription': 'Նկարագրությունը հասանելի չէ:',
+    'gallery.sold': 'Վաճառված է',
 
     // Exhibitions Page
     'exhibitions.page.title': 'Ցուցահանդեսներ',
@@ -269,6 +271,7 @@ const translations = {
     'gallery.loadingArtworks': 'Загрузка произведений...',
     'gallery.priceOnRequest': 'Цена по запросу',
     'gallery.noDescription': 'Описание недоступно.',
+    'gallery.sold': 'Продано',
 
     // Exhibitions Page
     'exhibitions.page.title': 'Выставки',

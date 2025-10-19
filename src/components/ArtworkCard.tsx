@@ -10,6 +10,7 @@ interface Artwork {
   description: string | null;
   price: number | null;
   category: string;
+  is_sold: boolean;
   created_at: string;
   artwork_images: ArtworkImage[];
 }
@@ -20,7 +21,11 @@ interface ArtworkCardProps {
   onSelect: (artwork: Artwork) => void;
 }
 
+import { useLanguage } from '@/contexts/LanguageContext';
+
 const ArtworkCard = ({ artwork, index, onSelect }: ArtworkCardProps) => {
+  const { t } = useLanguage();
+
   return (
     <div
       className="group cursor-pointer animate-fade-in"
@@ -34,6 +39,11 @@ const ArtworkCard = ({ artwork, index, onSelect }: ArtworkCardProps) => {
             alt={artwork.title}
             className="w-full h-full object-cover transition-all duration-300 group-hover:scale-102"
           />
+          {artwork.is_sold && (
+            <div className="absolute top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-md font-body text-sm font-semibold uppercase tracking-wider shadow-lg">
+              {t('gallery.sold')}
+            </div>
+          )}
         </div>
       </div>
       <div className="text-center space-y-3">
