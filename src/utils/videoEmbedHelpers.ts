@@ -52,11 +52,10 @@ export const convertToEmbedUrl = (url: string): string => {
     const match = cleanUrl.match(youtubeRegex);
 
     if (match && match[1]) {
-      // Use youtube-nocookie.com for privacy-enhanced mode
+      // Use standard YouTube embed URL
       // Add parameters for better user experience:
       // - rel=0: Don't show related videos from other channels
-      // - modestbranding=1: Use modest YouTube branding
-      return `https://www.youtube-nocookie.com/embed/${match[1]}?rel=0&modestbranding=1`;
+      return `https://www.youtube.com/embed/${match[1]}?rel=0`;
     }
 
     // If it's already an embed URL, return as is
