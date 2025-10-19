@@ -37,24 +37,15 @@ export const reorderArtworks = async (
       }
     });
 
-    // Batch update all affected artworks
+    // Update all affected artworks
     if (updates.length > 0) {
-      const { error } = await supabase.rpc('update_artwork_order', {
-        updates: updates
-      });
+      for (const update of updates) {
+        const { error: updateError } = await supabase
+          .from('artworks')
+          .update({ display_order: update.display_order })
+          .eq('id', update.id);
 
-      // If RPC doesn't exist, fallback to individual updates
-      if (error?.code === '42883') {
-        for (const update of updates) {
-          const { error: updateError } = await supabase
-            .from('artworks')
-            .update({ display_order: update.display_order })
-            .eq('id', update.id);
-
-          if (updateError) throw updateError;
-        }
-      } else if (error) {
-        throw error;
+        if (updateError) throw updateError;
       }
     }
 
