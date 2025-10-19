@@ -21,12 +21,6 @@ const HeroSection = () => {
 
       {/* Content */}
       <div className="relative z-10 text-center max-w-6xl mx-auto px-6 py-20 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-        <div className="mb-6">
-          <div className="inline-block px-4 py-1.5 border border-accent/30 rounded-full mb-8">
-            <span className="font-body text-xs uppercase tracking-[0.2em] text-muted-foreground">Contemporary Art</span>
-          </div>
-        </div>
-
         <h1 className="font-display text-6xl md:text-8xl lg:text-9xl text-primary mb-10 leading-[0.95] tracking-tight">
           {t('hero.title')}
         </h1>
