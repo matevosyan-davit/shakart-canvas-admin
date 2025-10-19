@@ -78,6 +78,7 @@ const translations = {
     'gallery.priceOnRequest': 'Price on request',
     'gallery.noDescription': 'No description available.',
     'gallery.sold': 'Sold',
+    'gallery.dimensions': 'Dimensions',
 
     // Exhibitions Page
     'exhibitions.page.title': 'Exhibitions',
@@ -175,6 +176,7 @@ const translations = {
     'gallery.priceOnRequest': 'Գինը՝ ըստ պահանջի',
     'gallery.noDescription': 'Նկարագրությունը հասանելի չէ:',
     'gallery.sold': 'Վաճառված է',
+    'gallery.dimensions': 'Չափսեր',
 
     // Exhibitions Page
     'exhibitions.page.title': 'Ցուցահանդեսներ',
@@ -272,6 +274,7 @@ const translations = {
     'gallery.priceOnRequest': 'Цена по запросу',
     'gallery.noDescription': 'Описание недоступно.',
     'gallery.sold': 'Продано',
+    'gallery.dimensions': 'Размеры',
 
     // Exhibitions Page
     'exhibitions.page.title': 'Выставки',

@@ -11,6 +11,9 @@ interface Artwork {
   price: number | null;
   category: string;
   is_sold: boolean;
+  width_cm: number | null;
+  height_cm: number | null;
+  depth_cm: number | null;
   created_at: string;
   artwork_images: ArtworkImage[];
 }

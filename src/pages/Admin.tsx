@@ -22,6 +22,9 @@ interface ArtworkForm {
   price: string;
   category: "painting" | "sculpture" | "streetart";
   is_sold: boolean;
+  width_cm: string;
+  height_cm: string;
+  depth_cm: string;
 }
 
 interface ArtworkImage {
@@ -37,6 +40,9 @@ interface Artwork {
   price: number | null;
   category: string;
   is_sold: boolean;
+  width_cm: number | null;
+  height_cm: number | null;
+  depth_cm: number | null;
   created_at: string;
   artwork_images: ArtworkImage[];
 }
@@ -124,6 +130,9 @@ const Admin = () => {
       price: "",
       category: "painting",
       is_sold: false,
+      width_cm: "",
+      height_cm: "",
+      depth_cm: "",
     },
   });
 
@@ -160,6 +169,9 @@ const Admin = () => {
         price: editingArtwork.price?.toString() || "",
         category: editingArtwork.category as "painting" | "sculpture" | "streetart",
         is_sold: editingArtwork.is_sold || false,
+        width_cm: editingArtwork.width_cm?.toString() || "",
+        height_cm: editingArtwork.height_cm?.toString() || "",
+        depth_cm: editingArtwork.depth_cm?.toString() || "",
       });
     }
   }, [adminLanguage, editingArtwork, form]);
@@ -194,6 +206,9 @@ const Admin = () => {
         price: editingArtwork.price?.toString() || "",
         category: editingArtwork.category as "painting" | "sculpture" | "streetart",
         is_sold: editingArtwork.is_sold || false,
+        width_cm: editingArtwork.width_cm?.toString() || "",
+        height_cm: editingArtwork.height_cm?.toString() || "",
+        depth_cm: editingArtwork.depth_cm?.toString() || "",
       });
       setShowAddForm(true);
     }
@@ -604,7 +619,11 @@ const Admin = () => {
         const updateData = createArtworkUpdate({
           title: data.title,
           description: data.description,
-        }, adminLanguage, parseFloat(data.price), data.category, data.is_sold);
+        }, adminLanguage, parseFloat(data.price), data.category, data.is_sold, {
+          width_cm: data.width_cm ? parseFloat(data.width_cm) : null,
+          height_cm: data.height_cm ? parseFloat(data.height_cm) : null,
+          depth_cm: data.depth_cm ? parseFloat(data.depth_cm) : null,
+        });
 
         const { error: artworkError } = await supabase
           .from('artworks')
@@ -630,7 +649,11 @@ const Admin = () => {
         const insertData = createArtworkUpdate({
           title: data.title,
           description: data.description,
-        }, adminLanguage, parseFloat(data.price), data.category, data.is_sold);
+        }, adminLanguage, parseFloat(data.price), data.category, data.is_sold, {
+          width_cm: data.width_cm ? parseFloat(data.width_cm) : null,
+          height_cm: data.height_cm ? parseFloat(data.height_cm) : null,
+          depth_cm: data.depth_cm ? parseFloat(data.depth_cm) : null,
+        });
 
         const { data: artwork, error: artworkError } = await supabase
           .from('artworks')
@@ -1107,6 +1130,65 @@ const Admin = () => {
                       </FormItem>
                     )}
                   />
+
+                  <div className="grid grid-cols-3 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="width_cm"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Width (cm)</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              placeholder="0"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="height_cm"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Height (cm)</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              placeholder="0"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="depth_cm"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Depth (cm)</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              placeholder="0"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
                   <FormField
                     control={form.control}

@@ -24,7 +24,8 @@ export const createArtworkUpdate = (
   language: Language,
   price: number,
   category: string,
-  is_sold: boolean = false
+  is_sold: boolean = false,
+  dimensions?: { width_cm?: number | null; height_cm?: number | null; depth_cm?: number | null }
 ) => {
   const update: any = {
     price,
@@ -32,6 +33,13 @@ export const createArtworkUpdate = (
     language,
     is_sold,
   };
+
+  // Add dimensions if provided
+  if (dimensions) {
+    if (dimensions.width_cm !== undefined) update.width_cm = dimensions.width_cm;
+    if (dimensions.height_cm !== undefined) update.height_cm = dimensions.height_cm;
+    if (dimensions.depth_cm !== undefined) update.depth_cm = dimensions.depth_cm;
+  }
 
   if (language === 'en') {
     update.title = data.title;

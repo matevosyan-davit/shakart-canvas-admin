@@ -22,6 +22,9 @@ interface Artwork {
   price: number | null;
   category: string;
   is_sold: boolean;
+  width_cm: number | null;
+  height_cm: number | null;
+  depth_cm: number | null;
   created_at: string;
   artwork_images: ArtworkImage[];
 }
@@ -260,8 +263,22 @@ const Gallery = () => {
                   <p className="font-body text-foreground leading-relaxed">
                     {getTranslatedField(selectedArtwork, 'description', currentLanguage) || t('gallery.noDescription')}
                   </p>
+
+                  {(selectedArtwork.width_cm || selectedArtwork.height_cm || selectedArtwork.depth_cm) && (
+                    <div className="mt-4 pt-4 border-t border-border/10">
+                      <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-2">
+                        {t('gallery.dimensions')}
+                      </p>
+                      <p className="font-body text-sm text-foreground">
+                        {selectedArtwork.width_cm && `${selectedArtwork.width_cm} cm`}
+                        {selectedArtwork.width_cm && selectedArtwork.height_cm && ' × '}
+                        {selectedArtwork.height_cm && `${selectedArtwork.height_cm} cm`}
+                        {selectedArtwork.depth_cm && ` × ${selectedArtwork.depth_cm} cm`}
+                      </p>
+                    </div>
+                  )}
                 </div>
-                
+
                 <div className="pt-6 border-t border-border/20">
                   <div className="font-display text-2xl text-primary font-semibold">
                     ${selectedArtwork.price?.toFixed(2) || t('gallery.priceOnRequest')}
