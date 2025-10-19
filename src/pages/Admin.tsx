@@ -34,7 +34,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { reorderArtworks } from "@/utils/artworkReorder";
-import { isYouTubeUrl, getYouTubeEmbedUrl } from "@/utils/videoEmbedHelpers";
+import { isYouTubeUrl, getYouTubeEmbedUrl, isVideoUrl, extractEmbedUrl } from "@/utils/videoEmbedHelpers";
 import YouTubeEmbed from "@/components/YouTubeEmbed";
 
 interface ArtworkForm {
@@ -2053,32 +2053,50 @@ const Admin = () => {
                             <X className="w-4 h-4" />
                           </Button>
                         </div>
-                        <div className="grid md:grid-cols-3 gap-4">
-                          <div>
-                            <FormLabel>Title</FormLabel>
-                            <Input
-                              placeholder="Media title"
-                              value={link.title}
-                              onChange={(e) => updateExhibitionMediaLink(index, 'title', e.target.value)}
-                            />
+                        <div className="space-y-4">
+                          <div className="grid md:grid-cols-2 gap-4">
+                            <div>
+                              <FormLabel>Title</FormLabel>
+                              <Input
+                                placeholder="Media title"
+                                value={link.title}
+                                onChange={(e) => updateExhibitionMediaLink(index, 'title', e.target.value)}
+                              />
+                            </div>
+                            <div>
+                              <FormLabel>Media Name</FormLabel>
+                              <Input
+                                placeholder="e.g., Armenia TV"
+                                value={link.media_name}
+                                onChange={(e) => updateExhibitionMediaLink(index, 'media_name', e.target.value)}
+                              />
+                            </div>
                           </div>
                           <div>
-                            <FormLabel>Media Name</FormLabel>
+                            <FormLabel>YouTube Video or Article URL</FormLabel>
                             <Input
-                              placeholder="e.g., Armenia TV"
-                              value={link.media_name}
-                              onChange={(e) => updateExhibitionMediaLink(index, 'media_name', e.target.value)}
-                            />
-                          </div>
-                          <div>
-                            <FormLabel>Embed Link</FormLabel>
-                            <Input
-                              placeholder="YouTube URL (e.g., https://www.youtube.com/watch?v=...)"
+                              placeholder="https://www.youtube.com/watch?v=... or https://example.com/article"
                               value={link.embed_link}
                               onChange={(e) => updateExhibitionMediaLink(index, 'embed_link', e.target.value)}
                             />
-                            {link.embed_link && isVideoUrl(extractEmbedUrl(link.embed_link)) && (
-                              <p className="text-xs text-green-600 mt-1">✓ Valid video URL</p>
+                            {link.embed_link && (
+                              <div className="mt-2">
+                                {isYouTubeUrl(link.embed_link) ? (
+                                  <div className="space-y-2">
+                                    <p className="text-xs text-green-600 font-medium">✓ Valid YouTube video URL</p>
+                                    <div className="border border-border/50 rounded-lg overflow-hidden">
+                                      <YouTubeEmbed
+                                        url={link.embed_link}
+                                        title={link.title || "Video preview"}
+                                      />
+                                    </div>
+                                  </div>
+                                ) : link.embed_link.startsWith('http') ? (
+                                  <p className="text-xs text-blue-600 font-medium">✓ Article URL (will open in new tab)</p>
+                                ) : (
+                                  <p className="text-xs text-amber-600 font-medium">⚠ Please enter a valid URL starting with http:// or https://</p>
+                                )}
+                              </div>
                             )}
                           </div>
                         </div>
