@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Upload, X, CreditCard as Edit, Trash2, Plus, LogOut, GripVertical } from "lucide-react";
+import { Upload, X, CreditCard as Edit, Trash2, Plus, LogOut, GripVertical, LayoutGrid, LayoutList } from "lucide-react";
 import { AdminLanguageSwitcher } from "@/components/AdminLanguageSwitcher";
 import { Language } from "@/contexts/LanguageContext";
 import { getLanguageField, getLanguageValue, createArtworkUpdate, createExhibitionUpdate, createMediaUpdate } from "@/utils/adminLanguageHelpers";
@@ -29,6 +29,7 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
+  rectSortingStrategy,
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -226,6 +227,82 @@ const SortableArtworkItem = ({ artwork, adminLanguage, onEdit, onDelete }: Sorta
   );
 };
 
+const SortableArtworkGridItem = ({ artwork, adminLanguage, onEdit, onDelete }: SortableArtworkItemProps) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: artwork.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      <Card className="group hover:border-accent/30 transition-all duration-300 overflow-hidden h-full">
+        <div className="relative">
+          <div
+            {...attributes}
+            {...listeners}
+            className="absolute top-2 left-2 z-10 cursor-grab active:cursor-grabbing bg-background/80 backdrop-blur-sm p-2 rounded hover:bg-accent/20 transition-colors"
+          >
+            <GripVertical className="w-4 h-4 text-muted-foreground" />
+          </div>
+          <div className="aspect-square">
+            <img
+              src={artwork.artwork_images[0]?.image_url || '/placeholder.svg'}
+              alt={getLanguageValue(artwork, 'title', adminLanguage)}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+        <div className="p-4">
+          <h3 className="font-display text-lg text-primary mb-2 tracking-tight truncate">
+            {getLanguageValue(artwork, 'title', adminLanguage)}
+          </h3>
+          <div className="flex flex-wrap gap-2 items-center mb-3">
+            <span className="inline-flex items-center px-2 py-1 bg-accent/10 text-accent-foreground text-xs font-body uppercase tracking-wider rounded-full">
+              {artwork.category}
+            </span>
+            {artwork.is_sold && (
+              <span className="inline-flex items-center px-2 py-1 bg-red-600 text-white text-xs font-body uppercase tracking-wider rounded-full">
+                Sold
+              </span>
+            )}
+          </div>
+          <p className="font-body text-sm font-semibold text-primary mb-3">
+            ${artwork.price?.toFixed(2) || 'Price on request'}
+          </p>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onEdit(artwork)}
+              className="flex-1 hover:border-accent hover:text-accent"
+            >
+              <Edit className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => onDelete(artwork.id)}
+              className="flex-1"
+            >
+              <Trash2 className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+};
+
 const Admin = () => {
   const navigate = useNavigate();
   const { admin, logout } = useAdminAuth();
@@ -246,6 +323,7 @@ const Admin = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [previewImages, setPreviewImages] = useState<Record<string, string>>({});
   const [adminLanguage, setAdminLanguage] = useState<Language>('en');
+  const [artworkViewMode, setArtworkViewMode] = useState<'list' | 'grid'>('list');
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -1134,19 +1212,39 @@ const Admin = () => {
                   <CardTitle className="font-display text-3xl text-primary tracking-tight">Manage Artworks</CardTitle>
                   <p className="font-body text-sm text-muted-foreground mt-2">View and edit your artwork collection</p>
                 </div>
-                <Button
-                  onClick={() => {
-                    setEditingArtwork(null);
-                    form.reset();
-                    setSelectedFiles([]);
-                    setPreviews([]);
-                    setShowAddForm(true);
-                  }}
-                  className="font-body text-xs uppercase tracking-wider"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  New Artwork
-                </Button>
+                <div className="flex gap-2">
+                  <div className="flex border border-border rounded-md overflow-hidden">
+                    <Button
+                      variant={artworkViewMode === 'list' ? 'default' : 'ghost'}
+                      size="sm"
+                      onClick={() => setArtworkViewMode('list')}
+                      className="rounded-none"
+                    >
+                      <LayoutList className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant={artworkViewMode === 'grid' ? 'default' : 'ghost'}
+                      size="sm"
+                      onClick={() => setArtworkViewMode('grid')}
+                      className="rounded-none"
+                    >
+                      <LayoutGrid className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  <Button
+                    onClick={() => {
+                      setEditingArtwork(null);
+                      form.reset();
+                      setSelectedFiles([]);
+                      setPreviews([]);
+                      setShowAddForm(true);
+                    }}
+                    className="font-body text-xs uppercase tracking-wider"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    New Artwork
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             <CardContent className="pt-6">
@@ -1173,19 +1271,33 @@ const Admin = () => {
                   >
                     <SortableContext
                       items={artworks.map(a => a.id)}
-                      strategy={verticalListSortingStrategy}
+                      strategy={artworkViewMode === 'list' ? verticalListSortingStrategy : rectSortingStrategy}
                     >
-                      <div className="grid gap-6">
-                        {artworks.map((artwork) => (
-                          <SortableArtworkItem
-                            key={artwork.id}
-                            artwork={artwork}
-                            adminLanguage={adminLanguage}
-                            onEdit={handleEdit}
-                            onDelete={handleDelete}
-                          />
-                        ))}
-                      </div>
+                      {artworkViewMode === 'list' ? (
+                        <div className="grid gap-6">
+                          {artworks.map((artwork) => (
+                            <SortableArtworkItem
+                              key={artwork.id}
+                              artwork={artwork}
+                              adminLanguage={adminLanguage}
+                              onEdit={handleEdit}
+                              onDelete={handleDelete}
+                            />
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                          {artworks.map((artwork) => (
+                            <SortableArtworkGridItem
+                              key={artwork.id}
+                              artwork={artwork}
+                              adminLanguage={adminLanguage}
+                              onEdit={handleEdit}
+                              onDelete={handleDelete}
+                            />
+                          ))}
+                        </div>
+                      )}
                     </SortableContext>
                   </DndContext>
                 </>
