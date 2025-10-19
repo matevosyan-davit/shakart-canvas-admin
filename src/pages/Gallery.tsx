@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslatedField } from "@/utils/multiLanguageHelpers";
 
@@ -71,10 +69,6 @@ const Gallery = () => {
     }
   };
 
-  const getArtworksByCategory = (category: string) => {
-    return artworks.filter(artwork => artwork.category === category);
-  };
-
   const handleArtworkClick = (artwork: Artwork) => {
     setSelectedArtwork(artwork);
     setCurrentImageIndex(0);
@@ -96,10 +90,8 @@ const Gallery = () => {
     }
   };
 
-  const renderArtworkGrid = (category: string) => {
-    const categoryArtworks = getArtworksByCategory(category);
-    
-    if (categoryArtworks.length === 0) {
+  const renderArtworkGrid = () => {
+    if (artworks.length === 0) {
       return (
         <div className="text-center py-12">
           <p className="text-muted-foreground">{t('gallery.noArtworks')}</p>
@@ -109,7 +101,7 @@ const Gallery = () => {
 
     return (
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {categoryArtworks.map((artwork, index) => (
+        {artworks.map((artwork, index) => (
           <Card
             key={artwork.id}
             className="group overflow-hidden border-0 shadow-card hover-lift cursor-pointer bg-card"
@@ -167,7 +159,7 @@ const Gallery = () => {
         </div>
       </section>
 
-      {/* Gallery Tabs */}
+      {/* Gallery Grid */}
       <section className="py-8 px-6">
         <div className="max-w-6xl mx-auto">
           {loading ? (
@@ -175,25 +167,7 @@ const Gallery = () => {
               <p className="text-muted-foreground">{t('gallery.loadingArtworks')}</p>
             </div>
           ) : (
-            <Tabs defaultValue="painting" className="w-full">
-              <TabsList className="sticky top-0 z-40 grid w-full grid-cols-3 mb-12 bg-card shadow-card">
-                <TabsTrigger value="painting" className="font-body text-base">{t('gallery.paintings')}</TabsTrigger>
-                <TabsTrigger value="sculpture" className="font-body text-base">{t('gallery.sculpture')}</TabsTrigger>
-                <TabsTrigger value="streetart" className="font-body text-base">{t('gallery.streetart')}</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="painting">
-                {renderArtworkGrid('painting')}
-              </TabsContent>
-              
-              <TabsContent value="sculpture">
-                {renderArtworkGrid('sculpture')}
-              </TabsContent>
-              
-              <TabsContent value="streetart">
-                {renderArtworkGrid('streetart')}
-              </TabsContent>
-            </Tabs>
+            renderArtworkGrid()
           )}
         </div>
       </section>
