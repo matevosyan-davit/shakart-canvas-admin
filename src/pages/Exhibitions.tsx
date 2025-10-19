@@ -167,12 +167,9 @@ const Exhibitions = () => {
                                     src={convertToEmbedUrl(extractEmbedUrl(media.embed_link))}
                                     title={media.title}
                                     className="w-full h-full"
-                                    frameBorder="0"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                     allowFullScreen
-                                    loading="lazy"
-                                    sandbox="allow-same-origin allow-scripts allow-presentation"
-                                    style={{ border: 0, display: 'block' }}
+                                    style={{ border: 'none', width: '100%', height: '100%' }}
                                   />
                                 </div>
                               ) : (
