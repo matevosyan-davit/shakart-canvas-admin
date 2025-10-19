@@ -1,16 +1,25 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ExternalLink, Play } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslatedField } from "@/utils/multiLanguageHelpers";
+import { extractEmbedUrl, convertToEmbedUrl, isVideoUrl } from "@/utils/videoEmbedHelpers";
 
 interface ExhibitionImage {
   id: string;
   image_url: string;
+  display_order: number;
+}
+
+interface ExhibitionMedia {
+  id: string;
+  title: string;
+  media_name: string;
+  embed_link: string;
   display_order: number;
 }
 
@@ -23,6 +32,7 @@ interface Exhibition {
   description: string | null;
   created_at: string;
   exhibition_images: ExhibitionImage[];
+  exhibition_media: ExhibitionMedia[];
 }
 
 const Exhibitions = () => {
@@ -45,6 +55,13 @@ const Exhibitions = () => {
             image_url,
             display_order
           ),
+          exhibition_media (
+            id,
+            title,
+            media_name,
+            embed_link,
+            display_order
+          )
         `)
         .order('date', { ascending: false });
 
@@ -52,7 +69,8 @@ const Exhibitions = () => {
       
       const sortedExhibitions = data?.map(exhibition => ({
         ...exhibition,
-        exhibition_images: exhibition.exhibition_images.sort((a: ExhibitionImage, b: ExhibitionImage) => a.display_order - b.display_order)
+        exhibition_images: exhibition.exhibition_images.sort((a: ExhibitionImage, b: ExhibitionImage) => a.display_order - b.display_order),
+        exhibition_media: exhibition.exhibition_media.sort((a: ExhibitionMedia, b: ExhibitionMedia) => a.display_order - b.display_order)
       })) || [];
       
       setExhibitions(sortedExhibitions);
@@ -126,6 +144,56 @@ const Exhibitions = () => {
                       <p className="font-body text-foreground leading-relaxed mb-6">
                         {getTranslatedField(exhibition, 'description', currentLanguage)}
                       </p>
+                    )}
+                    
+                    {/* Media Coverage */}
+                    {exhibition.exhibition_media.length > 0 && (
+                      <div className="mb-6">
+                        <h3 className="font-display text-lg font-medium text-primary mb-3">{t('exhibitions.mediaCoverage')}</h3>
+                        <div className="space-y-3">
+                          {exhibition.exhibition_media.map((media) => (
+                            <div key={media.id} className="border border-border rounded-lg p-4">
+                              <div className="flex justify-between items-start mb-3">
+                                <div>
+                                  <h4 className="font-medium text-foreground">{media.title}</h4>
+                                  <p className="text-sm text-muted-foreground">{media.media_name}</p>
+                                </div>
+                                <Play className="w-5 h-5 text-accent flex-shrink-0" />
+                              </div>
+                              
+                              {isVideoUrl(extractEmbedUrl(media.embed_link)) ? (
+                                <div className="aspect-video bg-black rounded-lg overflow-hidden">
+                                  <iframe
+                                    src={convertToEmbedUrl(extractEmbedUrl(media.embed_link))}
+                                    title={media.title}
+                                    className="w-full h-full"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    referrerPolicy="strict-origin-when-cross-origin"
+                                    allowFullScreen
+                                    style={{ border: 'none', width: '100%', height: '100%' }}
+                                  />
+                                </div>
+                              ) : (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="flex items-center gap-2"
+                                  asChild
+                                >
+                                  <a 
+                                    href={extractEmbedUrl(media.embed_link)} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                  >
+                                    {t('exhibitions.readArticle')}
+                                    <ExternalLink className="w-3 h-3" />
+                                  </a>
+                                </Button>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     )}
                   </div>
                   

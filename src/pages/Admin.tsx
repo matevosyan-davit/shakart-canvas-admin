@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { Upload, X, CreditCard as Edit, Trash2, Plus, LogOut, GripVertical, LayoutGrid, LayoutList } from "lucide-react";
 import { AdminLanguageSwitcher } from "@/components/AdminLanguageSwitcher";
 import { Language } from "@/contexts/LanguageContext";
-import { getLanguageField, getLanguageValue, createArtworkUpdate, createExhibitionUpdate } from "@/utils/adminLanguageHelpers";
+import { getLanguageField, getLanguageValue, createArtworkUpdate, createExhibitionUpdate, createMediaUpdate } from "@/utils/adminLanguageHelpers";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import {
   DndContext,
@@ -34,6 +34,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { reorderArtworks } from "@/utils/artworkReorder";
+import { extractEmbedUrl, convertToEmbedUrl, isVideoUrl } from "@/utils/videoEmbedHelpers";
 
 interface ArtworkForm {
   title: string;
@@ -81,6 +82,14 @@ interface ExhibitionImage {
   display_order: number;
 }
 
+interface ExhibitionMedia {
+  id: string;
+  title: string;
+  media_name: string;
+  embed_link: string;
+  display_order: number;
+}
+
 interface Exhibition {
   id: string;
   title: string;
@@ -90,6 +99,22 @@ interface Exhibition {
   description: string | null;
   created_at: string;
   exhibition_images: ExhibitionImage[];
+  exhibition_media: ExhibitionMedia[];
+}
+
+interface MediaForm {
+  title: string;
+  media_name: string;
+  embed_link: string;
+}
+
+interface MediaItem {
+  id: string;
+  title: string;
+  media_name: string;
+  embed_link: string;
+  type: string;
+  created_at: string;
 }
 
 interface SortableArtworkItemProps {
@@ -295,7 +320,7 @@ const Admin = () => {
   const [exhibitionPreviews, setExhibitionPreviews] = useState<string[]>([]);
   const [exhibitionMediaLinks, setExhibitionMediaLinks] = useState<{title: string, media_name: string, embed_link: string}[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'artworks' | 'exhibitions'>('artworks');
+  const [activeTab, setActiveTab] = useState<'artworks' | 'media' | 'exhibitions'>('artworks');
   const [showAddForm, setShowAddForm] = useState(false);
   const [previewImages, setPreviewImages] = useState<Record<string, string>>({});
   const [adminLanguage, setAdminLanguage] = useState<Language>('en');

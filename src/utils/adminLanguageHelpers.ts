@@ -91,3 +91,28 @@ export const createExhibitionUpdate = (
   return update;
 };
 
+// Create media update object for specific language
+export const createMediaUpdate = (
+  data: { title: string; media_name: string },
+  language: Language,
+  embed_link: string
+) => {
+  const update: any = {
+    embed_link,
+    language,
+  };
+
+  if (language === 'en') {
+    update.title = data.title;
+    update.media_name = data.media_name;
+  } else {
+    // For non-English languages, store the translation in language-specific field
+    // and also store it in the base field as fallback (required by database)
+    update.title = data.title;
+    update.media_name = data.media_name;
+    update[`title_${language}`] = data.title;
+    update[`media_name_${language}`] = data.media_name;
+  }
+
+  return update;
+};
