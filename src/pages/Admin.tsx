@@ -10,11 +10,29 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Upload, X, CreditCard as Edit, Trash2, Plus, LogOut } from "lucide-react";
+import { Upload, X, CreditCard as Edit, Trash2, Plus, LogOut, GripVertical } from "lucide-react";
 import { AdminLanguageSwitcher } from "@/components/AdminLanguageSwitcher";
 import { Language } from "@/contexts/LanguageContext";
 import { getLanguageField, getLanguageValue, createArtworkUpdate, createExhibitionUpdate, createMediaUpdate } from "@/utils/adminLanguageHelpers";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { reorderArtworks } from "@/utils/artworkReorder";
 
 interface ArtworkForm {
   title: string;
@@ -43,6 +61,7 @@ interface Artwork {
   width_cm: number | null;
   height_cm: number | null;
   depth_cm: number | null;
+  display_order: number;
   created_at: string;
   artwork_images: ArtworkImage[];
 }
@@ -96,6 +115,117 @@ interface MediaItem {
   created_at: string;
 }
 
+interface SortableArtworkItemProps {
+  artwork: Artwork;
+  adminLanguage: Language;
+  onEdit: (artwork: Artwork) => void;
+  onDelete: (id: string) => void;
+}
+
+const SortableArtworkItem = ({ artwork, adminLanguage, onEdit, onDelete }: SortableArtworkItemProps) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: artwork.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      <Card className="group hover:border-accent/30 transition-all duration-300 overflow-hidden">
+        <div className="flex flex-col md:flex-row gap-6 p-6">
+          <div className="flex items-center gap-3">
+            <div
+              {...attributes}
+              {...listeners}
+              className="cursor-grab active:cursor-grabbing flex-shrink-0 p-2 hover:bg-accent/10 rounded"
+            >
+              <GripVertical className="w-5 h-5 text-muted-foreground" />
+            </div>
+            <div className="w-full md:w-48 h-48 flex-shrink-0">
+              <img
+                src={artwork.artwork_images[0]?.image_url || '/placeholder.svg'}
+                alt={getLanguageValue(artwork, 'title', adminLanguage)}
+                className="w-full h-full object-cover rounded-lg border border-border/50 group-hover:scale-[1.02] transition-transform duration-300"
+              />
+            </div>
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex justify-between items-start mb-4">
+              <div className="flex-1 min-w-0 mr-4">
+                <h3 className="font-display text-2xl text-primary mb-2 tracking-tight truncate">
+                  {getLanguageValue(artwork, 'title', adminLanguage)}
+                </h3>
+                <div className="flex flex-wrap gap-3 items-center">
+                  <span className="inline-flex items-center px-3 py-1 bg-accent/10 text-accent-foreground text-xs font-body uppercase tracking-wider rounded-full">
+                    {artwork.category}
+                  </span>
+                  <span className="font-body text-sm font-semibold text-primary">
+                    ${artwork.price?.toFixed(2) || 'Price on request'}
+                  </span>
+                  {artwork.is_sold && (
+                    <span className="inline-flex items-center px-3 py-1 bg-red-600 text-white text-xs font-body uppercase tracking-wider rounded-full">
+                      Sold
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="flex gap-2 flex-shrink-0">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onEdit(artwork)}
+                  className="hover:border-accent hover:text-accent"
+                >
+                  <Edit className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => onDelete(artwork.id)}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+
+            <p className="font-serif text-sm text-foreground/70 line-clamp-2 mb-4 leading-relaxed">
+              {getLanguageValue(artwork, 'description', adminLanguage) || 'No description'}
+            </p>
+
+            {artwork.artwork_images.length > 1 && (
+              <div className="mt-4 pt-4 border-t border-border/30">
+                <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-3">
+                  {artwork.artwork_images.length} Images
+                </p>
+                <div className="flex gap-2 flex-wrap">
+                  {artwork.artwork_images.map((image, index) => (
+                    <div key={image.id} className="relative group/img">
+                      <img
+                        src={image.image_url}
+                        alt={`${getLanguageValue(artwork, 'title', adminLanguage)} ${index + 1}`}
+                        className="w-20 h-20 object-cover rounded border border-border/50 group-hover/img:border-accent/50 transition-colors"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+};
+
 const Admin = () => {
   const navigate = useNavigate();
   const { admin, logout } = useAdminAuth();
@@ -117,10 +247,43 @@ const Admin = () => {
   const [previewImages, setPreviewImages] = useState<Record<string, string>>({});
   const [adminLanguage, setAdminLanguage] = useState<Language>('en');
 
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
   const handleLogout = () => {
     logout();
     navigate('/admin-shant');
     toast.success('Logged out successfully');
+  };
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) {
+      return;
+    }
+
+    const oldIndex = artworks.findIndex((artwork) => artwork.id === active.id);
+    const newIndex = artworks.findIndex((artwork) => artwork.id === over.id);
+
+    if (oldIndex !== -1 && newIndex !== -1) {
+      const newArtworks = arrayMove(artworks, oldIndex, newIndex);
+      setArtworks(newArtworks);
+
+      const success = await reorderArtworks(artworks, oldIndex, newIndex);
+
+      if (success) {
+        toast.success('Artwork order updated successfully');
+        await fetchArtworks();
+      } else {
+        toast.error('Failed to update artwork order');
+        setArtworks(artworks);
+      }
+    }
   };
 
   const form = useForm<ArtworkForm>({
@@ -292,10 +455,10 @@ const Admin = () => {
             display_order
           )
         `)
-        .order('created_at', { ascending: false });
+        .order('display_order', { ascending: true });
 
       if (error) throw error;
-      
+
       const sortedArtworks = data?.map(artwork => ({
         ...artwork,
         artwork_images: artwork.artwork_images.sort((a: ArtworkImage, b: ArtworkImage) => a.display_order - b.display_order)
@@ -646,14 +809,27 @@ const Admin = () => {
         setShowAddForm(false);
       } else {
         // Create new artwork
-        const insertData = createArtworkUpdate({
-          title: data.title,
-          description: data.description,
-        }, adminLanguage, parseFloat(data.price), data.category, data.is_sold, {
-          width_cm: data.width_cm ? parseFloat(data.width_cm) : null,
-          height_cm: data.height_cm ? parseFloat(data.height_cm) : null,
-          depth_cm: data.depth_cm ? parseFloat(data.depth_cm) : null,
-        });
+        // Get the current max display_order to place new artwork at the end
+        const { data: maxOrderData } = await supabase
+          .from('artworks')
+          .select('display_order')
+          .order('display_order', { ascending: false })
+          .limit(1)
+          .single();
+
+        const nextOrder = (maxOrderData?.display_order || 0) + 1;
+
+        const insertData = {
+          ...createArtworkUpdate({
+            title: data.title,
+            description: data.description,
+          }, adminLanguage, parseFloat(data.price), data.category, data.is_sold, {
+            width_cm: data.width_cm ? parseFloat(data.width_cm) : null,
+            height_cm: data.height_cm ? parseFloat(data.height_cm) : null,
+            depth_cm: data.depth_cm ? parseFloat(data.depth_cm) : null,
+          }),
+          display_order: nextOrder
+        };
 
         const { data: artwork, error: artworkError } = await supabase
           .from('artworks')
@@ -983,78 +1159,36 @@ const Admin = () => {
                   <p className="text-muted-foreground">No artworks found. Click "New Artwork" to add one.</p>
                 </div>
               ) : (
-                <div className="grid gap-6">
-                  {artworks.map((artwork) => (
-                    <Card key={artwork.id} className="group hover:border-accent/30 transition-all duration-300 overflow-hidden">
-                      <div className="flex flex-col md:flex-row gap-6 p-6">
-                        <div className="w-full md:w-48 h-48 flex-shrink-0">
-                          <img
-                            src={artwork.artwork_images[0]?.image_url || '/placeholder.svg'}
-                            alt={getLanguageValue(artwork, 'title', adminLanguage)}
-                            className="w-full h-full object-cover rounded-lg border border-border/50 group-hover:scale-[1.02] transition-transform duration-300"
+                <>
+                  <div className="mb-4 p-4 bg-accent/5 border border-accent/20 rounded-lg">
+                    <p className="text-sm text-muted-foreground flex items-center gap-2">
+                      <GripVertical className="w-4 h-4" />
+                      Drag and drop artworks to reorder them. The order will be saved automatically.
+                    </p>
+                  </div>
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
+                  >
+                    <SortableContext
+                      items={artworks.map(a => a.id)}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      <div className="grid gap-6">
+                        {artworks.map((artwork) => (
+                          <SortableArtworkItem
+                            key={artwork.id}
+                            artwork={artwork}
+                            adminLanguage={adminLanguage}
+                            onEdit={handleEdit}
+                            onDelete={handleDelete}
                           />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex justify-between items-start mb-4">
-                            <div className="flex-1 min-w-0 mr-4">
-                              <h3 className="font-display text-2xl text-primary mb-2 tracking-tight truncate">
-                                {getLanguageValue(artwork, 'title', adminLanguage)}
-                              </h3>
-                              <div className="flex flex-wrap gap-3 items-center">
-                                <span className="inline-flex items-center px-3 py-1 bg-accent/10 text-accent-foreground text-xs font-body uppercase tracking-wider rounded-full">
-                                  {artwork.category}
-                                </span>
-                                <span className="font-body text-sm font-semibold text-primary">
-                                  ${artwork.price?.toFixed(2) || 'Price on request'}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="flex gap-2 flex-shrink-0">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleEdit(artwork)}
-                                className="hover:border-accent hover:text-accent"
-                              >
-                                <Edit className="w-4 h-4" />
-                              </Button>
-                              <Button
-                                variant="destructive"
-                                size="sm"
-                                onClick={() => handleDelete(artwork.id)}
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          </div>
-
-                          <p className="font-serif text-sm text-foreground/70 line-clamp-2 mb-4 leading-relaxed">
-                            {getLanguageValue(artwork, 'description', adminLanguage) || 'No description'}
-                          </p>
-
-                          {artwork.artwork_images.length > 1 && (
-                            <div className="mt-4 pt-4 border-t border-border/30">
-                              <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-3">
-                                {artwork.artwork_images.length} Images
-                              </p>
-                              <div className="flex gap-2 flex-wrap">
-                                {artwork.artwork_images.map((image, index) => (
-                                  <div key={image.id} className="relative group/img">
-                                    <img
-                                      src={image.image_url}
-                                      alt={`${getLanguageValue(artwork, 'title', adminLanguage)} ${index + 1}`}
-                                      className="w-20 h-20 object-cover rounded border border-border/50 group-hover/img:border-accent/50 transition-colors"
-                                    />
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
+                        ))}
                       </div>
-                    </Card>
-                  ))}
-                </div>
+                    </SortableContext>
+                  </DndContext>
+                </>
               )}
             </CardContent>
           </Card>

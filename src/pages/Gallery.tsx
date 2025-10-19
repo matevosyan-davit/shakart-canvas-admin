@@ -25,6 +25,7 @@ interface Artwork {
   width_cm: number | null;
   height_cm: number | null;
   depth_cm: number | null;
+  display_order: number;
   created_at: string;
   artwork_images: ArtworkImage[];
 }
@@ -52,7 +53,7 @@ const Gallery = () => {
             display_order
           )
         `)
-        .order('created_at', { ascending: false });
+        .order('display_order', { ascending: true });
 
       if (error) throw error;
       

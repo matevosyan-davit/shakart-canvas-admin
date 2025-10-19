@@ -14,6 +14,7 @@ interface Artwork {
   width_cm: number | null;
   height_cm: number | null;
   depth_cm: number | null;
+  display_order: number;
   created_at: string;
   artwork_images: ArtworkImage[];
 }
