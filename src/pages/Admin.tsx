@@ -34,6 +34,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { reorderArtworks } from "@/utils/artworkReorder";
+import { extractEmbedUrl, convertToEmbedUrl, isVideoUrl } from "@/utils/videoEmbedHelpers";
 
 interface ArtworkForm {
   title: string;
@@ -585,61 +586,6 @@ const Admin = () => {
     }
   };
 
-  const extractEmbedUrl = (embedLink: string): string => {
-    // If it's already a URL, return it
-    if (embedLink.startsWith('http')) {
-      return embedLink;
-    }
-    
-    // If it's iframe HTML, extract the src URL
-    const srcMatch = embedLink.match(/src="([^"]+)"/);
-    if (srcMatch && srcMatch[1]) {
-      return srcMatch[1];
-    }
-    
-    // Fallback to the original link
-    return embedLink;
-  };
-
-  const convertToEmbedUrl = (url: string): string => {
-    try {
-      // Clean the URL
-      const cleanUrl = url.trim();
-
-      // Handle YouTube URLs - improved regex to capture video ID more accurately
-      const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-      const match = cleanUrl.match(youtubeRegex);
-
-      if (match && match[1]) {
-        // Return embed URL with additional parameters for better compatibility
-        return `https://www.youtube-nocookie.com/embed/${match[1]}?rel=0&modestbranding=1`;
-      }
-
-      // If it's already an embed URL, return as is
-      if (cleanUrl.includes('/embed/')) {
-        return cleanUrl;
-      }
-
-      // For other URLs, return as is (we'll handle them differently in the display)
-      return cleanUrl;
-    } catch (error) {
-      console.error('Error converting URL:', error);
-      return url;
-    }
-  };
-
-  const isVideoUrl = (url: string): boolean => {
-    try {
-      const lowerUrl = url.toLowerCase().trim();
-      return lowerUrl.includes('youtube.com') ||
-             lowerUrl.includes('youtu.be') ||
-             lowerUrl.includes('vimeo.com') ||
-             lowerUrl.includes('/embed/') ||
-             lowerUrl.includes('youtube-nocookie.com');
-    } catch (error) {
-      return false;
-    }
-  };
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
@@ -1650,15 +1596,45 @@ const Admin = () => {
                       <FormItem>
                         <FormLabel>Embed Link</FormLabel>
                         <FormControl>
-                          <Input 
-                            placeholder="YouTube URL, embed URL, or article link" 
-                            {...field} 
+                          <Input
+                            placeholder="Paste YouTube URL (e.g., https://www.youtube.com/watch?v=...)"
+                            {...field}
                           />
                         </FormControl>
+                        <div className="text-xs text-muted-foreground mt-2 space-y-1">
+                          <p>Supported formats:</p>
+                          <ul className="list-disc list-inside pl-2">
+                            <li>YouTube: https://www.youtube.com/watch?v=VIDEO_ID</li>
+                            <li>Short YouTube: https://youtu.be/VIDEO_ID</li>
+                            <li>Article links: Any valid URL</li>
+                          </ul>
+                        </div>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
+
+                  {/* Live Preview */}
+                  {mediaForm.watch("embed_link") && isVideoUrl(extractEmbedUrl(mediaForm.watch("embed_link"))) && (
+                    <div className="space-y-2">
+                      <FormLabel>Video Preview</FormLabel>
+                      <div className="aspect-video bg-black rounded-lg overflow-hidden border border-border/50">
+                        <iframe
+                          src={convertToEmbedUrl(extractEmbedUrl(mediaForm.watch("embed_link")))}
+                          title="Video Preview"
+                          className="w-full h-full"
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                          loading="lazy"
+                          style={{ border: 0, display: 'block' }}
+                        />
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        ✓ Video detected! The embed will look like this on your site.
+                      </p>
+                    </div>
+                  )}
 
                   <div className="flex gap-4">
                     {editingMedia && (
@@ -1752,6 +1728,7 @@ const Admin = () => {
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             allowFullScreen
                             loading="lazy"
+                            sandbox="allow-same-origin allow-scripts allow-presentation"
                             style={{ border: 0, display: 'block' }}
                           />
                         </div>
@@ -2033,10 +2010,13 @@ const Admin = () => {
                           <div>
                             <FormLabel>Embed Link</FormLabel>
                             <Input
-                              placeholder="YouTube URL or article link"
+                              placeholder="YouTube URL (e.g., https://www.youtube.com/watch?v=...)"
                               value={link.embed_link}
                               onChange={(e) => updateExhibitionMediaLink(index, 'embed_link', e.target.value)}
                             />
+                            {link.embed_link && isVideoUrl(extractEmbedUrl(link.embed_link)) && (
+                              <p className="text-xs text-green-600 mt-1">✓ Valid video URL</p>
+                            )}
                           </div>
                         </div>
                       </Card>

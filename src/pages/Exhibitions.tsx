@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslatedField } from "@/utils/multiLanguageHelpers";
+import { extractEmbedUrl, convertToEmbedUrl, isVideoUrl } from "@/utils/videoEmbedHelpers";
 
 interface ExhibitionImage {
   id: string;
@@ -80,37 +81,6 @@ const Exhibitions = () => {
     }
   };
 
-  const extractEmbedUrl = (embedLink: string): string => {
-    if (embedLink.startsWith('http')) {
-      return embedLink;
-    }
-    
-    const srcMatch = embedLink.match(/src="([^"]+)"/);
-    if (srcMatch && srcMatch[1]) {
-      return srcMatch[1];
-    }
-    
-    return embedLink;
-  };
-
-  const convertToEmbedUrl = (url: string): string => {
-    const youtubeRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/;
-    const match = url.match(youtubeRegex);
-    if (match) {
-      return `https://www.youtube.com/embed/${match[1]}`;
-    }
-    
-    if (url.includes('/embed/')) {
-      return url;
-    }
-    
-    return url;
-  };
-
-  const isVideoUrl = (url: string): boolean => {
-    return url.includes('youtube.com') || url.includes('youtu.be') || 
-           url.includes('vimeo.com') || url.includes('/embed/');
-  };
   return (
     <main className="min-h-screen bg-surface pt-24">
       {/* Navigation */}
@@ -192,14 +162,17 @@ const Exhibitions = () => {
                               </div>
                               
                               {isVideoUrl(extractEmbedUrl(media.embed_link)) ? (
-                                <div className="aspect-video bg-muted rounded-lg overflow-hidden">
+                                <div className="aspect-video bg-black rounded-lg overflow-hidden">
                                   <iframe
                                     src={convertToEmbedUrl(extractEmbedUrl(media.embed_link))}
                                     title={media.title}
                                     className="w-full h-full"
                                     frameBorder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                     allowFullScreen
+                                    loading="lazy"
+                                    sandbox="allow-same-origin allow-scripts allow-presentation"
+                                    style={{ border: 0, display: 'block' }}
                                   />
                                 </div>
                               ) : (

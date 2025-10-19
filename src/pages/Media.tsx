@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Play } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslatedField } from "@/utils/multiLanguageHelpers";
+import { extractEmbedUrl, convertToEmbedUrl, isVideoUrl } from "@/utils/videoEmbedHelpers";
 
 interface MediaItem {
   id: string;
@@ -45,61 +46,6 @@ const Media = () => {
     });
   }, [media, previewImages]);
 
-  const extractEmbedUrl = (embedLink: string): string => {
-    // If it's already a URL, return it
-    if (embedLink.startsWith('http')) {
-      return embedLink;
-    }
-    
-    // If it's iframe HTML, extract the src URL
-    const srcMatch = embedLink.match(/src="([^"]+)"/);
-    if (srcMatch && srcMatch[1]) {
-      return srcMatch[1];
-    }
-    
-    // Fallback to the original link
-    return embedLink;
-  };
-
-  const convertToEmbedUrl = (url: string): string => {
-    try {
-      // Clean the URL
-      const cleanUrl = url.trim();
-
-      // Handle YouTube URLs - improved regex to capture video ID more accurately
-      const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-      const match = cleanUrl.match(youtubeRegex);
-
-      if (match && match[1]) {
-        // Return embed URL with additional parameters for better compatibility
-        return `https://www.youtube-nocookie.com/embed/${match[1]}?rel=0&modestbranding=1`;
-      }
-
-      // If it's already an embed URL, return as is
-      if (cleanUrl.includes('/embed/')) {
-        return cleanUrl;
-      }
-
-      // For other URLs, return as is (we'll handle them differently in the display)
-      return cleanUrl;
-    } catch (error) {
-      console.error('Error converting URL:', error);
-      return url;
-    }
-  };
-
-  const isVideoUrl = (url: string): boolean => {
-    try {
-      const lowerUrl = url.toLowerCase().trim();
-      return lowerUrl.includes('youtube.com') ||
-             lowerUrl.includes('youtu.be') ||
-             lowerUrl.includes('vimeo.com') ||
-             lowerUrl.includes('/embed/') ||
-             lowerUrl.includes('youtube-nocookie.com');
-    } catch (error) {
-      return false;
-    }
-  };
 
   const fetchMedia = async () => {
     try {
@@ -162,6 +108,7 @@ const Media = () => {
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                           allowFullScreen
                           loading="lazy"
+                          sandbox="allow-same-origin allow-scripts allow-presentation"
                           style={{ border: 0, display: 'block' }}
                         />
                       </div>
