@@ -135,14 +135,16 @@ const Media = () => {
                   <div className="grid lg:grid-cols-2 gap-8 p-8">
                     {/* Media Content */}
                     {isVideoUrl(extractEmbedUrl(mediaItem.embed_link)) ? (
-                      <div className="aspect-video bg-muted rounded-lg overflow-hidden">
+                      <div className="aspect-video bg-black rounded-lg overflow-hidden shadow-lg border border-border/50">
                         <iframe
                           src={convertToEmbedUrl(extractEmbedUrl(mediaItem.embed_link))}
-                          title={mediaItem.title}
+                          title={getTranslatedField(mediaItem, 'title', currentLanguage)}
                           className="w-full h-full"
                           frameBorder="0"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                           allowFullScreen
+                          loading="lazy"
+                          style={{ border: 0, display: 'block' }}
                         />
                       </div>
                     ) : (

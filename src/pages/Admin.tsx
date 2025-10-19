@@ -1725,14 +1725,16 @@ const Admin = () => {
                       
                       {/* Media Preview */}
                       {isVideoUrl(extractEmbedUrl(mediaItem.embed_link)) ? (
-                        <div className="aspect-video bg-muted rounded-lg overflow-hidden mb-4">
+                        <div className="aspect-video bg-black rounded-lg overflow-hidden mb-4 shadow-lg border border-border/50">
                           <iframe
                             src={convertToEmbedUrl(extractEmbedUrl(mediaItem.embed_link))}
-                            title={mediaItem.title}
+                            title={getLanguageValue(mediaItem, 'title', adminLanguage)}
                             className="w-full h-full"
                             frameBorder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             allowFullScreen
+                            loading="lazy"
+                            style={{ border: 0, display: 'block' }}
                           />
                         </div>
                       ) : (
