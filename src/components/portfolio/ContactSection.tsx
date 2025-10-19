@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, Instagram } from "lucide-react";
+import { Mail, Phone, Instagram, Facebook } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const ContactSection = () => {
@@ -24,7 +24,7 @@ const ContactSection = () => {
         <div className="max-w-3xl mx-auto">
           <div className="grid md:grid-cols-2 gap-8 animate-slide-up" style={{ animationDelay: "0.2s" }}>
             <a
-              href="mailto:hello@shakart.com"
+              href="mailto:shant101094@gmail.com"
               className="group relative p-8 border border-border/50 bg-card hover:border-accent/30 transition-all duration-500 overflow-hidden"
             >
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent/0 via-accent to-accent/0 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
@@ -37,14 +37,14 @@ const ContactSection = () => {
                     {t('contact.email')}
                   </span>
                   <p className="font-body text-lg text-foreground group-hover:text-accent transition-colors duration-300">
-                    hello@shakart.com
+                    shant101094@gmail.com
                   </p>
                 </div>
               </div>
             </a>
 
             <a
-              href="tel:+15551234567"
+              href="tel:+37491996999"
               className="group relative p-8 border border-border/50 bg-card hover:border-accent/30 transition-all duration-500 overflow-hidden"
             >
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent/0 via-accent to-accent/0 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
@@ -57,30 +57,14 @@ const ContactSection = () => {
                     {t('contact.phone')}
                   </span>
                   <p className="font-body text-lg text-foreground group-hover:text-accent transition-colors duration-300">
-                    +1 (555) 123-4567
+                    +374 91 99 69 99
                   </p>
                 </div>
               </div>
             </a>
 
-            <div className="group relative p-8 border border-border/50 bg-card">
-              <div className="flex flex-col items-start gap-4">
-                <div className="w-14 h-14 border-2 border-accent/20 rounded-full flex items-center justify-center">
-                  <MapPin className="w-6 h-6 text-accent" />
-                </div>
-                <div>
-                  <span className="font-body text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">
-                    {t('contact.location')}
-                  </span>
-                  <p className="font-body text-lg text-foreground">
-                    San Francisco, CA
-                  </p>
-                </div>
-              </div>
-            </div>
-
             <a
-              href="https://instagram.com/shakart_studio"
+              href="https://www.instagram.com/shakart_/?hl=en"
               target="_blank"
               rel="noopener noreferrer"
               className="group relative p-8 border border-border/50 bg-card hover:border-accent/30 transition-all duration-500 overflow-hidden"
@@ -95,7 +79,29 @@ const ContactSection = () => {
                     Instagram
                   </span>
                   <p className="font-body text-lg text-foreground group-hover:text-accent transition-colors duration-300">
-                    @shakart_studio
+                    @shakart_
+                  </p>
+                </div>
+              </div>
+            </a>
+
+            <a
+              href="https://www.facebook.com/shantkarapetyan.shakart"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative p-8 border border-border/50 bg-card hover:border-accent/30 transition-all duration-500 overflow-hidden"
+            >
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent/0 via-accent to-accent/0 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+              <div className="flex flex-col items-start gap-4">
+                <div className="w-14 h-14 border-2 border-accent/20 rounded-full flex items-center justify-center group-hover:border-accent/40 transition-colors duration-300">
+                  <Facebook className="w-6 h-6 text-accent" />
+                </div>
+                <div>
+                  <span className="font-body text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">
+                    Facebook
+                  </span>
+                  <p className="font-body text-lg text-foreground group-hover:text-accent transition-colors duration-300">
+                    Shakart
                   </p>
                 </div>
               </div>

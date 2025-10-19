@@ -25,7 +25,7 @@ const Contact = () => {
               size="lg"
               className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 text-lg font-semibold h-auto min-h-[60px] shadow-elegant hover-lift"
             >
-              <a href="mailto:contact@shakart.com" className="flex items-center gap-3">
+              <a href="mailto:shant101094@gmail.com" className="flex items-center gap-3">
                 <Mail className="w-6 h-6" />
                 {t('contact.email')}
               </a>
@@ -37,7 +37,7 @@ const Contact = () => {
               size="lg"
               className="border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground px-8 py-4 text-lg font-semibold h-auto min-h-[60px] hover-lift"
             >
-              <a href="tel:+1234567890" className="flex items-center gap-3">
+              <a href="tel:+37491996999" className="flex items-center gap-3">
                 <Phone className="w-6 h-6" />
                 {t('contact.call')}
               </a>
@@ -61,11 +61,11 @@ const Contact = () => {
                   </div>
                   <div>
                     <p className="font-body text-lg font-medium text-muted-foreground mb-2">{t('contact.emailLabel')}</p>
-                    <a 
-                      href="mailto:contact@shakart.com" 
+                    <a
+                      href="mailto:shant101094@gmail.com"
                       className="font-body text-xl text-foreground hover:text-accent transition-colors font-medium"
                     >
-                      contact@shakart.com
+                      shant101094@gmail.com
                     </a>
                   </div>
                 </div>
@@ -76,26 +76,15 @@ const Contact = () => {
                   </div>
                   <div>
                     <p className="font-body text-lg font-medium text-muted-foreground mb-2">{t('contact.phone')}</p>
-                    <a 
-                      href="tel:+1234567890" 
+                    <a
+                      href="tel:+37491996999"
                       className="font-body text-xl text-foreground hover:text-accent transition-colors font-medium"
                     >
-                      +1 (234) 567-890
+                      +374 91 99 69 99
                     </a>
                   </div>
                 </div>
                 
-                <div className="flex items-start gap-6">
-                  <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
-                    <MapPin className="w-8 h-8 text-accent" />
-                  </div>
-                  <div>
-                    <p className="font-body text-lg font-medium text-muted-foreground mb-2">{t('contact.location')}</p>
-                    <p className="font-body text-xl text-foreground font-medium">
-                      San Francisco, CA
-                    </p>
-                  </div>
-                </div>
               </div>
             </Card>
 
@@ -105,7 +94,7 @@ const Contact = () => {
               
               <div className="space-y-6">
                 <a
-                  href="https://facebook.com/shakart"
+                  href="https://www.facebook.com/shantkarapetyan.shakart"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-6 p-6 bg-surface hover:bg-primary/10 rounded-lg transition-all duration-300 hover-lift group"
@@ -115,12 +104,12 @@ const Contact = () => {
                   </div>
                   <div>
                     <p className="font-body text-lg font-medium text-foreground group-hover:text-primary transition-colors">Facebook</p>
-                    <p className="font-body text-muted-foreground">@shakart</p>
+                    <p className="font-body text-muted-foreground">Shakart</p>
                   </div>
                 </a>
                 
                 <a
-                  href="https://instagram.com/shakart"
+                  href="https://www.instagram.com/shakart_/?hl=en"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-6 p-6 bg-surface hover:bg-primary/10 rounded-lg transition-all duration-300 hover-lift group"
@@ -130,7 +119,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <p className="font-body text-lg font-medium text-foreground group-hover:text-primary transition-colors">Instagram</p>
-                    <p className="font-body text-muted-foreground">@shakart_studio</p>
+                    <p className="font-body text-muted-foreground">@shakart_</p>
                   </div>
                 </a>
               </div>
