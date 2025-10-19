@@ -21,6 +21,7 @@ interface Artwork {
   description: string | null;
   price: number | null;
   category: string;
+  is_sold: boolean;
   created_at: string;
   artwork_images: ArtworkImage[];
 }
@@ -105,7 +106,7 @@ const Gallery = () => {
     return (
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {categoryArtworks.map((artwork, index) => (
-          <Card 
+          <Card
             key={artwork.id}
             className="group overflow-hidden border-0 shadow-card hover-lift cursor-pointer bg-card"
             style={{ animationDelay: `${index * 0.1}s` }}
@@ -117,6 +118,11 @@ const Gallery = () => {
                 alt={getTranslatedField(artwork, 'title', currentLanguage)}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
+              {artwork.is_sold && (
+                <div className="absolute top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-md font-body text-sm font-semibold uppercase tracking-wider shadow-lg">
+                  {t('gallery.sold')}
+                </div>
+              )}
             </div>
             <div className="p-4">
               <h3 className="font-display text-lg font-medium text-primary mb-2">

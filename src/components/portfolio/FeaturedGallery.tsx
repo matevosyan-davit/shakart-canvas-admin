@@ -18,6 +18,7 @@ interface Artwork {
   description: string | null;
   price: number | null;
   category: string;
+  is_sold: boolean;
   created_at: string;
   artwork_images: ArtworkImage[];
 }
@@ -107,6 +108,11 @@ const FeaturedGallery = () => {
                       alt={getTranslatedField(artwork, 'title', currentLanguage)}
                       className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-95"
                     />
+                    {artwork.is_sold && (
+                      <div className="absolute top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-md font-body text-sm font-semibold uppercase tracking-wider shadow-lg">
+                        {t('gallery.sold')}
+                      </div>
+                    )}
                     <div className="absolute inset-0 border-2 border-transparent group-hover:border-accent/20 transition-all duration-500" />
                   </div>
                   <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
