@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
-import heroImage from "@/assets/481053385_1186855636132457_1785870235778242130_n.jpg";
+import heroImage from "@/assets/481075919_1187898589361495_3287294358418089157_n.jpg";
 
 const HeroSection = () => {
   const { t } = useLanguage();
