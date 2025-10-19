@@ -1,5 +1,5 @@
 import { useLanguage } from "@/contexts/LanguageContext";
-import artistPortrait from "@/assets/481053385_1186855636132457_1785870235778242130_n.jpg";
+import artistPortrait from "@/assets/481053385_1186855636132457_1785870235778242130_n copy.jpg";
 
 const AboutSection = () => {
   const { t } = useLanguage();
