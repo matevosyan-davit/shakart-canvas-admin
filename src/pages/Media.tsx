@@ -105,7 +105,6 @@ const Media = () => {
                           title={getTranslatedField(mediaItem, 'title', currentLanguage)}
                           className="w-full h-full"
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          referrerPolicy="strict-origin-when-cross-origin"
                           allowFullScreen
                           style={{ border: 'none', width: '100%', height: '100%' }}
                         />

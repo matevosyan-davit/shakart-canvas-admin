@@ -1624,7 +1624,6 @@ const Admin = () => {
                           title="Video Preview"
                           className="w-full h-full"
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          referrerPolicy="strict-origin-when-cross-origin"
                           allowFullScreen
                           style={{ border: 'none', width: '100%', height: '100%' }}
                         />
@@ -1724,7 +1723,6 @@ const Admin = () => {
                             title={getLanguageValue(mediaItem, 'title', adminLanguage)}
                             className="w-full h-full"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            referrerPolicy="strict-origin-when-cross-origin"
                             allowFullScreen
                             style={{ border: 'none', width: '100%', height: '100%' }}
                           />
