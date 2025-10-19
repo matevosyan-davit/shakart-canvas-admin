@@ -30,6 +30,16 @@ import { useLanguage } from '@/contexts/LanguageContext';
 const ArtworkCard = ({ artwork, index, onSelect }: ArtworkCardProps) => {
   const { t } = useLanguage();
 
+  // Map category to translation key
+  const getCategoryTranslation = (category: string) => {
+    const categoryMap: Record<string, string> = {
+      'paintings': 'gallery.paintings',
+      'sculpture': 'gallery.sculpture',
+      'streetart': 'gallery.streetart',
+    };
+    return t(categoryMap[category.toLowerCase()] || category);
+  };
+
   return (
     <div
       className="group cursor-pointer animate-fade-in"
@@ -55,8 +65,8 @@ const ArtworkCard = ({ artwork, index, onSelect }: ArtworkCardProps) => {
           {artwork.title}
         </h3>
         <div className="font-body text-sm text-muted-foreground uppercase tracking-wider space-y-1">
-          <p>{new Date(artwork.created_at).getFullYear()} • {artwork.category}</p>
-          <p>${artwork.price?.toFixed(2) || 'Price on request'}</p>
+          <p>{new Date(artwork.created_at).getFullYear()} • {getCategoryTranslation(artwork.category)}</p>
+          <p>${artwork.price?.toFixed(2) || t('gallery.priceOnRequest')}</p>
         </div>
       </div>
     </div>
