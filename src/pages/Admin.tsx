@@ -105,14 +105,17 @@ interface Exhibition {
 interface MediaForm {
   title: string;
   media_name: string;
-  embed_link: string;
+  video_url: string;
+  article_url: string;
 }
 
 interface MediaItem {
   id: string;
   title: string;
   media_name: string;
-  embed_link: string;
+  video_url: string | null;
+  article_url: string | null;
+  embed_link?: string;
   type: string;
   created_at: string;
 }
@@ -382,7 +385,8 @@ const Admin = () => {
     defaultValues: {
       title: "",
       media_name: "",
-      embed_link: "",
+      video_url: "",
+      article_url: "",
     },
   });
 
@@ -423,7 +427,8 @@ const Admin = () => {
       mediaForm.reset({
         title: getLanguageValue(editingMedia, 'title', adminLanguage),
         media_name: getLanguageValue(editingMedia, 'media_name', adminLanguage),
-        embed_link: editingMedia.embed_link,
+        video_url: editingMedia.video_url || "",
+        article_url: editingMedia.article_url || "",
       });
     }
   }, [adminLanguage, editingMedia, mediaForm]);
@@ -461,7 +466,8 @@ const Admin = () => {
       mediaForm.reset({
         title: getLanguageValue(editingMedia, 'title', adminLanguage),
         media_name: getLanguageValue(editingMedia, 'media_name', adminLanguage),
-        embed_link: editingMedia.embed_link,
+        video_url: editingMedia.video_url || "",
+        article_url: editingMedia.article_url || "",
       });
       setShowAddForm(true);
     }
@@ -560,14 +566,14 @@ const Admin = () => {
 
       if (error) throw error;
       setMedia(data || []);
-      
-      // Fetch preview images for non-video URLs
+
+      // Fetch preview images for article URLs (not video URLs)
       if (data) {
         data.forEach(async (mediaItem: MediaItem) => {
-          const url = extractEmbedUrl(mediaItem.embed_link);
-          if (!isVideoUrl(url) && !previewImages[mediaItem.id]) {
+          // Only fetch preview for articles, not videos
+          if (mediaItem.article_url && !previewImages[mediaItem.id]) {
             try {
-              const response = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}&meta=true`);
+              const response = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(mediaItem.article_url)}&meta=true`);
               const apiData = await response.json();
               if (apiData.status === 'success' && apiData.data?.image?.url) {
                 setPreviewImages(prev => ({
@@ -576,7 +582,7 @@ const Admin = () => {
                 }));
               }
             } catch (error) {
-              console.error('Failed to fetch preview for:', url);
+              console.error('Failed to fetch preview for:', mediaItem.article_url);
             }
           }
         });
@@ -905,12 +911,18 @@ const Admin = () => {
   };
 
   const onSubmitMedia = async (data: MediaForm) => {
+    // Validate that at least one URL is provided
+    if (!data.video_url && !data.article_url) {
+      toast.error("Please provide either a YouTube video URL or an article URL");
+      return;
+    }
+
     try {
       if (editingMedia) {
         const updateData = createMediaUpdate({
           title: data.title,
           media_name: data.media_name,
-        }, adminLanguage, data.embed_link);
+        }, adminLanguage, data.video_url || null, data.article_url || null);
 
         const { error } = await supabase
           .from('media')
@@ -925,7 +937,7 @@ const Admin = () => {
         const insertData = createMediaUpdate({
           title: data.title,
           media_name: data.media_name,
-        }, adminLanguage, data.embed_link);
+        }, adminLanguage, data.video_url || null, data.article_url || null);
 
         const { error } = await supabase
           .from('media')
@@ -1588,51 +1600,85 @@ const Admin = () => {
                     )}
                   />
 
-                  <FormField
-                    control={mediaForm.control}
-                    name="embed_link"
-                    rules={{ required: "Embed link is required" }}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Embed Link</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Paste YouTube URL (e.g., https://www.youtube.com/watch?v=...)"
-                            {...field}
-                          />
-                        </FormControl>
-                        <div className="text-xs text-muted-foreground mt-2 space-y-1">
-                          <p>Supported formats:</p>
-                          <ul className="list-disc list-inside pl-2">
-                            <li>YouTube: https://www.youtube.com/watch?v=VIDEO_ID</li>
-                            <li>Short YouTube: https://youtu.be/VIDEO_ID</li>
-                            <li>Article links: Any valid URL</li>
-                          </ul>
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {/* Live Preview */}
-                  {mediaForm.watch("embed_link") && isVideoUrl(extractEmbedUrl(mediaForm.watch("embed_link"))) && (
+                  <div className="space-y-4 p-4 border border-border/30 rounded-lg bg-muted/10">
                     <div className="space-y-2">
-                      <FormLabel>Video Preview</FormLabel>
-                      <div className="aspect-video bg-black rounded-lg overflow-hidden border border-border/50">
-                        <iframe
-                          src={convertToEmbedUrl(extractEmbedUrl(mediaForm.watch("embed_link")))}
-                          title="Video Preview"
-                          className="w-full h-full"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          allowFullScreen
-                          style={{ border: 'none', width: '100%', height: '100%' }}
-                        />
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        ✓ Video detected! The embed will look like this on your site.
-                      </p>
+                      <h3 className="font-body text-sm font-semibold text-primary uppercase tracking-wider">Media Type</h3>
+                      <p className="text-xs text-muted-foreground">Add either a YouTube video OR an article link (or both)</p>
                     </div>
-                  )}
+
+                    <FormField
+                      control={mediaForm.control}
+                      name="video_url"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>YouTube Video URL (Optional)</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="https://www.youtube.com/watch?v=..."
+                              {...field}
+                            />
+                          </FormControl>
+                          <div className="text-xs text-muted-foreground mt-2">
+                            <p className="font-medium mb-1">Supported YouTube formats:</p>
+                            <ul className="list-disc list-inside pl-2 space-y-1">
+                              <li>https://www.youtube.com/watch?v=VIDEO_ID</li>
+                              <li>https://youtu.be/VIDEO_ID</li>
+                            </ul>
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Live Video Preview */}
+                    {mediaForm.watch("video_url") && isVideoUrl(mediaForm.watch("video_url")) && (
+                      <div className="space-y-2">
+                        <FormLabel>Video Preview</FormLabel>
+                        <div className="aspect-video bg-black rounded-lg overflow-hidden border border-border/50">
+                          <iframe
+                            src={convertToEmbedUrl(mediaForm.watch("video_url"))}
+                            title="Video Preview"
+                            className="w-full h-full"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowFullScreen
+                            style={{ border: 'none', width: '100%', height: '100%' }}
+                          />
+                        </div>
+                        <p className="text-xs text-green-600">
+                          ✓ Valid YouTube video! The embed will look like this on your site.
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center">
+                        <span className="w-full border-t border-border/50" />
+                      </div>
+                      <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-muted/10 px-2 text-muted-foreground">or</span>
+                      </div>
+                    </div>
+
+                    <FormField
+                      control={mediaForm.control}
+                      name="article_url"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Article/Website URL (Optional)</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="https://example.com/article"
+                              {...field}
+                            />
+                          </FormControl>
+                          <div className="text-xs text-muted-foreground mt-2">
+                            <p>Any valid website URL for articles, interviews, or media coverage.</p>
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
                   <div className="flex gap-4">
                     {editingMedia && (
@@ -1715,73 +1761,104 @@ const Admin = () => {
                           </div>
                         </div>
                       
-                      {/* Media Preview */}
-                      {isVideoUrl(extractEmbedUrl(mediaItem.embed_link)) ? (
-                        <div className="aspect-video bg-black rounded-lg overflow-hidden mb-4 shadow-lg border border-border/50">
-                          <iframe
-                            src={convertToEmbedUrl(extractEmbedUrl(mediaItem.embed_link))}
-                            title={getLanguageValue(mediaItem, 'title', adminLanguage)}
-                            className="w-full h-full"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            allowFullScreen
-                            style={{ border: 'none', width: '100%', height: '100%' }}
-                          />
+                      {/* Media Preview - Different display for videos vs articles */}
+                      {mediaItem.video_url && isVideoUrl(mediaItem.video_url) ? (
+                        <div>
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="inline-flex items-center px-2 py-1 bg-red-100 text-red-700 text-xs font-body uppercase tracking-wider rounded-full">
+                              YouTube Video
+                            </span>
+                          </div>
+                          <div className="aspect-video bg-black rounded-lg overflow-hidden mb-4 shadow-lg border border-border/50">
+                            <iframe
+                              src={convertToEmbedUrl(mediaItem.video_url)}
+                              title={getLanguageValue(mediaItem, 'title', adminLanguage)}
+                              className="w-full h-full"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                              allowFullScreen
+                              style={{ border: 'none', width: '100%', height: '100%' }}
+                            />
+                          </div>
                         </div>
-                      ) : (
-                        <div className="aspect-video bg-muted rounded-lg overflow-hidden mb-4">
-                          {previewImages[mediaItem.id] ? (
-                            <div className="relative w-full h-full">
-                              <img 
-                                src={previewImages[mediaItem.id]} 
-                                alt={`Preview of ${mediaItem.title}`}
-                                className="w-full h-full object-cover"
-                              />
-                              <div className="absolute top-2 right-2">
-                                <a
-                                  href={extractEmbedUrl(mediaItem.embed_link)}
-                                  target="_blank" 
-                                  rel="noopener noreferrer"
-                                  className="text-xs bg-black/70 text-white px-2 py-1 rounded"
-                                >
-                                  View Article
-                                </a>
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="flex items-center justify-center border-2 border-dashed border-border h-full">
-                              <div className="text-center p-4">
-                                <div className="mb-2">
-                                  <svg className="w-12 h-12 mx-auto text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                  </svg>
+                      ) : mediaItem.article_url ? (
+                        <div>
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-700 text-xs font-body uppercase tracking-wider rounded-full">
+                              Article
+                            </span>
+                          </div>
+                          <div className="aspect-video bg-muted rounded-lg overflow-hidden mb-4">
+                            {previewImages[mediaItem.id] ? (
+                              <div className="relative w-full h-full">
+                                <img
+                                  src={previewImages[mediaItem.id]}
+                                  alt={`Preview of ${mediaItem.title}`}
+                                  className="w-full h-full object-cover"
+                                />
+                                <div className="absolute top-2 right-2">
+                                  <a
+                                    href={mediaItem.article_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-xs bg-black/70 text-white px-2 py-1 rounded hover:bg-black/90 transition-colors"
+                                  >
+                                    View Article →
+                                  </a>
                                 </div>
-                                <p className="text-sm text-muted-foreground mb-2">Article Link</p>
-                                <a
-                                  href={extractEmbedUrl(mediaItem.embed_link)}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-xs text-primary hover:underline"
-                                >
-                                  View Article
-                                </a>
                               </div>
-                            </div>
-                          )}
+                            ) : (
+                              <div className="flex items-center justify-center border-2 border-dashed border-border h-full">
+                                <div className="text-center p-4">
+                                  <div className="mb-2">
+                                    <svg className="w-12 h-12 mx-auto text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                  </div>
+                                  <p className="text-sm text-muted-foreground mb-2">Article Link</p>
+                                  <a
+                                    href={mediaItem.article_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-xs text-primary hover:underline"
+                                  >
+                                    View Article →
+                                  </a>
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      )}
+                      ) : null}
 
-
-                        <div className="pt-3 border-t border-border/30">
-                          <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-2">Embed Link</p>
-                          <a
-                            href={mediaItem.embed_link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs text-accent hover:text-primary transition-colors break-all"
-                          >
-                            {mediaItem.embed_link}
-                          </a>
-                        </div>
+                      {/* Show URLs */}
+                      <div className="pt-3 border-t border-border/30 space-y-2">
+                        {mediaItem.video_url && (
+                          <div>
+                            <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Video URL</p>
+                            <a
+                              href={mediaItem.video_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-accent hover:text-primary transition-colors break-all"
+                            >
+                              {mediaItem.video_url}
+                            </a>
+                          </div>
+                        )}
+                        {mediaItem.article_url && (
+                          <div>
+                            <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Article URL</p>
+                            <a
+                              href={mediaItem.article_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-accent hover:text-primary transition-colors break-all"
+                            >
+                              {mediaItem.article_url}
+                            </a>
+                          </div>
+                        )}
+                      </div>
                       </div>
                     </Card>
                   ))}

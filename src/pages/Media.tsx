@@ -10,7 +10,9 @@ interface MediaItem {
   id: string;
   title: string;
   media_name: string;
-  embed_link: string;
+  video_url: string | null;
+  article_url: string | null;
+  embed_link?: string;
   type: string;
   created_at: string;
 }
@@ -26,12 +28,11 @@ const Media = () => {
   }, []);
 
   useEffect(() => {
-    // Fetch preview images for non-video URLs
+    // Fetch preview images for article URLs only
     media.forEach(async (mediaItem) => {
-      const url = extractEmbedUrl(mediaItem.embed_link);
-      if (!isVideoUrl(url) && !previewImages[mediaItem.id]) {
+      if (mediaItem.article_url && !previewImages[mediaItem.id]) {
         try {
-          const response = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}&meta=true`);
+          const response = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(mediaItem.article_url)}&meta=true`);
           const data = await response.json();
           if (data.status === 'success' && data.data?.image?.url) {
             setPreviewImages(prev => ({
@@ -40,7 +41,7 @@ const Media = () => {
             }));
           }
         } catch (error) {
-          console.error('Failed to fetch preview for:', url);
+          console.error('Failed to fetch preview for:', mediaItem.article_url);
         }
       }
     });
@@ -97,11 +98,11 @@ const Media = () => {
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <div className="grid lg:grid-cols-2 gap-8 p-8">
-                    {/* Media Content */}
-                    {isVideoUrl(extractEmbedUrl(mediaItem.embed_link)) ? (
+                    {/* Media Content - Display video if available, otherwise article */}
+                    {mediaItem.video_url && isVideoUrl(mediaItem.video_url) ? (
                       <div className="aspect-video bg-black rounded-lg overflow-hidden shadow-lg border border-border/50">
                         <iframe
-                          src={convertToEmbedUrl(extractEmbedUrl(mediaItem.embed_link))}
+                          src={convertToEmbedUrl(mediaItem.video_url)}
                           title={getTranslatedField(mediaItem, 'title', currentLanguage)}
                           className="w-full h-full"
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -109,18 +110,18 @@ const Media = () => {
                           style={{ border: 'none', width: '100%', height: '100%' }}
                         />
                       </div>
-                    ) : (
+                    ) : mediaItem.article_url ? (
                       <div className="aspect-video bg-muted rounded-lg overflow-hidden">
                         {previewImages[mediaItem.id] ? (
                           <div className="relative w-full h-full group">
-                            <img 
-                              src={previewImages[mediaItem.id]} 
+                            <img
+                              src={previewImages[mediaItem.id]}
                               alt={`Preview of ${mediaItem.title}`}
                               className="w-full h-full object-cover"
                             />
                             <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                               <a
-                                href={extractEmbedUrl(mediaItem.embed_link)}
+                                href={mediaItem.article_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
@@ -145,7 +146,7 @@ const Media = () => {
                               <h3 className="font-medium text-foreground mb-2">{t('media.articleLink')}</h3>
                               <p className="text-sm text-muted-foreground mb-4">{t('media.loadingPreview')}</p>
                               <a
-                                href={extractEmbedUrl(mediaItem.embed_link)}
+                                href={mediaItem.article_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
@@ -159,7 +160,7 @@ const Media = () => {
                           </div>
                         )}
                       </div>
-                    )}
+                    ) : null}
                     
                     {/* Content */}
                     <div className="flex flex-col justify-center">

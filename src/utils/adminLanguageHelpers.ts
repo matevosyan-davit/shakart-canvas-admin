@@ -95,11 +95,13 @@ export const createExhibitionUpdate = (
 export const createMediaUpdate = (
   data: { title: string; media_name: string },
   language: Language,
-  embed_link: string
+  video_url?: string | null,
+  article_url?: string | null
 ) => {
   const update: any = {
-    embed_link,
     language,
+    video_url: video_url || null,
+    article_url: article_url || null,
   };
 
   if (language === 'en') {
