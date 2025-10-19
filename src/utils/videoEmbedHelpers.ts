@@ -1,125 +1,172 @@
 /**
- * Video Embed Helpers
+ * Video Embed Helpers - Rewritten from scratch
  *
- * This file contains utility functions for handling video embeds,
- * particularly YouTube videos. It provides consistent URL conversion
- * and validation across the application.
+ * This utility provides functions to handle YouTube video URLs and convert them
+ * to embeddable iframes that can be played directly on the website.
  */
 
 /**
- * Extracts a clean URL from various input formats
- * Handles:
- * - Direct URLs (https://youtube.com/...)
- * - Iframe embed code (<iframe src="...">)
- * - Plain text URLs
+ * Extracts the YouTube video ID from various YouTube URL formats
+ *
+ * Supported formats:
+ * - https://www.youtube.com/watch?v=VIDEO_ID
+ * - https://youtu.be/VIDEO_ID
+ * - https://www.youtube.com/embed/VIDEO_ID
+ * - https://m.youtube.com/watch?v=VIDEO_ID
+ * - URLs with additional parameters (e.g., ?v=VIDEO_ID&t=30s)
+ *
+ * @param url - The YouTube URL to parse
+ * @returns The video ID or null if not found
  */
-export const extractEmbedUrl = (embedLink: string): string => {
-  if (!embedLink) return '';
-
-  const trimmed = embedLink.trim();
-
-  // If it's already a URL, return it
-  if (trimmed.startsWith('http')) {
-    return trimmed;
+export const extractYouTubeVideoId = (url: string): string | null => {
+  if (!url || typeof url !== 'string') {
+    return null;
   }
 
-  // If it's iframe HTML, extract the src URL
-  const srcMatch = trimmed.match(/src=["']([^"']+)["']/);
-  if (srcMatch && srcMatch[1]) {
-    return srcMatch[1];
+  // Remove whitespace
+  const cleanUrl = url.trim();
+
+  // Pattern 1: youtube.com/watch?v=VIDEO_ID
+  const watchPattern = /(?:youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/;
+  const watchMatch = cleanUrl.match(watchPattern);
+  if (watchMatch && watchMatch[1]) {
+    return watchMatch[1];
   }
 
-  // Fallback to the original link
-  return trimmed;
+  // Pattern 2: youtu.be/VIDEO_ID
+  const shortPattern = /(?:youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+  const shortMatch = cleanUrl.match(shortPattern);
+  if (shortMatch && shortMatch[1]) {
+    return shortMatch[1];
+  }
+
+  // Pattern 3: youtube.com/embed/VIDEO_ID
+  const embedPattern = /(?:youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/;
+  const embedMatch = cleanUrl.match(embedPattern);
+  if (embedMatch && embedMatch[1]) {
+    return embedMatch[1];
+  }
+
+  // Pattern 4: m.youtube.com/watch?v=VIDEO_ID (mobile)
+  const mobilePattern = /(?:m\.youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/;
+  const mobileMatch = cleanUrl.match(mobilePattern);
+  if (mobileMatch && mobileMatch[1]) {
+    return mobileMatch[1];
+  }
+
+  return null;
 };
 
 /**
- * Converts various YouTube URL formats to a standardized embed URL
- * Handles:
- * - youtube.com/watch?v=VIDEO_ID
- * - youtu.be/VIDEO_ID
- * - youtube.com/embed/VIDEO_ID
- * - youtube.com/v/VIDEO_ID
- * - URLs with additional parameters
+ * Checks if a given URL is a valid YouTube URL
+ *
+ * @param url - The URL to check
+ * @returns true if it's a valid YouTube URL, false otherwise
  */
+export const isYouTubeUrl = (url: string): boolean => {
+  if (!url || typeof url !== 'string') {
+    return false;
+  }
+
+  const videoId = extractYouTubeVideoId(url);
+  return videoId !== null;
+};
+
+/**
+ * Converts a YouTube URL to an embeddable iframe URL
+ *
+ * This creates a URL suitable for use in an iframe src attribute.
+ * The embed URL includes parameters for better user experience:
+ * - autoplay=0: Don't autoplay videos
+ * - rel=0: Show related videos from the same channel only
+ * - modestbranding=1: Minimize YouTube branding
+ *
+ * @param url - The YouTube URL to convert
+ * @returns The embed URL or null if the URL is invalid
+ */
+export const getYouTubeEmbedUrl = (url: string): string | null => {
+  const videoId = extractYouTubeVideoId(url);
+
+  if (!videoId) {
+    return null;
+  }
+
+  // Create embed URL with recommended parameters
+  return `https://www.youtube.com/embed/${videoId}?autoplay=0&rel=0&modestbranding=1`;
+};
+
+/**
+ * Gets the thumbnail URL for a YouTube video
+ *
+ * @param url - The YouTube URL
+ * @param quality - Thumbnail quality ('default', 'medium', 'high', 'maxres')
+ * @returns The thumbnail URL or null if invalid
+ */
+export const getYouTubeThumbnail = (url: string, quality: 'default' | 'medium' | 'high' | 'maxres' = 'maxres'): string | null => {
+  const videoId = extractYouTubeVideoId(url);
+
+  if (!videoId) {
+    return null;
+  }
+
+  const qualityMap = {
+    default: 'default.jpg',
+    medium: 'mqdefault.jpg',
+    high: 'hqdefault.jpg',
+    maxres: 'maxresdefault.jpg'
+  };
+
+  return `https://img.youtube.com/vi/${videoId}/${qualityMap[quality]}`;
+};
+
+/**
+ * Validates a YouTube URL and returns detailed information
+ *
+ * @param url - The YouTube URL to validate
+ * @returns An object with validation results and video information
+ */
+export const validateYouTubeUrl = (url: string): {
+  isValid: boolean;
+  videoId: string | null;
+  embedUrl: string | null;
+  thumbnailUrl: string | null;
+  errorMessage?: string;
+} => {
+  if (!url || typeof url !== 'string') {
+    return {
+      isValid: false,
+      videoId: null,
+      embedUrl: null,
+      thumbnailUrl: null,
+      errorMessage: 'URL is empty or invalid'
+    };
+  }
+
+  const videoId = extractYouTubeVideoId(url);
+
+  if (!videoId) {
+    return {
+      isValid: false,
+      videoId: null,
+      embedUrl: null,
+      thumbnailUrl: null,
+      errorMessage: 'Not a valid YouTube URL'
+    };
+  }
+
+  return {
+    isValid: true,
+    videoId,
+    embedUrl: getYouTubeEmbedUrl(url),
+    thumbnailUrl: getYouTubeThumbnail(url),
+  };
+};
+
+// Legacy function for backward compatibility
+export const isVideoUrl = isYouTubeUrl;
 export const convertToEmbedUrl = (url: string): string => {
-  try {
-    const cleanUrl = url.trim();
-
-    // Comprehensive YouTube regex that handles multiple formats
-    // Captures the 11-character video ID from various YouTube URL patterns
-    const youtubeRegex = /(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|.+\?v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-    const match = cleanUrl.match(youtubeRegex);
-
-    if (match && match[1]) {
-      // Use standard YouTube embed URL
-      // Add parameters for better user experience:
-      // - rel=0: Don't show related videos from other channels
-      return `https://www.youtube.com/embed/${match[1]}?rel=0`;
-    }
-
-    // If it's already an embed URL, return as is
-    if (cleanUrl.includes('/embed/')) {
-      return cleanUrl;
-    }
-
-    // For Vimeo and other platforms, return the URL as-is
-    return cleanUrl;
-  } catch (error) {
-    console.error('Error converting URL:', error);
-    return url;
-  }
+  return getYouTubeEmbedUrl(url) || url;
 };
-
-/**
- * Checks if a URL is a video platform URL that can be embedded
- */
-export const isVideoUrl = (url: string): boolean => {
-  try {
-    const lowerUrl = url.toLowerCase().trim();
-    return (
-      lowerUrl.includes('youtube.com') ||
-      lowerUrl.includes('youtu.be') ||
-      lowerUrl.includes('vimeo.com') ||
-      lowerUrl.includes('/embed/') ||
-      lowerUrl.includes('youtube-nocookie.com')
-    );
-  } catch (error) {
-    return false;
-  }
-};
-
-/**
- * Validates if a YouTube URL is in a proper format
- * Returns true if the URL can be successfully converted to an embed URL
- */
-export const isValidYouTubeUrl = (url: string): boolean => {
-  try {
-    const cleanUrl = extractEmbedUrl(url);
-    const youtubeRegex = /(?:youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-    return youtubeRegex.test(cleanUrl);
-  } catch (error) {
-    return false;
-  }
-};
-
-/**
- * Gets a thumbnail URL for a YouTube video
- * Useful for preview images before the video loads
- */
-export const getYouTubeThumbnail = (url: string): string | null => {
-  try {
-    const cleanUrl = extractEmbedUrl(url);
-    const youtubeRegex = /(?:youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-    const match = cleanUrl.match(youtubeRegex);
-
-    if (match && match[1]) {
-      // Return high quality thumbnail
-      return `https://img.youtube.com/vi/${match[1]}/maxresdefault.jpg`;
-    }
-
-    return null;
-  } catch (error) {
-    return null;
-  }
+export const extractEmbedUrl = (url: string): string => {
+  return url?.trim() || '';
 };

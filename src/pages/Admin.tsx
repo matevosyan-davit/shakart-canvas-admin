@@ -34,7 +34,8 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { reorderArtworks } from "@/utils/artworkReorder";
-import { extractEmbedUrl, convertToEmbedUrl, isVideoUrl } from "@/utils/videoEmbedHelpers";
+import { isYouTubeUrl, getYouTubeEmbedUrl } from "@/utils/videoEmbedHelpers";
+import YouTubeEmbed from "@/components/YouTubeEmbed";
 
 interface ArtworkForm {
   title: string;
@@ -1631,21 +1632,16 @@ const Admin = () => {
                     />
 
                     {/* Live Video Preview */}
-                    {mediaForm.watch("video_url") && isVideoUrl(mediaForm.watch("video_url")) && (
+                    {mediaForm.watch("video_url") && isYouTubeUrl(mediaForm.watch("video_url")) && (
                       <div className="space-y-2">
                         <FormLabel>Video Preview</FormLabel>
-                        <div className="aspect-video bg-black rounded-lg overflow-hidden border border-border/50">
-                          <iframe
-                            src={convertToEmbedUrl(mediaForm.watch("video_url"))}
-                            title="Video Preview"
-                            className="w-full h-full"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            allowFullScreen
-                            style={{ border: 'none', width: '100%', height: '100%' }}
-                          />
-                        </div>
-                        <p className="text-xs text-green-600">
-                          ✓ Valid YouTube video! The embed will look like this on your site.
+                        <YouTubeEmbed
+                          url={mediaForm.watch("video_url")}
+                          title="Video Preview"
+                          className="border border-border/50 shadow-lg"
+                        />
+                        <p className="text-xs text-green-600 font-medium">
+                          ✓ Valid YouTube video! Click play to test the embed.
                         </p>
                       </div>
                     )}
@@ -1762,23 +1758,18 @@ const Admin = () => {
                         </div>
                       
                       {/* Media Preview - Different display for videos vs articles */}
-                      {mediaItem.video_url && isVideoUrl(mediaItem.video_url) ? (
+                      {mediaItem.video_url && isYouTubeUrl(mediaItem.video_url) ? (
                         <div>
                           <div className="flex items-center gap-2 mb-2">
                             <span className="inline-flex items-center px-2 py-1 bg-red-100 text-red-700 text-xs font-body uppercase tracking-wider rounded-full">
                               YouTube Video
                             </span>
                           </div>
-                          <div className="aspect-video bg-black rounded-lg overflow-hidden mb-4 shadow-lg border border-border/50">
-                            <iframe
-                              src={convertToEmbedUrl(mediaItem.video_url)}
-                              title={getLanguageValue(mediaItem, 'title', adminLanguage)}
-                              className="w-full h-full"
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                              allowFullScreen
-                              style={{ border: 'none', width: '100%', height: '100%' }}
-                            />
-                          </div>
+                          <YouTubeEmbed
+                            url={mediaItem.video_url}
+                            title={getLanguageValue(mediaItem, 'title', adminLanguage)}
+                            className="mb-4 shadow-lg border border-border/50"
+                          />
                         </div>
                       ) : mediaItem.article_url ? (
                         <div>

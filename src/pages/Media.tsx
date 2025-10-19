@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Play } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslatedField } from "@/utils/multiLanguageHelpers";
-import { extractEmbedUrl, convertToEmbedUrl, isVideoUrl } from "@/utils/videoEmbedHelpers";
+import { isYouTubeUrl } from "@/utils/videoEmbedHelpers";
+import YouTubeEmbed from "@/components/YouTubeEmbed";
 
 interface MediaItem {
   id: string;
@@ -99,17 +100,12 @@ const Media = () => {
                 >
                   <div className="grid lg:grid-cols-2 gap-8 p-8">
                     {/* Media Content - Display video if available, otherwise article */}
-                    {mediaItem.video_url && isVideoUrl(mediaItem.video_url) ? (
-                      <div className="aspect-video bg-black rounded-lg overflow-hidden shadow-lg border border-border/50">
-                        <iframe
-                          src={convertToEmbedUrl(mediaItem.video_url)}
-                          title={getTranslatedField(mediaItem, 'title', currentLanguage)}
-                          className="w-full h-full"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          allowFullScreen
-                          style={{ border: 'none', width: '100%', height: '100%' }}
-                        />
-                      </div>
+                    {mediaItem.video_url && isYouTubeUrl(mediaItem.video_url) ? (
+                      <YouTubeEmbed
+                        url={mediaItem.video_url}
+                        title={getTranslatedField(mediaItem, 'title', currentLanguage)}
+                        className="shadow-xl border-2 border-border/50"
+                      />
                     ) : mediaItem.article_url ? (
                       <div className="aspect-video bg-muted rounded-lg overflow-hidden">
                         {previewImages[mediaItem.id] ? (
