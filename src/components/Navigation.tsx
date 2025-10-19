@@ -12,10 +12,10 @@ const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   
   const navLinks = [
-    { href: "/about", label: t('nav.about') },
     { href: "/gallery", label: t('nav.gallery') },
     { href: "/exhibitions", label: t('nav.exhibitions') },
     { href: "/media", label: t('nav.media') },
+    { href: "/about", label: t('nav.about') },
     { href: "/contact", label: t('nav.contact') }
   ];
 
