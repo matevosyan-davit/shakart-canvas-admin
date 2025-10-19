@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
-import artistPortrait from "@/assets/artist-portrait.jpg";
+import artistPortrait from "@/assets/481053385_1186855636132457_1785870235778242130_n copy.jpg";
 
 const About = () => {
   const { t } = useLanguage();
