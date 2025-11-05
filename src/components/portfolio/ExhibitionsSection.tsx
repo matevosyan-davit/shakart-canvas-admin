@@ -105,82 +105,84 @@ const ExhibitionsSection = () => {
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
           {exhibitions.map((exhibition, index) => (
-            <Card
+            <Link
               key={exhibition.id}
-              className="group border border-border/50 bg-card hover:border-accent/30 transition-all duration-500 overflow-hidden animate-slide-up"
-              style={{ animationDelay: `${index * 0.15}s` }}
+              to="/exhibitions"
+              className="block"
             >
-              {/* Image Carousel */}
-              {exhibition.exhibition_images.length > 0 ? (
-                <Carousel className="w-full relative">
-                  <CarouselContent>
-                    {exhibition.exhibition_images.map((image) => (
-                      <CarouselItem key={image.id}>
-                        <div className="aspect-[4/3] overflow-hidden">
-                          <img
-                            src={image.image_url}
-                            alt={`${exhibition.title} - Exhibition Image`}
-                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                          />
-                        </div>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  {exhibition.exhibition_images.length > 1 && (
-                    <>
-                      <CarouselPrevious className="absolute left-3 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <CarouselNext className="absolute right-3 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </>
+              <Card
+                className="group border border-border/50 bg-card hover:border-accent/30 transition-all duration-500 overflow-hidden animate-slide-up cursor-pointer h-full"
+                style={{ animationDelay: `${index * 0.15}s` }}
+              >
+                {/* Image Carousel */}
+                {exhibition.exhibition_images.length > 0 ? (
+                  <Carousel className="w-full relative">
+                    <CarouselContent>
+                      {exhibition.exhibition_images.map((image) => (
+                        <CarouselItem key={image.id}>
+                          <div className="aspect-[4/3] overflow-hidden">
+                            <img
+                              src={image.image_url}
+                              alt={`${exhibition.title} - Exhibition Image`}
+                              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            />
+                          </div>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                    {exhibition.exhibition_images.length > 1 && (
+                      <>
+                        <CarouselPrevious className="absolute left-3 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <CarouselNext className="absolute right-3 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </>
+                    )}
+                  </Carousel>
+                ) : (
+                  <div className="aspect-[4/3] bg-muted flex items-center justify-center">
+                    <p className="text-muted-foreground text-sm">No Images Available</p>
+                  </div>
+                )}
+
+                {/* Exhibition Details */}
+                <div className="p-8 space-y-6">
+                  {exhibition.theme && (
+                    <span className="inline-block px-3 py-1 bg-accent/10 text-accent-foreground text-xs font-body uppercase tracking-wider">
+                      {getLocalizedText(exhibition, 'theme', currentLanguage)}
+                    </span>
                   )}
-                </Carousel>
-              ) : (
-                <div className="aspect-[4/3] bg-muted flex items-center justify-center">
-                  <p className="text-muted-foreground text-sm">No Images Available</p>
-                </div>
-              )}
 
-              {/* Exhibition Details */}
-              <div className="p-8 space-y-6">
-                {exhibition.theme && (
-                  <span className="inline-block px-3 py-1 bg-accent/10 text-accent-foreground text-xs font-body uppercase tracking-wider">
-                    {getLocalizedText(exhibition, 'theme', currentLanguage)}
+                  <div>
+                    <h3 className="font-display text-2xl text-primary mb-3 line-clamp-2 tracking-tight group-hover:text-accent transition-colors duration-300">
+                      {getLocalizedText(exhibition, 'title', currentLanguage)}
+                    </h3>
+                    <div className="h-px w-12 bg-accent/30 mb-4" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="font-body text-foreground/80 font-medium text-sm">
+                      {getLocalizedText(exhibition, 'location', currentLanguage)}
+                    </p>
+                    <p className="font-body text-muted-foreground text-xs uppercase tracking-wider">
+                      {new Date(exhibition.date).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </p>
+                  </div>
+
+                  {exhibition.description && (
+                    <p className="font-serif text-sm text-foreground/70 line-clamp-3 leading-relaxed">
+                      {getLocalizedText(exhibition, 'description', currentLanguage)}
+                    </p>
+                  )}
+
+                  <span className="inline-block font-body text-xs uppercase tracking-[0.15em] text-muted-foreground group-hover:text-primary transition-colors duration-300 border-b border-transparent group-hover:border-primary pb-1">
+                    View Details
                   </span>
-                )}
-
-                <div>
-                  <h3 className="font-display text-2xl text-primary mb-3 line-clamp-2 tracking-tight group-hover:text-accent transition-colors duration-300">
-                    {getLocalizedText(exhibition, 'title', currentLanguage)}
-                  </h3>
-                  <div className="h-px w-12 bg-accent/30 mb-4" />
                 </div>
-
-                <div className="space-y-2">
-                  <p className="font-body text-foreground/80 font-medium text-sm">
-                    {getLocalizedText(exhibition, 'location', currentLanguage)}
-                  </p>
-                  <p className="font-body text-muted-foreground text-xs uppercase tracking-wider">
-                    {new Date(exhibition.date).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
-                  </p>
-                </div>
-
-                {exhibition.description && (
-                  <p className="font-serif text-sm text-foreground/70 line-clamp-3 leading-relaxed">
-                    {getLocalizedText(exhibition, 'description', currentLanguage)}
-                  </p>
-                )}
-
-                <Link
-                  to="/exhibitions"
-                  className="inline-block font-body text-xs uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300 border-b border-transparent hover:border-primary pb-1"
-                >
-                  View Details
-                </Link>
-              </div>
-            </Card>
+              </Card>
+            </Link>
           ))}
         </div>
 
