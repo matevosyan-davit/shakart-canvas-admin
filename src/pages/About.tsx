@@ -1,7 +1,4 @@
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import artistPortrait from "@/assets/481053385_1186855636132457_1785870235778242130_n copy.jpg";
 
@@ -9,18 +6,8 @@ const About = () => {
   const { t } = useLanguage();
   return (
     <main className="min-h-screen bg-surface pt-24">
-      {/* Navigation */}
-      <div className="sticky top-0 z-40 bg-surface p-6">
-        <Link to="/">
-          <Button variant="outline" className="mb-8">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            {t('common.backHome')}
-          </Button>
-        </Link>
-      </div>
-
       {/* Hero Section */}
-      <section className="py-16 px-6">
+      <section className="py-8 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="animate-slide-up">

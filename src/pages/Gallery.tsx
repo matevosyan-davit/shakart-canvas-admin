@@ -1,8 +1,5 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslatedField } from "@/utils/multiLanguageHelpers";
@@ -122,18 +119,8 @@ const Gallery = () => {
 
   return (
     <main className="min-h-screen bg-surface pt-24">
-      {/* Navigation */}
-      <div className="sticky top-0 z-40 bg-surface p-6">
-        <Link to="/">
-          <Button variant="outline" className="mb-8">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            {t('common.backHome')}
-          </Button>
-        </Link>
-      </div>
-
       {/* Header */}
-      <section className="py-16 px-6">
+      <section className="py-8 px-6">
         <div className="max-w-6xl mx-auto text-center">
           <h1 className="font-display text-5xl md:text-6xl font-semibold text-primary mb-6 animate-slide-up">
             {t('gallery.page.title')}

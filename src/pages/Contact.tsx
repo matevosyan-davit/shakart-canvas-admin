@@ -9,7 +9,7 @@ const Contact = () => {
   return (
     <main className="min-h-screen bg-surface pt-24">
       {/* Hero Header */}
-      <section className="py-20 px-6">
+      <section className="py-8 px-6">
         <div className="max-w-6xl mx-auto text-center">
           <h1 className="font-display text-6xl md:text-7xl font-bold text-primary mb-8 animate-slide-up">
             {t('contact.title')}
