@@ -52,8 +52,8 @@ const Navigation = () => {
           </div>
 
           {/* Horizontal Scrollable Navigation */}
-          <div className="overflow-x-auto scrollbar-hide -mx-4 px-4">
-            <div className="flex items-center gap-6 min-w-max">
+          <div className="overflow-x-scroll scrollbar-hide -mx-4 px-4 touch-pan-x">
+            <div className="flex items-center gap-6 w-max">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
