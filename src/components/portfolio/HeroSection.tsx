@@ -20,23 +20,23 @@ const HeroSection = () => {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-accent to-transparent opacity-50" />
 
       {/* Content */}
-      <div className="relative z-10 text-center max-w-6xl mx-auto px-6 py-20 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-        <h1 className="font-display text-6xl md:text-8xl lg:text-9xl text-primary mb-10 leading-[0.95] tracking-tight">
+      <div className="relative z-10 text-center max-w-6xl mx-auto px-4 sm:px-6 py-20 animate-fade-in" style={{ animationDelay: "0.2s" }}>
+        <h1 className="font-display text-5xl sm:text-6xl md:text-8xl lg:text-9xl text-primary mb-10 leading-[0.95] tracking-tight">
           {t('hero.title')}
         </h1>
 
-        <div className="max-w-2xl mx-auto mb-14">
+        <div className="max-w-2xl mx-auto mb-14 px-4">
           <div className="h-px w-16 bg-accent mx-auto mb-8" />
-          <p className="font-serif text-xl md:text-2xl text-foreground/80 leading-relaxed">
+          <p className="font-serif text-lg sm:text-xl md:text-2xl text-foreground/80 leading-relaxed">
             {t('hero.description')}
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-5 justify-center items-center">
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-5 justify-center items-center">
           <Button
             variant="ghost"
             size="lg"
-            className="group font-body text-xs uppercase tracking-[0.2em] border-2 border-primary/20 hover:border-primary hover:bg-primary hover:text-primary-foreground px-10 py-6 transition-all duration-300 rounded-none"
+            className="group font-body text-xs uppercase tracking-[0.15em] sm:tracking-[0.2em] border-2 border-primary/20 hover:border-primary hover:bg-primary hover:text-primary-foreground px-6 sm:px-8 md:px-10 py-4 sm:py-6 transition-all duration-300 rounded-none"
             asChild
           >
             <Link to="/gallery">
@@ -46,7 +46,7 @@ const HeroSection = () => {
           <Button
             variant="ghost"
             size="lg"
-            className="font-body text-xs uppercase tracking-[0.2em] text-muted-foreground hover:text-primary px-10 py-6 transition-all duration-300 rounded-none border-2 border-transparent hover:border-primary/20"
+            className="font-body text-xs uppercase tracking-[0.15em] sm:tracking-[0.2em] text-muted-foreground hover:text-primary px-6 sm:px-8 md:px-10 py-4 sm:py-6 transition-all duration-300 rounded-none border-2 border-transparent hover:border-primary/20"
             asChild
           >
             <Link to="/about">{t('hero.about')}</Link>

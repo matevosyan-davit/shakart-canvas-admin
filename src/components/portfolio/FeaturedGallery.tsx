@@ -89,17 +89,17 @@ const FeaturedGallery = () => {
         <div className="w-px h-32 bg-gradient-to-b from-transparent via-accent/30 to-transparent" />
       </div>
 
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-24 animate-slide-up">
           <div className="mb-6">
-            <span className="font-body text-xs uppercase tracking-[0.25em] text-muted-foreground">Curated Collection</span>
+            <span className="font-body text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-muted-foreground">Curated Collection</span>
           </div>
-          <h2 className="font-display text-5xl md:text-7xl text-primary mb-10 tracking-tight leading-tight">
+          <h2 className="font-display text-4xl sm:text-5xl md:text-7xl text-primary mb-10 tracking-tight leading-tight">
             {t('gallery.featuredWorks')}
           </h2>
           <div className="h-px w-24 bg-accent mx-auto mb-10" />
-          <div className="max-w-2xl mx-auto">
-            <p className="font-serif text-lg md:text-xl text-foreground/70 leading-relaxed">
+          <div className="max-w-2xl mx-auto px-4">
+            <p className="font-serif text-base sm:text-lg md:text-xl text-foreground/70 leading-relaxed">
               {t('gallery.featuredDescription')}
             </p>
           </div>
@@ -176,7 +176,7 @@ const FeaturedGallery = () => {
           <Link to="/gallery">
             <Button
               size="lg"
-              className="group relative overflow-hidden bg-accent hover:bg-accent/90 text-white font-body text-sm uppercase tracking-[0.2em] px-12 py-6 h-auto rounded-none border-2 border-accent hover:border-accent/90 transition-all duration-500 shadow-lg hover:shadow-xl hover:scale-105"
+              className="group relative overflow-hidden bg-accent hover:bg-accent/90 text-white font-body text-xs sm:text-sm uppercase tracking-[0.15em] sm:tracking-[0.2em] px-6 sm:px-8 md:px-12 py-4 sm:py-6 h-auto rounded-none border-2 border-accent hover:border-accent/90 transition-all duration-500 shadow-lg hover:shadow-xl hover:scale-105"
             >
               <span className="relative z-10 flex items-center gap-3">
                 {t('gallery.viewCompleteGallery')}

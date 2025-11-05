@@ -5,18 +5,18 @@ const ContactSection = () => {
   const { t } = useLanguage();
 
   return (
-    <section className="py-32 px-6 bg-background relative overflow-hidden">
+    <section className="py-32 px-4 sm:px-6 bg-background relative overflow-hidden">
       {/* Decorative elements */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
 
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-20 animate-slide-up">
-          <span className="font-body text-xs uppercase tracking-[0.25em] text-muted-foreground">Let's Connect</span>
+          <span className="font-body text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-muted-foreground">Let's Connect</span>
           <div className="h-px w-16 bg-accent mx-auto my-8" />
-          <h2 className="font-display text-5xl md:text-7xl text-primary mb-10 tracking-tight leading-tight">
+          <h2 className="font-display text-4xl sm:text-5xl md:text-7xl text-primary mb-10 tracking-tight leading-tight">
             {t('contact.title')}
           </h2>
-          <p className="font-serif text-lg md:text-xl text-foreground/70 max-w-2xl mx-auto leading-relaxed">
+          <p className="font-serif text-base sm:text-lg md:text-xl text-foreground/70 max-w-2xl mx-auto leading-relaxed px-4">
             {t('contact.subtitle')}
           </p>
         </div>

@@ -90,15 +90,15 @@ const ExhibitionsSection = () => {
   }
 
   return (
-    <section className="py-32 px-6 bg-surface relative">
+    <section className="py-32 px-4 sm:px-6 bg-surface relative">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-24 animate-slide-up">
-          <span className="font-body text-xs uppercase tracking-[0.25em] text-muted-foreground">Past & Present</span>
+          <span className="font-body text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-muted-foreground">Past & Present</span>
           <div className="h-px w-16 bg-accent mx-auto my-8" />
-          <h2 className="font-display text-5xl md:text-7xl text-primary mb-10 tracking-tight leading-tight">
+          <h2 className="font-display text-4xl sm:text-5xl md:text-7xl text-primary mb-10 tracking-tight leading-tight">
             {t('exhibitions.title')}
           </h2>
-          <p className="font-serif text-lg md:text-xl text-foreground/70 max-w-2xl mx-auto leading-relaxed">
+          <p className="font-serif text-base sm:text-lg md:text-xl text-foreground/70 max-w-2xl mx-auto leading-relaxed px-4">
             {t('exhibitions.subtitle')}
           </p>
         </div>
@@ -189,7 +189,7 @@ const ExhibitionsSection = () => {
           <Link to="/exhibitions">
             <Button
               variant="ghost"
-              className="font-body text-xs uppercase tracking-[0.2em] border-2 border-primary/20 hover:border-primary hover:bg-primary hover:text-primary-foreground px-10 py-6 transition-all duration-300 rounded-none mb-8"
+              className="font-body text-xs uppercase tracking-[0.15em] sm:tracking-[0.2em] border-2 border-primary/20 hover:border-primary hover:bg-primary hover:text-primary-foreground px-6 sm:px-8 md:px-10 py-4 sm:py-6 transition-all duration-300 rounded-none mb-8"
             >
               {t('exhibitions.viewAll')}
             </Button>
