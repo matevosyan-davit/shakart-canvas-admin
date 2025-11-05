@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Calendar, MapPin } from "lucide-react";
-import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslatedField } from "@/utils/multiLanguageHelpers";
@@ -203,25 +201,6 @@ const Exhibitions = () => {
               </Card>
             ))
           )}
-        </div>
-      </section>
-
-      {/* Call to Action */}
-      <section className="py-16 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <Card className="p-8 bg-card shadow-card">
-            <h2 className="font-display text-2xl font-medium text-primary mb-4">
-              {t('exhibitions.inquiries')}
-            </h2>
-            <p className="font-body text-muted-foreground mb-6">
-              {t('exhibitions.inquiriesText')}
-            </p>
-            <Link to="/contact">
-              <Button className="font-body">
-                {t('exhibitions.getInTouch')}
-              </Button>
-            </Link>
-          </Card>
         </div>
       </section>
     </main>
