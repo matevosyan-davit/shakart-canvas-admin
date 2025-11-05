@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
-import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslatedField } from "@/utils/multiLanguageHelpers";
 import { Button } from "@/components/ui/button";
@@ -30,9 +30,8 @@ interface Artwork {
 
 const FeaturedGallery = () => {
   const { t, currentLanguage } = useLanguage();
+  const navigate = useNavigate();
   const [artworks, setArtworks] = useState<Artwork[]>([]);
-  const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
 
   useEffect(() => {
@@ -123,7 +122,7 @@ const FeaturedGallery = () => {
                   <div
                     className="group cursor-pointer animate-fade-in h-full"
                     style={{ animationDelay: `${index * 0.1}s` }}
-                    onClick={() => { setSelectedArtwork(artwork); setCurrentImageIndex(0); }}
+                    onClick={() => navigate(`/artwork/${artwork.id}`)}
                   >
                     <div className="relative mb-8 overflow-hidden bg-card">
                       <div className="aspect-[4/5] overflow-hidden relative border border-border/50">
@@ -186,94 +185,6 @@ const FeaturedGallery = () => {
           </p>
         </div>
       </div>
-      
-      {/* Refined Gallery Modal */}
-      {selectedArtwork && (
-        <div 
-          className="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4"
-          onClick={() => setSelectedArtwork(null)}
-        >
-          <div className="w-[90vw] h-[90vh] gallery-glass rounded-lg overflow-hidden animate-fade-in" onClick={(e) => e.stopPropagation()}>
-            <div className="flex h-full">
-              {/* Image Section - Left Side */}
-              <div className="flex-1 bg-black/20 flex items-center justify-center p-8 relative group">
-                <img
-                  src={selectedArtwork.artwork_images[currentImageIndex]?.image_url || '/placeholder.svg'}
-                  alt={getTranslatedField(selectedArtwork, 'title', currentLanguage)}
-                  className="max-w-full max-h-full object-contain"
-                />
-                {selectedArtwork.artwork_images.length > 1 && (
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <button
-                      onClick={() => setCurrentImageIndex(prev => prev === 0 ? selectedArtwork.artwork_images.length - 1 : prev - 1)}
-                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-1 rounded transition-colors"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => setCurrentImageIndex(prev => prev === selectedArtwork.artwork_images.length - 1 ? 0 : prev + 1)}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-1 rounded transition-colors"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/30 text-white px-2 py-0.5 rounded text-xs">
-                      {currentImageIndex + 1} / {selectedArtwork.artwork_images.length}
-                    </div>
-                  </div>
-                )}
-              </div>
-              
-              {/* Content Section - Right Side */}
-              <div className="w-96 bg-card/95 p-8 flex flex-col justify-between">
-                <div className="space-y-6">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <h3 className="font-display text-2xl text-primary mb-3 tracking-gallery">
-                        {getTranslatedField(selectedArtwork, 'title', currentLanguage)}
-                      </h3>
-                      <div className="font-body text-muted-foreground space-y-1 text-sm uppercase tracking-wider">
-                        <p>{new Date(selectedArtwork.created_at).getFullYear()} • {selectedArtwork.category}</p>
-                      </div>
-                    </div>
-                    <button 
-                      onClick={() => setSelectedArtwork(null)}
-                      className="text-muted-foreground hover:text-primary transition-colors p-2"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                  
-                  <div className="w-16 h-px bg-accent"></div>
-                  
-                  <p className="font-serif text-base text-foreground leading-relaxed">
-                    {getTranslatedField(selectedArtwork, 'description', currentLanguage) || t('gallery.noDescription')}
-                  </p>
-
-                  {(selectedArtwork.width_cm || selectedArtwork.height_cm || selectedArtwork.depth_cm) && (
-                    <div className="mt-4 pt-4 border-t border-border/10">
-                      <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-2">
-                        {t('gallery.dimensions')}
-                      </p>
-                      <p className="font-body text-sm text-foreground">
-                        {selectedArtwork.width_cm && `${selectedArtwork.width_cm} ${t('gallery.cm')}`}
-                        {selectedArtwork.width_cm && selectedArtwork.height_cm && ' × '}
-                        {selectedArtwork.height_cm && `${selectedArtwork.height_cm} ${t('gallery.cm')}`}
-                        {selectedArtwork.depth_cm && ` × ${selectedArtwork.depth_cm} ${t('gallery.cm')}`}
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                <div className="pt-6 border-t border-border/20">
-                  <div className="font-display text-2xl text-primary font-semibold">
-                    ${selectedArtwork.price?.toFixed(2) || t('gallery.priceOnRequest')}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 };
