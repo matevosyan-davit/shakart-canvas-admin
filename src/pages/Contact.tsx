@@ -1,6 +1,5 @@
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Mail, Phone, Facebook, Instagram, MapPin } from "lucide-react";
+import { Mail, Phone, Facebook, Instagram } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const Contact = () => {
@@ -14,35 +13,9 @@ const Contact = () => {
           <h1 className="font-display text-6xl md:text-7xl font-bold text-primary mb-8 animate-slide-up">
             {t('contact.title')}
           </h1>
-          <p className="font-body text-2xl md:text-3xl text-muted-foreground max-w-3xl mx-auto mb-12 animate-fade-in leading-relaxed" style={{ animationDelay: "0.2s" }}>
+          <p className="font-body text-2xl md:text-3xl text-muted-foreground max-w-3xl mx-auto animate-fade-in leading-relaxed" style={{ animationDelay: "0.2s" }}>
             {t('contact.hero.description')}
           </p>
-          
-          {/* Quick Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center animate-fade-in" style={{ animationDelay: "0.4s" }}>
-            <Button
-              asChild
-              size="lg"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 text-lg font-semibold h-auto min-h-[60px] shadow-elegant hover-lift"
-            >
-              <a href="mailto:shant101094@gmail.com" className="flex items-center gap-3">
-                <Mail className="w-6 h-6" />
-                {t('contact.email')}
-              </a>
-            </Button>
-            
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground px-8 py-4 text-lg font-semibold h-auto min-h-[60px] hover-lift"
-            >
-              <a href="tel:+37491996999" className="flex items-center gap-3">
-                <Phone className="w-6 h-6" />
-                {t('contact.call')}
-              </a>
-            </Button>
-          </div>
         </div>
       </section>
 
