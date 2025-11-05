@@ -233,9 +233,9 @@ const Gallery = () => {
 
       {/* Artwork Modal */}
       {selectedArtwork && (
-        <div className="fixed inset-0 bg-black z-50">
+        <div className="fixed inset-0 bg-black z-50 overflow-hidden">
           {/* Desktop View */}
-          <div className="hidden md:flex items-center justify-center h-full p-4">
+          <div className="hidden lg:flex items-center justify-center h-full p-4">
             <div
               className="w-[90vw] h-[90vh] max-w-6xl glass rounded-lg overflow-hidden flex"
               onClick={(e) => e.stopPropagation()}
@@ -334,7 +334,7 @@ const Gallery = () => {
           </div>
 
           {/* Mobile View */}
-          <div className="md:hidden h-full flex flex-col relative">
+          <div className="lg:hidden h-full w-full flex flex-col relative overflow-hidden">
             {/* Close Button - Mobile (Fixed at top) */}
             <button
               onClick={() => setSelectedArtwork(null)}
@@ -346,15 +346,15 @@ const Gallery = () => {
             {/* Image Section with touch swipe */}
             <div
               ref={imageContainerRef}
-              className="flex-1 flex items-center justify-center relative touch-none"
-              style={{ height: `${100 - descriptionHeight}%` }}
+              className="w-full flex items-center justify-center relative touch-none bg-black"
+              style={{ height: `${100 - descriptionHeight}vh` }}
               onTouchStart={handleImageTouchStart}
               onTouchEnd={handleImageTouchEnd}
             >
               <img
                 src={selectedArtwork.artwork_images[currentImageIndex]?.image_url || '/placeholder.svg'}
                 alt={selectedArtwork.title}
-                className="w-full h-full object-contain p-4"
+                className="max-w-full max-h-full object-contain px-4"
               />
 
               {/* Image counter */}
@@ -368,7 +368,7 @@ const Gallery = () => {
             {/* Swipeable Description Panel */}
             <div
               className="absolute bottom-0 left-0 right-0 bg-card/98 backdrop-blur-sm rounded-t-3xl shadow-2xl transition-all duration-300 ease-out"
-              style={{ height: `${descriptionHeight}%` }}
+              style={{ height: `${descriptionHeight}vh` }}
             >
               {/* Drag Handle */}
               <div
