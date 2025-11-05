@@ -113,7 +113,7 @@ const ArtworkDialog = ({ artwork, open, onOpenChange }: ArtworkDialogProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-none w-screen h-screen p-0 bg-black border-0">
+      <DialogContent hideCloseButton className="max-w-none w-screen h-screen p-0 bg-black border-0">
         {/* Mobile Layout */}
         <div className="lg:hidden fixed inset-0 bg-black">
           {/* Close Button */}
