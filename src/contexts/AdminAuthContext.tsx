@@ -1,94 +1,69 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-
-interface AdminUser {
-  id: string;
-  email: string;
-  full_name: string;
-}
-
-interface AdminSession {
-  token: string;
-  expiresAt: string;
-}
+import { supabase } from '@/integrations/supabase/client';
+import type { User } from '@supabase/supabase-js';
 
 interface AdminAuthContextType {
-  admin: AdminUser | null;
+  user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 const AdminAuthContext = createContext<AdminAuthContextType | undefined>(undefined);
 
-const STORAGE_KEY = 'admin_session';
-
 export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [admin, setAdmin] = useState<AdminUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const storedSession = localStorage.getItem(STORAGE_KEY);
-    if (storedSession) {
-      try {
-        const { admin: storedAdmin, session } = JSON.parse(storedSession);
-        const expiresAt = new Date(session.expiresAt);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      setIsLoading(false);
+    });
 
-        if (expiresAt > new Date()) {
-          setAdmin(storedAdmin);
-        } else {
-          localStorage.removeItem(STORAGE_KEY);
-        }
-      } catch (error) {
-        console.error('Error loading admin session:', error);
-        localStorage.removeItem(STORAGE_KEY);
-      }
-    }
-    setIsLoading(false);
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     try {
-      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-auth`;
-
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-        },
-        body: JSON.stringify({ email, password }),
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        return { success: false, error: data.error || 'Login failed' };
+      if (error) {
+        return { success: false, error: error.message };
       }
 
-      setAdmin(data.admin);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        admin: data.admin,
-        session: data.session,
-      }));
+      if (data.user) {
+        setUser(data.user);
+        return { success: true };
+      }
 
-      return { success: true };
+      return { success: false, error: 'Login failed' };
     } catch (error) {
       console.error('Login error:', error);
       return { success: false, error: 'Network error. Please try again.' };
     }
   };
 
-  const logout = () => {
-    setAdmin(null);
-    localStorage.removeItem(STORAGE_KEY);
+  const logout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
   };
 
   return (
     <AdminAuthContext.Provider
       value={{
-        admin,
-        isAuthenticated: admin !== null,
+        user,
+        isAuthenticated: user !== null,
         isLoading,
         login,
         logout,
