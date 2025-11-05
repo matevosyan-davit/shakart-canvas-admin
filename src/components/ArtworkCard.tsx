@@ -47,11 +47,11 @@ const ArtworkCard = ({ artwork, index, onSelect }: ArtworkCardProps) => {
       onClick={() => onSelect(artwork)}
     >
       <div className="artwork-frame hover-lift mb-6">
-        <div className="aspect-square overflow-hidden relative">
+        <div className="overflow-hidden relative flex items-center justify-center bg-black/5" style={{ minHeight: '300px', maxHeight: '500px' }}>
           <img
             src={artwork.artwork_images[0]?.image_url || '/placeholder.svg'}
             alt={artwork.title}
-            className="w-full h-full object-cover transition-all duration-300 group-hover:scale-102"
+            className="w-full h-full object-contain transition-all duration-300 group-hover:scale-102"
           />
           {artwork.is_sold && (
             <div className="absolute top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-md font-body text-sm font-semibold uppercase tracking-wider shadow-lg">
