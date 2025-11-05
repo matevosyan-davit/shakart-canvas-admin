@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
 import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslatedField } from "@/utils/multiLanguageHelpers";
 import { Button } from "@/components/ui/button";
+import ArtworkDialog from "@/components/ArtworkDialog";
 
 interface ArtworkImage {
   id: string;
@@ -30,9 +31,10 @@ interface Artwork {
 
 const FeaturedGallery = () => {
   const { t, currentLanguage } = useLanguage();
-  const navigate = useNavigate();
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+  const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchFeaturedArtworks();
@@ -122,7 +124,10 @@ const FeaturedGallery = () => {
                   <div
                     className="group cursor-pointer animate-fade-in h-full"
                     style={{ animationDelay: `${index * 0.1}s` }}
-                    onClick={() => navigate(`/artwork/${artwork.id}`)}
+                    onClick={() => {
+                      setSelectedArtwork(artwork);
+                      setDialogOpen(true);
+                    }}
                   >
                     <div className="relative mb-8 overflow-hidden bg-card">
                       <div className="aspect-[4/5] overflow-hidden relative border border-border/50">
@@ -184,6 +189,12 @@ const FeaturedGallery = () => {
             Explore our complete collection of artworks
           </p>
         </div>
+
+        <ArtworkDialog
+          artwork={selectedArtwork}
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+        />
       </div>
     </section>
   );

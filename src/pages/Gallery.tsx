@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslatedField } from "@/utils/multiLanguageHelpers";
+import ArtworkDialog from "@/components/ArtworkDialog";
 
 interface ArtworkImage {
   id: string;
@@ -30,9 +31,10 @@ interface Artwork {
 
 const Gallery = () => {
   const { t, currentLanguage } = useLanguage();
-  const navigate = useNavigate();
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchArtworks();
@@ -68,8 +70,9 @@ const Gallery = () => {
     }
   };
 
-  const handleArtworkClick = (artworkId: string) => {
-    navigate(`/artwork/${artworkId}`);
+  const handleArtworkClick = (artwork: Artwork) => {
+    setSelectedArtwork(artwork);
+    setDialogOpen(true);
   };
 
   const renderArtworkGrid = () => {
@@ -88,7 +91,7 @@ const Gallery = () => {
             key={artwork.id}
             className="group overflow-hidden border-0 shadow-card hover-lift cursor-pointer bg-card"
             style={{ animationDelay: `${index * 0.1}s` }}
-            onClick={() => handleArtworkClick(artwork.id)}
+            onClick={() => handleArtworkClick(artwork)}
           >
             <div className="aspect-square overflow-hidden relative">
               <img
@@ -153,6 +156,12 @@ const Gallery = () => {
           )}
         </div>
       </section>
+
+      <ArtworkDialog
+        artwork={selectedArtwork}
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+      />
     </main>
   );
 };
