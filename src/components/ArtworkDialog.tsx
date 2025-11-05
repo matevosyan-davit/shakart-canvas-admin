@@ -121,9 +121,9 @@ const ArtworkDialog = ({ artwork, open, onOpenChange }: ArtworkDialogProps) => {
             onClick={() => onOpenChange(false)}
             variant="ghost"
             size="icon"
-            className="absolute top-4 left-4 z-50 text-white hover:bg-white/10 rounded-full"
+            className="absolute top-4 right-4 z-50 text-white hover:bg-white/10 rounded-full h-12 w-12"
           >
-            <X className="w-5 h-5" />
+            <X className="w-6 h-6" />
           </Button>
 
           {/* Image Section */}
@@ -248,9 +248,9 @@ const ArtworkDialog = ({ artwork, open, onOpenChange }: ArtworkDialogProps) => {
                   onClick={() => onOpenChange(false)}
                   variant="ghost"
                   size="icon"
-                  className="absolute top-4 left-4 text-white hover:bg-white/10 rounded-full"
+                  className="absolute top-4 right-4 text-white hover:bg-white/10 rounded-full h-12 w-12"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-6 h-6" />
                 </Button>
               </div>
 
