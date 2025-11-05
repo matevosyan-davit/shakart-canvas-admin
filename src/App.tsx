@@ -10,6 +10,7 @@ import Navigation from "@/components/Navigation";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Gallery from "./pages/Gallery";
+import ArtworkDetail from "./pages/ArtworkDetail";
 import Exhibitions from "./pages/Exhibitions";
 import Media from "./pages/Media";
 import Contact from "./pages/Contact";
@@ -32,6 +33,7 @@ const App = () => (
               <Route path="/" element={<><Navigation /><Index /></>} />
               <Route path="/about" element={<><Navigation /><About /></>} />
               <Route path="/gallery" element={<><Navigation /><Gallery /></>} />
+              <Route path="/artwork/:id" element={<ArtworkDetail />} />
               <Route path="/exhibitions" element={<><Navigation /><Exhibitions /></>} />
               <Route path="/media" element={<><Navigation /><Media /></>} />
               <Route path="/contact" element={<><Navigation /><Contact /></>} />
