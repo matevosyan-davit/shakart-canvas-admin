@@ -231,122 +231,23 @@ const Gallery = () => {
         </div>
       </section>
 
-      {/* Artwork Modal */}
+      {/* Artwork Modal - Mobile First Approach */}
       {selectedArtwork && (
-        <div className="fixed inset-0 bg-black z-50 overflow-hidden">
-          {/* Desktop View - Only shows on screens 1024px and wider */}
-          <div className="hidden lg:flex items-center justify-center h-full p-4">
-            <div
-              className="w-[90vw] h-[90vh] max-w-6xl glass rounded-lg overflow-hidden flex"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Image Section - Left on desktop */}
-              <div className="flex-1 bg-black/20 flex items-center justify-center relative group">
-                <img
-                  src={selectedArtwork.artwork_images[currentImageIndex]?.image_url || '/placeholder.svg'}
-                  alt={selectedArtwork.title}
-                  className="w-full h-full object-contain p-8"
-                />
-
-                {/* Image Navigation */}
-                {selectedArtwork.artwork_images.length > 1 && (
-                  <>
-                    <button
-                      onClick={prevImage}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors z-10"
-                    >
-                      <ChevronLeft className="w-6 h-6" />
-                    </button>
-                    <button
-                      onClick={nextImage}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors z-10"
-                    >
-                      <ChevronRight className="w-6 h-6" />
-                    </button>
-                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-white px-3 py-1.5 rounded-full text-sm">
-                      {currentImageIndex + 1} / {selectedArtwork.artwork_images.length}
-                    </div>
-                  </>
-                )}
-
-                {/* Close Button - Desktop */}
-                <button
-                  onClick={() => setSelectedArtwork(null)}
-                  className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors z-10"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-
-              {/* Content Section - Right on desktop */}
-              <div className="w-96 bg-card/95 backdrop-blur-sm overflow-y-auto">
-                <div className="p-8 flex flex-col min-h-full">
-                  <div className="flex-1 space-y-6">
-                    <div>
-                      <h3 className="font-display text-2xl font-semibold text-primary mb-3">
-                        {getTranslatedField(selectedArtwork, 'title', currentLanguage)}
-                      </h3>
-                      <div className="font-body text-muted-foreground space-y-1">
-                        <p className="text-base capitalize">{selectedArtwork.category}</p>
-                        <p className="text-sm">
-                          {new Date(selectedArtwork.created_at).getFullYear()}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="w-16 h-px bg-accent"></div>
-
-                    {getTranslatedField(selectedArtwork, 'description', currentLanguage) && (
-                      <p className="font-body text-base text-foreground leading-relaxed">
-                        {getTranslatedField(selectedArtwork, 'description', currentLanguage)}
-                      </p>
-                    )}
-
-                    {(selectedArtwork.width_cm || selectedArtwork.height_cm || selectedArtwork.depth_cm) && (
-                      <div className="pt-4 border-t border-border/10">
-                        <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-2">
-                          {t('gallery.dimensions')}
-                        </p>
-                        <p className="font-body text-base text-foreground">
-                          {selectedArtwork.width_cm && `${selectedArtwork.width_cm} ${t('gallery.cm')}`}
-                          {selectedArtwork.width_cm && selectedArtwork.height_cm && ' × '}
-                          {selectedArtwork.height_cm && `${selectedArtwork.height_cm} ${t('gallery.cm')}`}
-                          {selectedArtwork.depth_cm && ` × ${selectedArtwork.depth_cm} ${t('gallery.cm')}`}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="pt-6 mt-6 border-t border-border/20">
-                    {selectedArtwork.is_sold ? (
-                      <div className="inline-block bg-red-600 text-white px-4 py-2 rounded-md font-body text-sm font-semibold uppercase tracking-wider">
-                        {t('gallery.sold')}
-                      </div>
-                    ) : (
-                      <div className="font-display text-2xl text-primary font-semibold">
-                        ${selectedArtwork.price?.toFixed(2) || t('gallery.priceOnRequest')}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Mobile View - Shows on screens smaller than 1024px */}
-          <div className="flex lg:hidden h-screen w-screen flex-col relative overflow-hidden">
-            {/* Close Button - Mobile (Fixed at top) */}
+        <>
+          {/* MOBILE LAYOUT - Default (no media query prefix) */}
+          <div className="lg:hidden fixed inset-0 bg-black z-50 w-full h-full overflow-hidden">
+            {/* Close Button */}
             <button
               onClick={() => setSelectedArtwork(null)}
-              className="absolute top-4 right-4 bg-black/70 text-white p-2 rounded-full transition-colors z-50"
+              className="absolute top-4 right-4 bg-black/70 hover:bg-black/90 text-white p-2.5 rounded-full transition-colors z-50"
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5" />
             </button>
 
-            {/* Image Section with touch swipe */}
+            {/* Image Section - Top portion */}
             <div
               ref={imageContainerRef}
-              className="flex-shrink-0 w-full flex items-center justify-center relative touch-none bg-black"
+              className="absolute top-0 left-0 right-0 bg-black flex items-center justify-center"
               style={{ height: `${100 - descriptionHeight}vh` }}
               onTouchStart={handleImageTouchStart}
               onTouchEnd={handleImageTouchEnd}
@@ -354,34 +255,34 @@ const Gallery = () => {
               <img
                 src={selectedArtwork.artwork_images[currentImageIndex]?.image_url || '/placeholder.svg'}
                 alt={selectedArtwork.title}
-                className="w-full h-full object-contain p-4"
+                className="max-w-full max-h-full object-contain px-4"
               />
 
               {/* Image counter */}
               {selectedArtwork.artwork_images.length > 1 && (
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-white px-3 py-1.5 rounded-full text-sm">
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/70 text-white px-3 py-1.5 rounded-full text-xs font-medium">
                   {currentImageIndex + 1} / {selectedArtwork.artwork_images.length}
                 </div>
               )}
             </div>
 
-            {/* Swipeable Description Panel */}
+            {/* Description Panel - Bottom portion */}
             <div
-              className="absolute bottom-0 left-0 right-0 bg-card/98 backdrop-blur-sm rounded-t-3xl shadow-2xl transition-all duration-300 ease-out"
+              className="absolute bottom-0 left-0 right-0 bg-card rounded-t-3xl shadow-2xl overflow-hidden"
               style={{ height: `${descriptionHeight}vh` }}
             >
               {/* Drag Handle */}
               <div
-                className="w-full py-3 flex justify-center cursor-grab active:cursor-grabbing"
+                className="w-full py-4 flex justify-center active:cursor-grabbing select-none"
                 onTouchStart={handleDescriptionTouchStart}
                 onTouchMove={handleDescriptionTouchMove}
                 onTouchEnd={handleDescriptionTouchEnd}
               >
-                <div className="w-12 h-1.5 bg-muted-foreground/30 rounded-full"></div>
+                <div className="w-12 h-1 bg-muted-foreground/40 rounded-full"></div>
               </div>
 
               {/* Scrollable Content */}
-              <div className="px-6 pb-6 overflow-y-auto" style={{ height: 'calc(100% - 40px)' }}>
+              <div className="px-6 pb-8 overflow-y-auto" style={{ maxHeight: `calc(${descriptionHeight}vh - 48px)` }}>
                 <div className="space-y-4">
                   <div>
                     <h3 className="font-display text-2xl font-semibold text-primary mb-2">
@@ -404,7 +305,7 @@ const Gallery = () => {
                   )}
 
                   {(selectedArtwork.width_cm || selectedArtwork.height_cm || selectedArtwork.depth_cm) && (
-                    <div className="pt-4 border-t border-border/10">
+                    <div className="pt-3 border-t border-border/10">
                       <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-2">
                         {t('gallery.dimensions')}
                       </p>
@@ -432,7 +333,105 @@ const Gallery = () => {
               </div>
             </div>
           </div>
-        </div>
+
+          {/* DESKTOP LAYOUT - Only on large screens */}
+          <div className="hidden lg:block fixed inset-0 bg-black z-50">
+            <div className="w-full h-full flex items-center justify-center p-4">
+              <div className="w-[90vw] h-[90vh] max-w-6xl glass rounded-lg overflow-hidden flex">
+                {/* Image Section - Left */}
+                <div className="flex-1 bg-black/20 flex items-center justify-center relative">
+                  <img
+                    src={selectedArtwork.artwork_images[currentImageIndex]?.image_url || '/placeholder.svg'}
+                    alt={selectedArtwork.title}
+                    className="w-full h-full object-contain p-8"
+                  />
+
+                  {/* Image Navigation Buttons */}
+                  {selectedArtwork.artwork_images.length > 1 && (
+                    <>
+                      <button
+                        onClick={prevImage}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors"
+                      >
+                        <ChevronLeft className="w-6 h-6" />
+                      </button>
+                      <button
+                        onClick={nextImage}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors"
+                      >
+                        <ChevronRight className="w-6 h-6" />
+                      </button>
+                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-white px-3 py-1.5 rounded-full text-sm">
+                        {currentImageIndex + 1} / {selectedArtwork.artwork_images.length}
+                      </div>
+                    </>
+                  )}
+
+                  {/* Close Button */}
+                  <button
+                    onClick={() => setSelectedArtwork(null)}
+                    className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+
+                {/* Content Section - Right */}
+                <div className="w-96 bg-card/95 backdrop-blur-sm overflow-y-auto">
+                  <div className="p-8 flex flex-col min-h-full">
+                    <div className="flex-1 space-y-6">
+                      <div>
+                        <h3 className="font-display text-2xl font-semibold text-primary mb-3">
+                          {getTranslatedField(selectedArtwork, 'title', currentLanguage)}
+                        </h3>
+                        <div className="font-body text-muted-foreground space-y-1">
+                          <p className="text-base capitalize">{selectedArtwork.category}</p>
+                          <p className="text-sm">
+                            {new Date(selectedArtwork.created_at).getFullYear()}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="w-16 h-px bg-accent"></div>
+
+                      {getTranslatedField(selectedArtwork, 'description', currentLanguage) && (
+                        <p className="font-body text-base text-foreground leading-relaxed">
+                          {getTranslatedField(selectedArtwork, 'description', currentLanguage)}
+                        </p>
+                      )}
+
+                      {(selectedArtwork.width_cm || selectedArtwork.height_cm || selectedArtwork.depth_cm) && (
+                        <div className="pt-4 border-t border-border/10">
+                          <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-2">
+                            {t('gallery.dimensions')}
+                          </p>
+                          <p className="font-body text-base text-foreground">
+                            {selectedArtwork.width_cm && `${selectedArtwork.width_cm} ${t('gallery.cm')}`}
+                            {selectedArtwork.width_cm && selectedArtwork.height_cm && ' × '}
+                            {selectedArtwork.height_cm && `${selectedArtwork.height_cm} ${t('gallery.cm')}`}
+                            {selectedArtwork.depth_cm && ` × ${selectedArtwork.depth_cm} ${t('gallery.cm')}`}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="pt-6 mt-6 border-t border-border/20">
+                      {selectedArtwork.is_sold ? (
+                        <div className="inline-block bg-red-600 text-white px-4 py-2 rounded-md font-body text-sm font-semibold uppercase tracking-wider">
+                          {t('gallery.sold')}
+                        </div>
+                      ) : (
+                        <div className="font-display text-2xl text-primary font-semibold">
+                          ${selectedArtwork.price?.toFixed(2) || t('gallery.priceOnRequest')}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </main>
   );
