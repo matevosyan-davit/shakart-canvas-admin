@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -34,6 +34,11 @@ const Gallery = () => {
   const [loading, setLoading] = useState(true);
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [descriptionHeight, setDescriptionHeight] = useState(30); // percentage from bottom
+  const [isDragging, setIsDragging] = useState(false);
+  const touchStartY = useRef(0);
+  const touchStartX = useRef(0);
+  const imageContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchArtworks();
@@ -72,11 +77,12 @@ const Gallery = () => {
   const handleArtworkClick = (artwork: Artwork) => {
     setSelectedArtwork(artwork);
     setCurrentImageIndex(0);
+    setDescriptionHeight(30);
   };
 
   const nextImage = () => {
     if (selectedArtwork && selectedArtwork.artwork_images.length > 1) {
-      setCurrentImageIndex((prev) => 
+      setCurrentImageIndex((prev) =>
         prev === selectedArtwork.artwork_images.length - 1 ? 0 : prev + 1
       );
     }
@@ -84,9 +90,62 @@ const Gallery = () => {
 
   const prevImage = () => {
     if (selectedArtwork && selectedArtwork.artwork_images.length > 1) {
-      setCurrentImageIndex((prev) => 
+      setCurrentImageIndex((prev) =>
         prev === 0 ? selectedArtwork.artwork_images.length - 1 : prev - 1
       );
+    }
+  };
+
+  // Handle horizontal swipe for image navigation
+  const handleImageTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleImageTouchEnd = (e: React.TouchEvent) => {
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    const diffX = touchStartX.current - touchEndX;
+    const diffY = Math.abs(touchStartY.current - touchEndY);
+
+    // Only trigger if horizontal swipe is more significant than vertical
+    if (Math.abs(diffX) > 50 && Math.abs(diffX) > diffY) {
+      if (diffX > 0) {
+        nextImage();
+      } else {
+        prevImage();
+      }
+    }
+  };
+
+  // Handle vertical swipe for description panel
+  const handleDescriptionTouchStart = (e: React.TouchEvent) => {
+    touchStartY.current = e.touches[0].clientY;
+    setIsDragging(true);
+  };
+
+  const handleDescriptionTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    const currentY = e.touches[0].clientY;
+    const windowHeight = window.innerHeight;
+    const newHeight = ((windowHeight - currentY) / windowHeight) * 100;
+
+    // Constrain between 15% and 85%
+    const constrainedHeight = Math.max(15, Math.min(85, newHeight));
+    setDescriptionHeight(constrainedHeight);
+  };
+
+  const handleDescriptionTouchEnd = () => {
+    setIsDragging(false);
+    // Snap to nearest position
+    if (descriptionHeight < 25) {
+      setDescriptionHeight(15);
+    } else if (descriptionHeight < 50) {
+      setDescriptionHeight(30);
+    } else if (descriptionHeight < 70) {
+      setDescriptionHeight(60);
+    } else {
+      setDescriptionHeight(85);
     }
   };
 
@@ -174,72 +233,172 @@ const Gallery = () => {
 
       {/* Artwork Modal */}
       {selectedArtwork && (
-        <div
-          className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-0 md:p-4"
-          onClick={() => setSelectedArtwork(null)}
-        >
-          <div
-            className="w-full h-full md:w-[90vw] md:h-[90vh] md:max-w-6xl glass md:rounded-lg overflow-hidden flex flex-col md:flex-row"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Image Section - Top on mobile, Left on desktop */}
-            <div className="flex-1 bg-black/20 flex items-center justify-center relative group">
-              <img
-                src={selectedArtwork.artwork_images[currentImageIndex]?.image_url || '/placeholder.svg'}
-                alt={selectedArtwork.title}
-                className="w-full h-full object-contain p-4 md:p-8"
-              />
+        <div className="fixed inset-0 bg-black z-50">
+          {/* Desktop View */}
+          <div className="hidden md:flex items-center justify-center h-full p-4">
+            <div
+              className="w-[90vw] h-[90vh] max-w-6xl glass rounded-lg overflow-hidden flex"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Image Section - Left on desktop */}
+              <div className="flex-1 bg-black/20 flex items-center justify-center relative group">
+                <img
+                  src={selectedArtwork.artwork_images[currentImageIndex]?.image_url || '/placeholder.svg'}
+                  alt={selectedArtwork.title}
+                  className="w-full h-full object-contain p-8"
+                />
 
-              {/* Image Navigation */}
-              {selectedArtwork.artwork_images.length > 1 && (
-                <>
-                  <button
-                    onClick={prevImage}
-                    className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 md:p-3 rounded-full transition-colors z-10"
-                  >
-                    <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
-                  </button>
-                  <button
-                    onClick={nextImage}
-                    className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 md:p-3 rounded-full transition-colors z-10"
-                  >
-                    <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
-                  </button>
-                  <div className="absolute bottom-2 md:bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-white px-3 py-1.5 rounded-full text-sm">
-                    {currentImageIndex + 1} / {selectedArtwork.artwork_images.length}
-                  </div>
-                </>
-              )}
-            </div>
+                {/* Image Navigation */}
+                {selectedArtwork.artwork_images.length > 1 && (
+                  <>
+                    <button
+                      onClick={prevImage}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors z-10"
+                    >
+                      <ChevronLeft className="w-6 h-6" />
+                    </button>
+                    <button
+                      onClick={nextImage}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors z-10"
+                    >
+                      <ChevronRight className="w-6 h-6" />
+                    </button>
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-white px-3 py-1.5 rounded-full text-sm">
+                      {currentImageIndex + 1} / {selectedArtwork.artwork_images.length}
+                    </div>
+                  </>
+                )}
 
-            {/* Content Section - Bottom on mobile, Right on desktop */}
-            <div className="w-full md:w-96 bg-card/95 backdrop-blur-sm overflow-y-auto">
-              <div className="p-6 md:p-8 flex flex-col min-h-full">
-                <div className="flex-1 space-y-4 md:space-y-6">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <h3 className="font-display text-xl md:text-2xl font-semibold text-primary mb-2 md:mb-3">
+                {/* Close Button - Desktop */}
+                <button
+                  onClick={() => setSelectedArtwork(null)}
+                  className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors z-10"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              {/* Content Section - Right on desktop */}
+              <div className="w-96 bg-card/95 backdrop-blur-sm overflow-y-auto">
+                <div className="p-8 flex flex-col min-h-full">
+                  <div className="flex-1 space-y-6">
+                    <div>
+                      <h3 className="font-display text-2xl font-semibold text-primary mb-3">
                         {getTranslatedField(selectedArtwork, 'title', currentLanguage)}
                       </h3>
                       <div className="font-body text-muted-foreground space-y-1">
-                        <p className="text-sm md:text-base capitalize">{selectedArtwork.category}</p>
-                        <p className="text-xs md:text-sm">
+                        <p className="text-base capitalize">{selectedArtwork.category}</p>
+                        <p className="text-sm">
                           {new Date(selectedArtwork.created_at).getFullYear()}
                         </p>
                       </div>
                     </div>
-                    <button
-                      onClick={() => setSelectedArtwork(null)}
-                      className="text-muted-foreground hover:text-primary transition-colors p-2 -mt-2 -mr-2"
-                    >
-                      <span className="text-xl md:text-2xl">✕</span>
-                    </button>
+
+                    <div className="w-16 h-px bg-accent"></div>
+
+                    {getTranslatedField(selectedArtwork, 'description', currentLanguage) && (
+                      <p className="font-body text-base text-foreground leading-relaxed">
+                        {getTranslatedField(selectedArtwork, 'description', currentLanguage)}
+                      </p>
+                    )}
+
+                    {(selectedArtwork.width_cm || selectedArtwork.height_cm || selectedArtwork.depth_cm) && (
+                      <div className="pt-4 border-t border-border/10">
+                        <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-2">
+                          {t('gallery.dimensions')}
+                        </p>
+                        <p className="font-body text-base text-foreground">
+                          {selectedArtwork.width_cm && `${selectedArtwork.width_cm} ${t('gallery.cm')}`}
+                          {selectedArtwork.width_cm && selectedArtwork.height_cm && ' × '}
+                          {selectedArtwork.height_cm && `${selectedArtwork.height_cm} ${t('gallery.cm')}`}
+                          {selectedArtwork.depth_cm && ` × ${selectedArtwork.depth_cm} ${t('gallery.cm')}`}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="pt-6 mt-6 border-t border-border/20">
+                    {selectedArtwork.is_sold ? (
+                      <div className="inline-block bg-red-600 text-white px-4 py-2 rounded-md font-body text-sm font-semibold uppercase tracking-wider">
+                        {t('gallery.sold')}
+                      </div>
+                    ) : (
+                      <div className="font-display text-2xl text-primary font-semibold">
+                        ${selectedArtwork.price?.toFixed(2) || t('gallery.priceOnRequest')}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile View */}
+          <div className="md:hidden h-full flex flex-col relative">
+            {/* Close Button - Mobile (Fixed at top) */}
+            <button
+              onClick={() => setSelectedArtwork(null)}
+              className="absolute top-4 right-4 bg-black/70 text-white p-2 rounded-full transition-colors z-50"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            {/* Image Section with touch swipe */}
+            <div
+              ref={imageContainerRef}
+              className="flex-1 flex items-center justify-center relative touch-none"
+              style={{ height: `${100 - descriptionHeight}%` }}
+              onTouchStart={handleImageTouchStart}
+              onTouchEnd={handleImageTouchEnd}
+            >
+              <img
+                src={selectedArtwork.artwork_images[currentImageIndex]?.image_url || '/placeholder.svg'}
+                alt={selectedArtwork.title}
+                className="w-full h-full object-contain p-4"
+              />
+
+              {/* Image counter */}
+              {selectedArtwork.artwork_images.length > 1 && (
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-white px-3 py-1.5 rounded-full text-sm">
+                  {currentImageIndex + 1} / {selectedArtwork.artwork_images.length}
+                </div>
+              )}
+            </div>
+
+            {/* Swipeable Description Panel */}
+            <div
+              className="absolute bottom-0 left-0 right-0 bg-card/98 backdrop-blur-sm rounded-t-3xl shadow-2xl transition-all duration-300 ease-out"
+              style={{ height: `${descriptionHeight}%` }}
+            >
+              {/* Drag Handle */}
+              <div
+                className="w-full py-3 flex justify-center cursor-grab active:cursor-grabbing"
+                onTouchStart={handleDescriptionTouchStart}
+                onTouchMove={handleDescriptionTouchMove}
+                onTouchEnd={handleDescriptionTouchEnd}
+              >
+                <div className="w-12 h-1.5 bg-muted-foreground/30 rounded-full"></div>
+              </div>
+
+              {/* Scrollable Content */}
+              <div className="px-6 pb-6 overflow-y-auto" style={{ height: 'calc(100% - 40px)' }}>
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="font-display text-2xl font-semibold text-primary mb-2">
+                      {getTranslatedField(selectedArtwork, 'title', currentLanguage)}
+                    </h3>
+                    <div className="font-body text-muted-foreground space-y-1">
+                      <p className="text-base capitalize">{selectedArtwork.category}</p>
+                      <p className="text-sm">
+                        {new Date(selectedArtwork.created_at).getFullYear()}
+                      </p>
+                    </div>
                   </div>
 
                   <div className="w-16 h-px bg-accent"></div>
 
                   {getTranslatedField(selectedArtwork, 'description', currentLanguage) && (
-                    <p className="font-body text-sm md:text-base text-foreground leading-relaxed">
+                    <p className="font-body text-base text-foreground leading-relaxed">
                       {getTranslatedField(selectedArtwork, 'description', currentLanguage)}
                     </p>
                   )}
@@ -249,7 +408,7 @@ const Gallery = () => {
                       <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-2">
                         {t('gallery.dimensions')}
                       </p>
-                      <p className="font-body text-sm md:text-base text-foreground">
+                      <p className="font-body text-base text-foreground">
                         {selectedArtwork.width_cm && `${selectedArtwork.width_cm} ${t('gallery.cm')}`}
                         {selectedArtwork.width_cm && selectedArtwork.height_cm && ' × '}
                         {selectedArtwork.height_cm && `${selectedArtwork.height_cm} ${t('gallery.cm')}`}
@@ -257,18 +416,18 @@ const Gallery = () => {
                       </p>
                     </div>
                   )}
-                </div>
 
-                <div className="pt-4 md:pt-6 mt-4 md:mt-6 border-t border-border/20">
-                  {selectedArtwork.is_sold ? (
-                    <div className="inline-block bg-red-600 text-white px-4 py-2 rounded-md font-body text-sm font-semibold uppercase tracking-wider">
-                      {t('gallery.sold')}
-                    </div>
-                  ) : (
-                    <div className="font-display text-xl md:text-2xl text-primary font-semibold">
-                      ${selectedArtwork.price?.toFixed(2) || t('gallery.priceOnRequest')}
-                    </div>
-                  )}
+                  <div className="pt-4 border-t border-border/20">
+                    {selectedArtwork.is_sold ? (
+                      <div className="inline-block bg-red-600 text-white px-4 py-2 rounded-md font-body text-sm font-semibold uppercase tracking-wider">
+                        {t('gallery.sold')}
+                      </div>
+                    ) : (
+                      <div className="font-display text-2xl text-primary font-semibold">
+                        ${selectedArtwork.price?.toFixed(2) || t('gallery.priceOnRequest')}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
