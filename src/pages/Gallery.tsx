@@ -32,10 +32,16 @@ const Gallery = () => {
   const [loading, setLoading] = useState(true);
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 15;
 
   useEffect(() => {
     fetchArtworks();
   }, []);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentPage]);
 
   const fetchArtworks = async () => {
     try {
@@ -72,6 +78,11 @@ const Gallery = () => {
     setDialogOpen(true);
   };
 
+  const totalPages = Math.ceil(artworks.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentArtworks = artworks.slice(startIndex, endIndex);
+
   const renderArtworkGrid = () => {
     if (artworks.length === 0) {
       return (
@@ -83,7 +94,7 @@ const Gallery = () => {
 
     return (
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {artworks.map((artwork, index) => (
+        {currentArtworks.map((artwork, index) => (
           <Card
             key={artwork.id}
             className="group overflow-hidden border-0 shadow-card hover-lift cursor-pointer bg-card"
@@ -97,7 +108,7 @@ const Gallery = () => {
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
               {artwork.is_sold && (
-                <div className="absolute top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-md font-body text-sm font-semibold uppercase tracking-wider shadow-lg">
+                <div className="absolute top-4 right-4 bg-accent text-white px-3 py-1 font-body text-xs uppercase tracking-widest">
                   {t('gallery.sold')}
                 </div>
               )}
@@ -113,6 +124,46 @@ const Gallery = () => {
             </div>
           </Card>
         ))}
+      </div>
+    );
+  };
+
+  const renderPagination = () => {
+    if (totalPages <= 1) return null;
+
+    return (
+      <div className="flex items-center justify-center gap-2 mt-16">
+        <button
+          onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+          disabled={currentPage === 1}
+          className="px-4 py-2 font-body text-sm uppercase tracking-[0.25em] text-foreground/70 hover:text-accent disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-300"
+        >
+          Prev
+        </button>
+
+        <div className="flex items-center gap-2">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`w-10 h-10 font-body text-sm transition-colors duration-300 ${
+                currentPage === page
+                  ? 'text-accent border-b border-accent'
+                  : 'text-foreground/50 hover:text-accent'
+              }`}
+            >
+              {page}
+            </button>
+          ))}
+        </div>
+
+        <button
+          onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 font-body text-sm uppercase tracking-[0.25em] text-foreground/70 hover:text-accent disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-300"
+        >
+          Next
+        </button>
       </div>
     );
   };
@@ -139,7 +190,10 @@ const Gallery = () => {
               <p className="text-muted-foreground">{t('gallery.loadingArtworks')}</p>
             </div>
           ) : (
-            renderArtworkGrid()
+            <>
+              {renderArtworkGrid()}
+              {renderPagination()}
+            </>
           )}
         </div>
       </section>
