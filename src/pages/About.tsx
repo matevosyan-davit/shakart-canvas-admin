@@ -115,7 +115,7 @@ const About = () => {
                       {t('contact.phone')}
                     </p>
                     <p className="font-body text-base md:text-xl text-foreground group-hover:text-accent transition-colors font-medium">
-                      +374 91 99 69 99
+                      +374 91 99 66 99
                     </p>
                   </div>
                 </a>
