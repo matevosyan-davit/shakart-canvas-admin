@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Mail, Phone, Facebook, Instagram } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import artistPortrait from "@/assets/481053385_1186855636132457_1785870235778242130_n copy.jpg";
+import ExhibitionsSection from "@/components/portfolio/ExhibitionsSection";
 
 const About = () => {
   const { t } = useLanguage();
@@ -62,6 +63,9 @@ const About = () => {
           </div>
         </div>
       </section>
+
+      {/* Exhibitions Section */}
+      <ExhibitionsSection />
 
       {/* Contact Information Section - Mobile Optimized */}
       <section className="py-12 md:py-16 px-4 md:px-6 bg-surface">
