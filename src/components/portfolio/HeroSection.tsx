@@ -1,5 +1,3 @@
-import { Button } from "@/components/ui/button";
-import { ArrowDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import heroImage from "@/assets/481075919_1187898589361495_3287294358418089157_n.jpg";
@@ -8,63 +6,55 @@ const HeroSection = () => {
   const { t } = useLanguage();
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image with refined overlay */}
+      {/* Background Image - More visible bohemian style */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${heroImage})` }}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background/70 backdrop-blur-[2px]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/25 via-background/35 to-background/85" />
       </div>
 
-      {/* Decorative top border */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-accent to-transparent opacity-50" />
+      {/* Content - Minimalistic & Bohemian */}
+      <div className="relative z-10 text-center max-w-5xl mx-auto px-4 sm:px-6 py-20 animate-fade-in" style={{ animationDelay: "0.2s" }}>
+        <div className="space-y-12">
+          <div className="w-20 h-px bg-accent mx-auto opacity-60" />
 
-      {/* Content */}
-      <div className="relative z-10 text-center max-w-6xl mx-auto px-4 sm:px-6 py-20 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-        <h1 className="font-display text-5xl sm:text-6xl md:text-8xl lg:text-9xl text-primary mb-10 leading-[0.95] tracking-tight">
-          {t('hero.title')}
-        </h1>
+          <h1 className="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl text-primary mb-6 leading-[0.85] tracking-tighter">
+            {t('hero.title')}
+          </h1>
 
-        <div className="max-w-2xl mx-auto mb-14 px-4">
-          <div className="h-px w-16 bg-accent mx-auto mb-8" />
-          <p className="font-serif text-lg sm:text-xl md:text-2xl text-foreground/80 leading-relaxed">
+          <div className="w-20 h-px bg-accent mx-auto opacity-60" />
+
+          <p className="font-serif text-xl sm:text-2xl md:text-3xl text-foreground/70 max-w-2xl mx-auto leading-loose tracking-wide px-4">
             {t('hero.description')}
           </p>
-        </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 sm:gap-5 justify-center items-center">
-          <Button
-            variant="ghost"
-            size="lg"
-            className="group font-body text-xs uppercase tracking-[0.15em] sm:tracking-[0.2em] border-2 border-primary/20 hover:border-primary hover:bg-primary hover:text-primary-foreground px-6 sm:px-8 md:px-10 py-4 sm:py-6 transition-all duration-300 rounded-none"
-            asChild
-          >
-            <Link to="/gallery">
-              <span>{t('hero.explore')}</span>
+          <div className="flex flex-col sm:flex-row gap-10 justify-center items-center pt-8">
+            <Link
+              to="/gallery"
+              className="group relative font-body text-sm uppercase tracking-[0.25em] text-primary hover:text-accent transition-colors duration-500"
+            >
+              <span className="relative z-10">{t('hero.explore')}</span>
+              <div className="absolute bottom-0 left-0 w-full h-px bg-accent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
             </Link>
-          </Button>
-          <Button
-            variant="ghost"
-            size="lg"
-            className="font-body text-xs uppercase tracking-[0.15em] sm:tracking-[0.2em] text-muted-foreground hover:text-primary px-6 sm:px-8 md:px-10 py-4 sm:py-6 transition-all duration-300 rounded-none border-2 border-transparent hover:border-primary/20"
-            asChild
-          >
-            <Link to="/about">{t('hero.about')}</Link>
-          </Button>
+
+            <div className="hidden sm:block w-px h-8 bg-border/30" />
+
+            <Link
+              to="/about"
+              className="group relative font-body text-sm uppercase tracking-[0.25em] text-primary hover:text-accent transition-colors duration-500"
+            >
+              <span className="relative z-10">{t('hero.about')}</span>
+              <div className="absolute bottom-0 left-0 w-full h-px bg-accent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+            </Link>
+          </div>
         </div>
       </div>
 
-      {/* Refined Scroll Indicator */}
-      <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 animate-float opacity-60">
-        <div className="flex flex-col items-center gap-3">
-          <span className="font-body text-[10px] uppercase tracking-widest text-muted-foreground">Scroll</span>
-          <div className="w-px h-12 bg-gradient-to-b from-muted-foreground/40 to-transparent" />
-          <ArrowDown className="w-3 h-3 text-muted-foreground/70" />
-        </div>
+      {/* Minimal Scroll Indicator */}
+      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 animate-float opacity-50">
+        <div className="w-px h-20 bg-gradient-to-b from-transparent via-accent/40 to-transparent" />
       </div>
-
-      {/* Decorative bottom border */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-accent to-transparent opacity-50" />
     </section>
   );
 };

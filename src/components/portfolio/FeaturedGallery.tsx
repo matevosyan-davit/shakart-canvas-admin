@@ -80,26 +80,15 @@ const FeaturedGallery = () => {
   };
 
   return (
-    <section className="py-32 px-6 bg-surface relative">
-      {/* Decorative side elements */}
-      <div className="absolute left-8 top-1/2 -translate-y-1/2 hidden lg:block">
-        <div className="w-px h-32 bg-gradient-to-b from-transparent via-accent/30 to-transparent" />
-      </div>
-      <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden lg:block">
-        <div className="w-px h-32 bg-gradient-to-b from-transparent via-accent/30 to-transparent" />
-      </div>
-
+    <section className="py-40 px-6 bg-background relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="text-center mb-24 animate-slide-up">
-          <div className="mb-6">
-            <span className="font-body text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-muted-foreground">Curated Collection</span>
-          </div>
-          <h2 className="font-display text-4xl sm:text-5xl md:text-7xl text-primary mb-10 tracking-tight leading-tight">
+        <div className="text-center mb-32 animate-slide-up">
+          <div className="w-24 h-px bg-accent mx-auto mb-12 opacity-50" />
+          <h2 className="font-display text-5xl sm:text-6xl md:text-7xl text-primary mb-16 tracking-tighter leading-tight">
             {t('gallery.featuredWorks')}
           </h2>
-          <div className="h-px w-24 bg-accent mx-auto mb-10" />
           <div className="max-w-2xl mx-auto px-4">
-            <p className="font-serif text-base sm:text-lg md:text-xl text-foreground/70 leading-relaxed">
+            <p className="font-serif text-lg sm:text-xl md:text-2xl text-foreground/60 leading-loose tracking-wide">
               {t('gallery.featuredDescription')}
             </p>
           </div>
@@ -129,65 +118,50 @@ const FeaturedGallery = () => {
                       setDialogOpen(true);
                     }}
                   >
-                    <div className="relative mb-8 overflow-hidden bg-card">
-                      <div className="aspect-[4/5] overflow-hidden relative border border-border/50">
+                    <div className="relative mb-6 overflow-hidden">
+                      <div className="aspect-[4/5] overflow-hidden relative">
                         <img
                           src={artwork.artwork_images[0]?.image_url || '/placeholder.svg'}
                           alt={getTranslatedField(artwork, 'title', currentLanguage)}
-                          className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-95"
+                          className="w-full h-full object-cover transition-all duration-700 group-hover:scale-[1.02]"
                         />
                         {artwork.is_sold && (
-                          <div className="absolute top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-md font-body text-sm font-semibold uppercase tracking-wider shadow-lg">
+                          <div className="absolute top-4 right-4 bg-accent text-white px-3 py-1 font-body text-xs uppercase tracking-widest">
                             {t('gallery.sold')}
                           </div>
                         )}
-                        <div className="absolute inset-0 border-2 border-transparent group-hover:border-accent/20 transition-all duration-500" />
+                        <div className="absolute inset-0 border border-transparent group-hover:border-accent/30 transition-all duration-500" />
                       </div>
-                      <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     </div>
-                    <div className="space-y-4">
-                      <div className="text-center space-y-2">
-                        <h3 className="font-display text-2xl md:text-3xl text-primary tracking-tight">
+                    <div className="space-y-3">
+                      <div className="text-center space-y-1">
+                        <h3 className="font-display text-xl md:text-2xl text-primary tracking-tight">
                           {getTranslatedField(artwork, 'title', currentLanguage)}
                         </h3>
-                        <div className="font-body text-xs text-muted-foreground uppercase tracking-[0.15em]">
-                          <span>{new Date(artwork.created_at).getFullYear()}</span>
-                          <span className="mx-2">•</span>
-                          <span>{artwork.category}</span>
+                        <div className="font-body text-xs text-muted-foreground uppercase tracking-[0.2em]">
+                          {new Date(artwork.created_at).getFullYear()}
                         </div>
-                      </div>
-                      <div className="text-center">
-                        <span className="font-body text-sm text-foreground/80">
-                          ${artwork.price?.toFixed(2) || t('gallery.priceOnRequest')}
-                        </span>
                       </div>
                     </div>
                   </div>
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="hidden md:flex -left-12 lg:-left-16 h-12 w-12 border-2 border-accent/30 hover:border-accent hover:bg-accent/10" />
-            <CarouselNext className="hidden md:flex -right-12 lg:-right-16 h-12 w-12 border-2 border-accent/30 hover:border-accent hover:bg-accent/10" />
+            <CarouselPrevious className="hidden md:flex -left-12 lg:-left-16 h-10 w-10 border border-accent/20 hover:border-accent/40 hover:bg-transparent" />
+            <CarouselNext className="hidden md:flex -right-12 lg:-right-16 h-10 w-10 border border-accent/20 hover:border-accent/40 hover:bg-transparent" />
           </Carousel>
         )}
         
-        <div className="text-center mt-32">
-          <div className="h-px w-24 bg-accent mx-auto mb-12" />
-          <Link to="/gallery">
-            <Button
-              size="lg"
-              className="group relative overflow-hidden bg-accent hover:bg-accent/90 text-white font-body text-xs sm:text-sm uppercase tracking-[0.15em] sm:tracking-[0.2em] px-6 sm:px-8 md:px-12 py-4 sm:py-6 h-auto rounded-none border-2 border-accent hover:border-accent/90 transition-all duration-500 shadow-lg hover:shadow-xl hover:scale-105"
-            >
-              <span className="relative z-10 flex items-center gap-3">
-                {t('gallery.viewCompleteGallery')}
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-            </Button>
+        <div className="text-center mt-40">
+          <div className="h-px w-24 bg-accent mx-auto mb-16 opacity-50" />
+          <Link
+            to="/gallery"
+            className="group relative inline-flex items-center gap-2 font-body text-sm uppercase tracking-[0.25em] text-primary hover:text-accent transition-colors duration-500"
+          >
+            <span className="relative z-10">{t('gallery.viewCompleteGallery')}</span>
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+            <div className="absolute bottom-0 left-0 w-full h-px bg-accent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
           </Link>
-          <p className="mt-6 font-serif text-sm text-muted-foreground">
-            Explore our complete collection of artworks
-          </p>
         </div>
 
         <ArtworkDialog
