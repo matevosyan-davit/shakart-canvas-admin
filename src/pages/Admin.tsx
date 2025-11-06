@@ -10,11 +10,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Upload, X, CreditCard as Edit, Trash2, Plus, LogOut, GripVertical, LayoutGrid, LayoutList } from "lucide-react";
+import { Upload, X, CreditCard as Edit, Trash2, Plus, GripVertical, LayoutGrid, LayoutList } from "lucide-react";
 import { AdminLanguageSwitcher } from "@/components/AdminLanguageSwitcher";
 import { Language } from "@/contexts/LanguageContext";
 import { getLanguageField, getLanguageValue, createArtworkUpdate, createExhibitionUpdate, createMediaUpdate } from "@/utils/adminLanguageHelpers";
-import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import {
   DndContext,
   closestCenter,
@@ -311,7 +310,6 @@ const SortableArtworkGridItem = ({ artwork, adminLanguage, onEdit, onDelete }: S
 
 const Admin = () => {
   const navigate = useNavigate();
-  const { admin, logout } = useAdminAuth();
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
   const [previews, setPreviews] = useState<string[]>([]);
@@ -337,12 +335,6 @@ const Admin = () => {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
-
-  const handleLogout = () => {
-    logout();
-    navigate('/admin-shant');
-    toast.success('Logged out successfully');
-  };
 
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
@@ -1111,24 +1103,14 @@ const Admin = () => {
             <div>
               <h1 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-primary mb-1 md:mb-2 tracking-tight">Admin Panel</h1>
               <p className="font-body text-xs sm:text-sm text-muted-foreground">
-                Welcome, {admin?.full_name || admin?.email}
+                Manage your portfolio content
               </p>
             </div>
             <div className="flex items-center gap-2 sm:gap-4">
-              {/* Language Switcher */}
               <AdminLanguageSwitcher
                 currentLanguage={adminLanguage}
                 onLanguageChange={setAdminLanguage}
               />
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleLogout}
-                className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3"
-              >
-                <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="hidden sm:inline">Logout</span>
-              </Button>
             </div>
           </div>
           <div className="h-px w-full bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
