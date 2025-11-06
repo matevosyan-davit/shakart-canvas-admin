@@ -645,7 +645,9 @@ const Admin = () => {
 
     const { data, error } = await supabase.storage
       .from('exhibition-images')
-      .upload(fileName, file);
+      .upload(fileName, file, {
+        upsert: true
+      });
 
     if (error) throw error;
 
@@ -672,7 +674,9 @@ const Admin = () => {
 
     const { data, error } = await supabase.storage
       .from('artwork-images')
-      .upload(fileName, file);
+      .upload(fileName, file, {
+        upsert: true
+      });
 
     if (error) throw error;
 
