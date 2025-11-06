@@ -32,20 +32,32 @@ export default function AdminLogin() {
     setIsLoading(true);
 
     try {
+      console.log('Attempting login with email:', email);
+
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+        email: email.trim(),
+        password: password,
       });
 
-      if (error) throw error;
+      console.log('Login response:', { data, error });
 
-      if (data.user) {
+      if (error) {
+        console.error('Login error:', error);
+        throw error;
+      }
+
+      if (data.session && data.user) {
+        console.log('Login successful, user:', data.user.id);
         toast.success('Login successful!');
         navigate('/admin');
+      } else {
+        throw new Error('No session created');
       }
     } catch (err: any) {
-      setError(err.message || 'Login failed');
-      toast.error(err.message || 'Login failed');
+      console.error('Login failed:', err);
+      const errorMessage = err.message || 'Login failed. Please check your credentials.';
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
