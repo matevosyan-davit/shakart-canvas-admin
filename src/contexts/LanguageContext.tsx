@@ -122,7 +122,7 @@ const translations = {
 
     // Hero Section
     'hero.title': 'Շակարտ',
-    'hero.subtitle': 'Ժամանակակից Նկարիչ և Տեսողական Պատմաբան',
+    'hero.subtitle': 'Հայ ժամանակակից նկարիչ',
     'hero.description': 'Ուսումնասիրելով ավանդական և ժամանակակից արվեստի սահմանները',
     'hero.explore': 'Դիտել Պատկերասրահը',
     'hero.about': 'Նկարչի Մասին',
