@@ -187,7 +187,7 @@ const translations = {
     'exhibitions.noExhibitions': 'Ցուցահանդեսներ չեն գտնվել:',
     'exhibitions.theme': 'Թեմա',
     'exhibitions.mediaCoverage': 'Լրատվամիջոցներում',
-    'exhibitions.exhibitionHighlights': 'Ցուցահանդեսի Գլխավոր Իրադարձություններ',
+    'exhibitions.exhibitionHighlights': 'Գլխավոր իրադարձությունները',
     'exhibitions.inquiries': 'Ցուցահանդեսների Վերաբերյալ Հարցումներ',
     'exhibitions.inquiriesText': 'Հետաքրքրված եք ցուցադրել իմ աշխատանքները ձեր պատկերասրահում կամ համագործակցել ցուցահանդեսի վերաբերյալ: Միշտ պատրաստ եմ քննարկել նոր հնարավորություններ և գեղարվեստական համագործակցություններ:',
     'exhibitions.getInTouch': 'Կապվել',
