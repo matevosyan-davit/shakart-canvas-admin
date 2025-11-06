@@ -113,7 +113,7 @@ const translations = {
   am: {
     // Navigation
     'nav.home': 'Գլխավոր',
-    'nav.about': 'Մասին',
+    'nav.about': 'Իմ մասին',
     'nav.gallery': 'Պատկերասրահ',
     'nav.exhibitions': 'Ցուցահանդեսներ',
     'nav.media': 'Մեդիա',
