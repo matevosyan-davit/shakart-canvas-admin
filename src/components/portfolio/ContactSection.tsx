@@ -47,7 +47,7 @@ const ContactSection = () => {
                     {t('contact.phone')}
                   </span>
                   <p className="font-body text-base text-foreground group-hover:text-accent transition-colors duration-300">
-                    +374 91 99 69 99
+                    +374 91 99 66 99
                   </p>
                 </div>
               </div>
