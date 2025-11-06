@@ -45,11 +45,6 @@ export default function AdminLogin() {
           <CardDescription className="text-center">
             Enter your credentials to access the admin panel
           </CardDescription>
-          <Alert className="mt-4 border-blue-200 bg-blue-50">
-            <AlertDescription className="text-xs text-blue-900">
-              This application is secured for single-user access only.
-            </AlertDescription>
-          </Alert>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
