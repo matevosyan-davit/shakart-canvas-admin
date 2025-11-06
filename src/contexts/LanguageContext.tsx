@@ -194,8 +194,8 @@ const translations = {
     'exhibitions.readArticle': 'Կարդալ Հոդվածը',
 
     // Media Page
-    'media.page.title': 'Մեդիա և Հարցազրույցներ',
-    'media.page.description': 'Հարցազրույցներ և լրատվամիջոցների ուշադրության ուսումնասիրելով իմ գեղարվեստական ճանապարհորդությունը և ներդրումը ժամանակակից արվեստում:',
+    'media.page.title': 'Մեդիա և հարցազրույցներ',
+    'media.page.description': '',
     'media.loadingMedia': 'Բեռնվում է մեդիան...',
     'media.noMedia': 'Այս պահին մեդիա բովանդակություն հասանելի չէ:',
     'media.interview': 'Հարցազրույց',
