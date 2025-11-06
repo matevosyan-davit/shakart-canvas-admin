@@ -25,6 +25,10 @@ const HeroSection = () => {
 
           <div className="w-20 h-px bg-accent mx-auto opacity-60" />
 
+          <p className="font-serif text-xl sm:text-2xl md:text-3xl text-foreground/70 max-w-2xl mx-auto leading-loose tracking-wide px-4">
+            {t('hero.description')}
+          </p>
+
           <div className="flex flex-col sm:flex-row gap-10 justify-center items-center pt-8">
             <Link
               to="/gallery"
