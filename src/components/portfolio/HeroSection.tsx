@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
-import heroImage from "@/assets/481075919_1187898589361495_3287294358418089157_n.jpg";
+import heroImage from "@/assets/unnamed.jpg";
 
 const HeroSection = () => {
   const { t } = useLanguage();
