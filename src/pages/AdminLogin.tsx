@@ -49,7 +49,11 @@ export default function AdminLogin() {
       if (data.session && data.user) {
         console.log('Login successful, user:', data.user.id);
         toast.success('Login successful!');
-        navigate('/admin');
+
+        // Wait a bit for auth state to propagate
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        navigate('/admin', { replace: true });
       } else {
         throw new Error('No session created');
       }
@@ -58,7 +62,6 @@ export default function AdminLogin() {
       const errorMessage = err.message || 'Login failed. Please check your credentials.';
       setError(errorMessage);
       toast.error(errorMessage);
-    } finally {
       setIsLoading(false);
     }
   };
