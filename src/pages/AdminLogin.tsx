@@ -1,38 +1,52 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAdminAuth } from '@/contexts/AdminAuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader as Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
-  const { login, isAuthenticated } = useAdminAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  React.useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/admin');
-    }
-  }, [isAuthenticated, navigate]);
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        navigate('/admin');
+      }
+    };
+    checkAuth();
+  }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
 
-    const result = await login(email, password);
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (result.success) {
-      navigate('/admin');
-    } else {
-      setError(result.error || 'Login failed');
+      if (error) throw error;
+
+      if (data.user) {
+        toast.success('Login successful!');
+        navigate('/admin');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Login failed');
+      toast.error(err.message || 'Login failed');
+    } finally {
       setIsLoading(false);
     }
   };

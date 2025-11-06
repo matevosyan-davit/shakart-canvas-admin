@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Navigation from "@/components/Navigation";
 import Index from "./pages/Index";
 import About from "./pages/About";
@@ -12,33 +14,39 @@ import ArtworkDetail from "./pages/ArtworkDetail";
 import Exhibitions from "./pages/Exhibitions";
 import Media from "./pages/Media";
 import Admin from "./pages/Admin";
+import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <LanguageProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            {/* Public routes */}
-            <Route path="/" element={<><Navigation /><Index /></>} />
-            <Route path="/about" element={<><Navigation /><About /></>} />
-            <Route path="/gallery" element={<><Navigation /><Gallery /></>} />
-            <Route path="/artwork/:id" element={<ArtworkDetail />} />
-            <Route path="/exhibitions" element={<><Navigation /><Exhibitions /></>} />
-            <Route path="/media" element={<><Navigation /><Media /></>} />
-            <Route path="/admin" element={<><Navigation /><Admin /></>} />
+    <AuthProvider>
+      <LanguageProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/" element={<><Navigation /><Index /></>} />
+              <Route path="/about" element={<><Navigation /><About /></>} />
+              <Route path="/gallery" element={<><Navigation /><Gallery /></>} />
+              <Route path="/artwork/:id" element={<ArtworkDetail />} />
+              <Route path="/exhibitions" element={<><Navigation /><Exhibitions /></>} />
+              <Route path="/media" element={<><Navigation /><Media /></>} />
 
-            {/* 404 - ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<><Navigation /><NotFound /></>} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </LanguageProvider>
+              {/* Admin routes */}
+              <Route path="/admin-login" element={<AdminLogin />} />
+              <Route path="/admin" element={<ProtectedRoute><><Navigation /><Admin /></></ProtectedRoute>} />
+
+              {/* 404 - ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<><Navigation /><NotFound /></>} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </LanguageProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 

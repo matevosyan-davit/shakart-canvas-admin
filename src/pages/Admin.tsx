@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Upload, X, CreditCard as Edit, Trash2, Plus, GripVertical, LayoutGrid, LayoutList } from "lucide-react";
+import { Upload, X, CreditCard as Edit, Trash2, Plus, GripVertical, LayoutGrid, LayoutList, LogOut } from "lucide-react";
 import { AdminLanguageSwitcher } from "@/components/AdminLanguageSwitcher";
 import { Language } from "@/contexts/LanguageContext";
 import { getLanguageField, getLanguageValue, createArtworkUpdate, createExhibitionUpdate, createMediaUpdate } from "@/utils/adminLanguageHelpers";
@@ -1115,6 +1115,19 @@ const Admin = () => {
                 currentLanguage={adminLanguage}
                 onLanguageChange={setAdminLanguage}
               />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={async () => {
+                  await supabase.auth.signOut();
+                  navigate('/admin-login');
+                  toast.success('Logged out successfully');
+                }}
+                className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3"
+              >
+                <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Logout</span>
+              </Button>
             </div>
           </div>
           <div className="h-px w-full bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
