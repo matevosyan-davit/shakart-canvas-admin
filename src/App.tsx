@@ -13,7 +13,6 @@ import Gallery from "./pages/Gallery";
 import ArtworkDetail from "./pages/ArtworkDetail";
 import Exhibitions from "./pages/Exhibitions";
 import Media from "./pages/Media";
-import Contact from "./pages/Contact";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
@@ -36,7 +35,6 @@ const App = () => (
               <Route path="/artwork/:id" element={<ArtworkDetail />} />
               <Route path="/exhibitions" element={<><Navigation /><Exhibitions /></>} />
               <Route path="/media" element={<><Navigation /><Media /></>} />
-              <Route path="/contact" element={<><Navigation /><Contact /></>} />
 
               {/* Admin routes */}
               <Route path="/admin-shant" element={<AdminLogin />} />
