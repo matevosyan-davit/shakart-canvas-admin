@@ -147,16 +147,16 @@ const SortableArtworkItem = ({ artwork, adminLanguage, onEdit, onDelete }: Sorta
   return (
     <div ref={setNodeRef} style={style}>
       <Card className="group hover:border-accent/30 transition-all duration-300 overflow-hidden">
-        <div className="flex flex-col md:flex-row gap-6 p-6">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 p-3 sm:p-6">
+          <div className="flex items-center gap-2 sm:gap-3">
             <div
               {...attributes}
               {...listeners}
-              className="cursor-grab active:cursor-grabbing flex-shrink-0 p-2 hover:bg-accent/10 rounded"
+              className="cursor-grab active:cursor-grabbing flex-shrink-0 p-1 sm:p-2 hover:bg-accent/10 rounded"
             >
-              <GripVertical className="w-5 h-5 text-muted-foreground" />
+              <GripVertical className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
             </div>
-            <div className="w-full md:w-48 h-48 flex-shrink-0">
+            <div className="w-24 h-24 sm:w-32 sm:h-32 md:w-48 md:h-48 flex-shrink-0">
               <img
                 src={artwork.artwork_images[0]?.image_url || '/placeholder.svg'}
                 alt={getLanguageValue(artwork, 'title', adminLanguage)}
@@ -165,40 +165,41 @@ const SortableArtworkItem = ({ artwork, adminLanguage, onEdit, onDelete }: Sorta
             </div>
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex justify-between items-start mb-4">
-              <div className="flex-1 min-w-0 mr-4">
-                <h3 className="font-display text-2xl text-primary mb-2 tracking-tight truncate">
+            <div className="flex justify-between items-start mb-3 sm:mb-4">
+              <div className="flex-1 min-w-0 mr-2 sm:mr-4">
+                <h3 className="font-display text-lg sm:text-xl md:text-2xl text-primary mb-1 sm:mb-2 tracking-tight truncate">
                   {getLanguageValue(artwork, 'title', adminLanguage)}
                 </h3>
-                <div className="flex flex-wrap gap-3 items-center">
-                  <span className="inline-flex items-center px-3 py-1 bg-accent/10 text-accent-foreground text-xs font-body uppercase tracking-wider rounded-full">
+                <div className="flex flex-wrap gap-2 sm:gap-3 items-center">
+                  <span className="inline-flex items-center px-2 py-0.5 sm:px-3 sm:py-1 bg-accent/10 text-accent-foreground text-[10px] sm:text-xs font-body uppercase tracking-wider rounded-full">
                     {artwork.category}
                   </span>
-                  <span className="font-body text-sm font-semibold text-primary">
+                  <span className="font-body text-xs sm:text-sm font-semibold text-primary">
                     ${artwork.price?.toFixed(2) || 'Price on request'}
                   </span>
                   {artwork.is_sold && (
-                    <span className="inline-flex items-center px-3 py-1 bg-red-600 text-white text-xs font-body uppercase tracking-wider rounded-full">
+                    <span className="inline-flex items-center px-2 py-0.5 sm:px-3 sm:py-1 bg-red-600 text-white text-[10px] sm:text-xs font-body uppercase tracking-wider rounded-full">
                       Sold
                     </span>
                   )}
                 </div>
               </div>
-              <div className="flex gap-2 flex-shrink-0">
+              <div className="flex gap-1 sm:gap-2 flex-shrink-0">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => onEdit(artwork)}
-                  className="hover:border-accent hover:text-accent"
+                  className="hover:border-accent hover:text-accent px-2 sm:px-3"
                 >
-                  <Edit className="w-4 h-4" />
+                  <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
                 </Button>
                 <Button
                   variant="destructive"
                   size="sm"
                   onClick={() => onDelete(artwork.id)}
+                  className="px-2 sm:px-3"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                 </Button>
               </div>
             </div>
@@ -1102,18 +1103,18 @@ const Admin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-surface to-background py-8">
-      <div className="container mx-auto px-4 max-w-7xl">
+    <div className="min-h-screen bg-gradient-to-br from-background via-surface to-background py-4 md:py-8">
+      <div className="container mx-auto px-3 sm:px-4 max-w-7xl">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+        <div className="mb-6 md:mb-8">
+          <div className="flex flex-col gap-3 md:gap-4 mb-4 md:mb-6">
             <div>
-              <h1 className="font-display text-4xl md:text-5xl text-primary mb-2 tracking-tight">Admin Panel</h1>
-              <p className="font-body text-sm text-muted-foreground">
+              <h1 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-primary mb-1 md:mb-2 tracking-tight">Admin Panel</h1>
+              <p className="font-body text-xs sm:text-sm text-muted-foreground">
                 Welcome, {admin?.full_name || admin?.email}
               </p>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               {/* Language Switcher */}
               <AdminLanguageSwitcher
                 currentLanguage={adminLanguage}
@@ -1123,10 +1124,10 @@ const Admin = () => {
                 variant="outline"
                 size="sm"
                 onClick={handleLogout}
-                className="gap-2"
+                className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3"
               >
-                <LogOut className="h-4 w-4" />
-                Logout
+                <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Logout</span>
               </Button>
             </div>
           </div>
@@ -1134,9 +1135,9 @@ const Admin = () => {
         </div>
         
         {/* Navigation Tabs */}
-        <div className="mb-10">
-          <div className="bg-card border border-border/50 rounded-lg p-2">
-            <div className="grid grid-cols-3 gap-2">
+        <div className="mb-6 md:mb-10">
+          <div className="bg-card border border-border/50 rounded-lg p-1 sm:p-2">
+            <div className="grid grid-cols-3 gap-1 sm:gap-2">
               <Button
                 variant={activeTab === 'artworks' ? 'default' : 'ghost'}
                 onClick={() => {
@@ -1146,7 +1147,7 @@ const Admin = () => {
                   setShowAddForm(false);
                   setActiveTab('artworks');
                 }}
-                className="font-body text-xs uppercase tracking-wider"
+                className="font-body text-[10px] sm:text-xs uppercase tracking-wider px-2 sm:px-4 py-2 sm:py-3"
               >
                 Artworks
               </Button>
@@ -1159,7 +1160,7 @@ const Admin = () => {
                   setShowAddForm(false);
                   setActiveTab('media');
                 }}
-                className="font-body text-xs uppercase tracking-wider"
+                className="font-body text-[10px] sm:text-xs uppercase tracking-wider px-2 sm:px-4 py-2 sm:py-3"
               >
                 Media
               </Button>
@@ -1172,7 +1173,7 @@ const Admin = () => {
                   setShowAddForm(false);
                   setActiveTab('exhibitions');
                 }}
-                className="font-body text-xs uppercase tracking-wider"
+                className="font-body text-[10px] sm:text-xs uppercase tracking-wider px-2 sm:px-4 py-2 sm:py-3"
               >
                 Exhibitions
               </Button>
@@ -1183,29 +1184,29 @@ const Admin = () => {
         {/* Artworks Section */}
         {activeTab === 'artworks' && !showAddForm && (
           <Card className="border-border/50 shadow-lg">
-            <CardHeader className="border-b border-border/30 pb-6">
-              <div className="flex justify-between items-start">
-                <div>
-                  <CardTitle className="font-display text-3xl text-primary tracking-tight">Manage Artworks</CardTitle>
-                  <p className="font-body text-sm text-muted-foreground mt-2">View and edit your artwork collection</p>
+            <CardHeader className="border-b border-border/30 pb-4 sm:pb-6">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 sm:gap-4">
+                <div className="flex-1">
+                  <CardTitle className="font-display text-xl sm:text-2xl md:text-3xl text-primary tracking-tight">Manage Artworks</CardTitle>
+                  <p className="font-body text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-2">View and edit your artwork collection</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-shrink-0">
                   <div className="flex border border-border rounded-md overflow-hidden">
                     <Button
                       variant={artworkViewMode === 'list' ? 'default' : 'ghost'}
                       size="sm"
                       onClick={() => setArtworkViewMode('list')}
-                      className="rounded-none"
+                      className="rounded-none px-2 sm:px-3"
                     >
-                      <LayoutList className="w-4 h-4" />
+                      <LayoutList className="w-3 h-3 sm:w-4 sm:h-4" />
                     </Button>
                     <Button
                       variant={artworkViewMode === 'grid' ? 'default' : 'ghost'}
                       size="sm"
                       onClick={() => setArtworkViewMode('grid')}
-                      className="rounded-none"
+                      className="rounded-none px-2 sm:px-3"
                     >
-                      <LayoutGrid className="w-4 h-4" />
+                      <LayoutGrid className="w-3 h-3 sm:w-4 sm:h-4" />
                     </Button>
                   </div>
                   <Button
@@ -1216,10 +1217,11 @@ const Admin = () => {
                       setPreviews([]);
                       setShowAddForm(true);
                     }}
-                    className="font-body text-xs uppercase tracking-wider"
+                    size="sm"
+                    className="font-body text-[10px] sm:text-xs uppercase tracking-wider px-2 sm:px-3"
                   >
-                    <Plus className="w-4 h-4 mr-2" />
-                    New Artwork
+                    <Plus className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+                    <span className="hidden sm:inline">New Artwork</span>
                   </Button>
                 </div>
               </div>
@@ -1263,7 +1265,7 @@ const Admin = () => {
                           ))}
                         </div>
                       ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
                           {artworks.map((artwork) => (
                             <SortableArtworkGridItem
                               key={artwork.id}

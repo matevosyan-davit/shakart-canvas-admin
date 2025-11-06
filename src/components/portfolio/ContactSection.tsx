@@ -5,38 +5,31 @@ const ContactSection = () => {
   const { t } = useLanguage();
 
   return (
-    <section className="py-32 px-4 sm:px-6 bg-background relative overflow-hidden">
-      {/* Decorative elements */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
-
+    <section className="py-40 px-4 sm:px-6 bg-surface relative overflow-hidden">
       <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-20 animate-slide-up">
-          <span className="font-body text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-muted-foreground">Let's Connect</span>
-          <div className="h-px w-16 bg-accent mx-auto my-8" />
-          <h2 className="font-display text-4xl sm:text-5xl md:text-7xl text-primary mb-10 tracking-tight leading-tight">
+        <div className="text-center mb-28 animate-slide-up">
+          <div className="w-24 h-px bg-accent mx-auto mb-12 opacity-50" />
+          <h2 className="font-display text-5xl sm:text-6xl md:text-7xl text-primary mb-16 tracking-tighter leading-tight">
             {t('contact.title')}
           </h2>
-          <p className="font-serif text-base sm:text-lg md:text-xl text-foreground/70 max-w-2xl mx-auto leading-relaxed px-4">
+          <p className="font-serif text-lg sm:text-xl md:text-2xl text-foreground/60 max-w-2xl mx-auto leading-loose tracking-wide px-4">
             {t('contact.subtitle')}
           </p>
         </div>
 
         <div className="max-w-3xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-8 animate-slide-up" style={{ animationDelay: "0.2s" }}>
+          <div className="grid md:grid-cols-2 gap-10 animate-slide-up" style={{ animationDelay: "0.2s" }}>
             <a
               href="mailto:shant101094@gmail.com"
-              className="group relative p-8 border border-border/50 bg-card hover:border-accent/30 transition-all duration-500 overflow-hidden"
+              className="group relative p-8 bg-transparent hover:bg-card/30 transition-all duration-500"
             >
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent/0 via-accent to-accent/0 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
               <div className="flex flex-col items-start gap-4">
-                <div className="w-14 h-14 border-2 border-accent/20 rounded-full flex items-center justify-center group-hover:border-accent/40 transition-colors duration-300">
-                  <Mail className="w-6 h-6 text-accent" />
-                </div>
+                <Mail className="w-5 h-5 text-accent" />
                 <div>
-                  <span className="font-body text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">
+                  <span className="font-body text-xs uppercase tracking-[0.25em] text-muted-foreground mb-2 block">
                     {t('contact.email')}
                   </span>
-                  <p className="font-body text-lg text-foreground group-hover:text-accent transition-colors duration-300">
+                  <p className="font-body text-base text-foreground group-hover:text-accent transition-colors duration-300">
                     shant101094@gmail.com
                   </p>
                 </div>
@@ -45,18 +38,15 @@ const ContactSection = () => {
 
             <a
               href="tel:+37491996999"
-              className="group relative p-8 border border-border/50 bg-card hover:border-accent/30 transition-all duration-500 overflow-hidden"
+              className="group relative p-8 bg-transparent hover:bg-card/30 transition-all duration-500"
             >
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent/0 via-accent to-accent/0 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
               <div className="flex flex-col items-start gap-4">
-                <div className="w-14 h-14 border-2 border-accent/20 rounded-full flex items-center justify-center group-hover:border-accent/40 transition-colors duration-300">
-                  <Phone className="w-6 h-6 text-accent" />
-                </div>
+                <Phone className="w-5 h-5 text-accent" />
                 <div>
-                  <span className="font-body text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">
+                  <span className="font-body text-xs uppercase tracking-[0.25em] text-muted-foreground mb-2 block">
                     {t('contact.phone')}
                   </span>
-                  <p className="font-body text-lg text-foreground group-hover:text-accent transition-colors duration-300">
+                  <p className="font-body text-base text-foreground group-hover:text-accent transition-colors duration-300">
                     +374 91 99 69 99
                   </p>
                 </div>
@@ -67,18 +57,15 @@ const ContactSection = () => {
               href="https://www.instagram.com/shakart_/?hl=en"
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative p-8 border border-border/50 bg-card hover:border-accent/30 transition-all duration-500 overflow-hidden"
+              className="group relative p-8 bg-transparent hover:bg-card/30 transition-all duration-500"
             >
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent/0 via-accent to-accent/0 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
               <div className="flex flex-col items-start gap-4">
-                <div className="w-14 h-14 border-2 border-accent/20 rounded-full flex items-center justify-center group-hover:border-accent/40 transition-colors duration-300">
-                  <Instagram className="w-6 h-6 text-accent" />
-                </div>
+                <Instagram className="w-5 h-5 text-accent" />
                 <div>
-                  <span className="font-body text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">
+                  <span className="font-body text-xs uppercase tracking-[0.25em] text-muted-foreground mb-2 block">
                     Instagram
                   </span>
-                  <p className="font-body text-lg text-foreground group-hover:text-accent transition-colors duration-300">
+                  <p className="font-body text-base text-foreground group-hover:text-accent transition-colors duration-300">
                     @shakart_
                   </p>
                 </div>
@@ -89,18 +76,15 @@ const ContactSection = () => {
               href="https://www.facebook.com/shantkarapetyan.shakart"
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative p-8 border border-border/50 bg-card hover:border-accent/30 transition-all duration-500 overflow-hidden"
+              className="group relative p-8 bg-transparent hover:bg-card/30 transition-all duration-500"
             >
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent/0 via-accent to-accent/0 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
               <div className="flex flex-col items-start gap-4">
-                <div className="w-14 h-14 border-2 border-accent/20 rounded-full flex items-center justify-center group-hover:border-accent/40 transition-colors duration-300">
-                  <Facebook className="w-6 h-6 text-accent" />
-                </div>
+                <Facebook className="w-5 h-5 text-accent" />
                 <div>
-                  <span className="font-body text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">
+                  <span className="font-body text-xs uppercase tracking-[0.25em] text-muted-foreground mb-2 block">
                     Facebook
                   </span>
-                  <p className="font-body text-lg text-foreground group-hover:text-accent transition-colors duration-300">
+                  <p className="font-body text-base text-foreground group-hover:text-accent transition-colors duration-300">
                     Shakart
                   </p>
                 </div>
@@ -109,9 +93,6 @@ const ContactSection = () => {
           </div>
         </div>
       </div>
-
-      {/* Decorative bottom element */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-48 h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
     </section>
   );
 };

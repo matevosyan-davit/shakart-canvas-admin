@@ -2,61 +2,61 @@
 @tailwind components;
 @tailwind utilities;
 
-/* High-End Art Gallery Design System */
+/* Minimalistic Bohemian Art Studio Design System */
 
 @layer base {
   :root {
-    /* Gallery Core Colors - Museum Quality */
-    --background: 32 8% 97%;
-    --foreground: 0 0% 15%;
-    
-    --surface: 32 10% 95%;
-    --surface-foreground: 0 0% 15%;
-    
-    /* Cards and Overlays - Pure Gallery White */
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 15%;
-    
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 15%;
-    
-    /* Primary - Deep Charcoal */
-    --primary: 0 0% 15%;
-    --primary-foreground: 32 8% 97%;
-    
-    /* Secondary - Gallery Neutral */
-    --secondary: 32 6% 92%;
-    --secondary-foreground: 0 0% 15%;
-    
-    /* Muted Tones - Sophisticated Beige */
-    --muted: 32 6% 92%;
-    --muted-foreground: 0 0% 45%;
-    
-    /* Accent - Warm Gallery Tone */
-    --accent: 32 15% 75%;
-    --accent-foreground: 0 0% 15%;
-    
-    /* Destructive */
-    --destructive: 0 65% 55%;
-    --destructive-foreground: 0 0% 98%;
-    
-    /* Borders and Inputs - Subtle Gallery Lines */
-    --border: 32 6% 88%;
-    --input: 32 6% 88%;
-    --ring: 32 15% 75%;
-    
-    /* Gallery Gradients - Canvas & Paper Textures */
-    --gradient-canvas: linear-gradient(135deg, hsl(32 8% 98%) 0%, hsl(32 6% 96%) 50%, hsl(32 8% 97%) 100%);
-    --gradient-paper: linear-gradient(180deg, hsl(32 8% 97%) 0%, hsl(32 10% 95%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(32 15% 75%) 0%, hsl(32 20% 65%) 100%);
-    --gradient-frame: linear-gradient(135deg, hsl(0 0% 15%) 0%, hsl(0 0% 25%) 100%);
-    
-    /* Gallery Shadows - Soft Museum Lighting */
-    --shadow-artwork: 0 8px 32px -8px hsl(0 0% 0% / 0.12);
-    --shadow-frame: 0 4px 20px -4px hsl(0 0% 0% / 0.08);
-    --shadow-subtle: 0 2px 8px -2px hsl(0 0% 0% / 0.06);
+    /* Core Colors - Natural Earth Tones */
+    --background: 40 30% 96%;
+    --foreground: 25 25% 20%;
 
-    --radius: 0.5rem;
+    --surface: 40 25% 94%;
+    --surface-foreground: 25 25% 20%;
+
+    /* Cards - Warm Paper White */
+    --card: 40 40% 98%;
+    --card-foreground: 25 25% 20%;
+
+    --popover: 40 40% 98%;
+    --popover-foreground: 25 25% 20%;
+
+    /* Primary - Warm Charcoal */
+    --primary: 25 25% 20%;
+    --primary-foreground: 40 30% 96%;
+
+    /* Secondary - Natural Clay */
+    --secondary: 30 20% 88%;
+    --secondary-foreground: 25 25% 20%;
+
+    /* Muted Tones - Soft Terracotta */
+    --muted: 30 20% 88%;
+    --muted-foreground: 25 15% 45%;
+
+    /* Accent - Earthy Terracotta */
+    --accent: 20 45% 65%;
+    --accent-foreground: 25 25% 20%;
+
+    /* Destructive */
+    --destructive: 0 60% 55%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Borders - Subtle Natural Lines */
+    --border: 30 15% 85%;
+    --input: 30 15% 85%;
+    --ring: 20 45% 65%;
+
+    /* Bohemian Gradients - Natural & Organic */
+    --gradient-canvas: linear-gradient(135deg, hsl(40 35% 97%) 0%, hsl(35 30% 95%) 50%, hsl(40 30% 96%) 100%);
+    --gradient-paper: linear-gradient(180deg, hsl(40 30% 96%) 0%, hsl(35 25% 94%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(20 45% 65%) 0%, hsl(15 50% 60%) 100%);
+    --gradient-frame: linear-gradient(135deg, hsl(25 25% 20%) 0%, hsl(20 30% 30%) 100%);
+    
+    /* Soft Natural Shadows */
+    --shadow-artwork: 0 6px 24px -6px hsl(20 20% 30% / 0.08);
+    --shadow-frame: 0 3px 16px -3px hsl(20 20% 30% / 0.05);
+    --shadow-subtle: 0 1px 6px -1px hsl(20 20% 30% / 0.04);
+
+    --radius: 0;
 
     --sidebar-background: 0 0% 98%;
 
@@ -121,9 +121,10 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Crimson Text', Georgia, 'Times New Roman', serif;
     font-feature-settings: 'kern', 'liga', 'clig', 'calt';
-    font-variant-numeric: lining-nums;
+    font-variant-numeric: oldstyle-nums;
+    font-weight: 400;
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -132,31 +133,31 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: Georgia, 'Times New Roman', Times, serif;
-    font-weight: 400;
-    letter-spacing: 0.01em;
-    line-height: 1.2;
+    font-family: 'Crimson Text', Georgia, 'Times New Roman', serif;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
   }
 }
 
 @layer components {
-  /* Gallery Typography */
+  /* Minimalistic Bohemian Typography */
   .font-display {
-    font-family: Georgia, 'Times New Roman', Times, serif;
-    font-weight: 400;
-    letter-spacing: -0.01em;
+    font-family: 'Crimson Text', Georgia, 'Times New Roman', serif;
+    font-weight: 300;
+    letter-spacing: -0.02em;
   }
 
   .font-serif {
-    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-family: 'Crimson Text', Georgia, 'Times New Roman', serif;
     font-weight: 400;
-    line-height: 1.7;
+    line-height: 1.8;
   }
 
   .font-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    font-weight: 400;
-    letter-spacing: 0.01em;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.02em;
   }
 
   /* Gallery Animations - Subtle & Refined */

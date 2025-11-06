@@ -90,20 +90,19 @@ const ExhibitionsSection = () => {
   }
 
   return (
-    <section className="py-32 px-4 sm:px-6 bg-surface relative">
+    <section className="py-40 px-4 sm:px-6 bg-surface relative">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-24 animate-slide-up">
-          <span className="font-body text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-muted-foreground">Past & Present</span>
-          <div className="h-px w-16 bg-accent mx-auto my-8" />
-          <h2 className="font-display text-4xl sm:text-5xl md:text-7xl text-primary mb-10 tracking-tight leading-tight">
+        <div className="text-center mb-32 animate-slide-up">
+          <div className="w-24 h-px bg-accent mx-auto mb-12 opacity-50" />
+          <h2 className="font-display text-5xl sm:text-6xl md:text-7xl text-primary mb-16 tracking-tighter leading-tight">
             {t('exhibitions.title')}
           </h2>
-          <p className="font-serif text-base sm:text-lg md:text-xl text-foreground/70 max-w-2xl mx-auto leading-relaxed px-4">
+          <p className="font-serif text-lg sm:text-xl md:text-2xl text-foreground/60 max-w-2xl mx-auto leading-loose tracking-wide px-4">
             {t('exhibitions.subtitle')}
           </p>
         </div>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
           {exhibitions.map((exhibition, index) => (
             <Link
               key={exhibition.id}
@@ -111,7 +110,7 @@ const ExhibitionsSection = () => {
               className="block"
             >
               <Card
-                className="group border border-border/50 bg-card hover:border-accent/30 transition-all duration-500 overflow-hidden animate-slide-up cursor-pointer h-full"
+                className="group border-none bg-transparent hover:bg-card/30 transition-all duration-500 overflow-hidden animate-slide-up cursor-pointer h-full"
                 style={{ animationDelay: `${index * 0.15}s` }}
               >
                 {/* Image Carousel */}
@@ -124,7 +123,7 @@ const ExhibitionsSection = () => {
                             <img
                               src={image.image_url}
                               alt={`${exhibition.title} - Exhibition Image`}
-                              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
                             />
                           </div>
                         </CarouselItem>
@@ -144,64 +143,45 @@ const ExhibitionsSection = () => {
                 )}
 
                 {/* Exhibition Details */}
-                <div className="p-8 space-y-6">
-                  {exhibition.theme && (
-                    <span className="inline-block px-3 py-1 bg-accent/10 text-accent-foreground text-xs font-body uppercase tracking-wider">
-                      {getLocalizedText(exhibition, 'theme', currentLanguage)}
-                    </span>
-                  )}
-
+                <div className="p-6 space-y-4">
                   <div>
-                    <h3 className="font-display text-2xl text-primary mb-3 line-clamp-2 tracking-tight group-hover:text-accent transition-colors duration-300">
+                    <h3 className="font-display text-xl text-primary mb-2 line-clamp-2 tracking-tight group-hover:text-accent transition-colors duration-300">
                       {getLocalizedText(exhibition, 'title', currentLanguage)}
                     </h3>
-                    <div className="h-px w-12 bg-accent/30 mb-4" />
                   </div>
 
-                  <div className="space-y-2">
-                    <p className="font-body text-foreground/80 font-medium text-sm">
+                  <div className="space-y-1">
+                    <p className="font-body text-foreground/70 text-sm">
                       {getLocalizedText(exhibition, 'location', currentLanguage)}
                     </p>
-                    <p className="font-body text-muted-foreground text-xs uppercase tracking-wider">
+                    <p className="font-body text-muted-foreground text-xs uppercase tracking-[0.2em]">
                       {new Date(exhibition.date).toLocaleDateString('en-US', {
                         year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
+                        month: 'long'
                       })}
                     </p>
                   </div>
 
                   {exhibition.description && (
-                    <p className="font-serif text-sm text-foreground/70 line-clamp-3 leading-relaxed">
+                    <p className="font-serif text-sm text-foreground/60 line-clamp-2 leading-relaxed">
                       {getLocalizedText(exhibition, 'description', currentLanguage)}
                     </p>
                   )}
-
-                  <span className="inline-block font-body text-xs uppercase tracking-[0.15em] text-muted-foreground group-hover:text-primary transition-colors duration-300 border-b border-transparent group-hover:border-primary pb-1">
-                    View Details
-                  </span>
                 </div>
               </Card>
             </Link>
           ))}
         </div>
 
-        <div className="text-center mt-20">
-          <div className="h-px w-16 bg-accent/50 mx-auto mb-10" />
-          <Link to="/exhibitions">
-            <Button
-              variant="ghost"
-              className="font-body text-xs uppercase tracking-[0.15em] sm:tracking-[0.2em] border-2 border-primary/20 hover:border-primary hover:bg-primary hover:text-primary-foreground px-6 sm:px-8 md:px-10 py-4 sm:py-6 transition-all duration-300 rounded-none mb-8"
-            >
-              {t('exhibitions.viewAll')}
-            </Button>
+        <div className="text-center mt-32">
+          <div className="h-px w-24 bg-accent mx-auto mb-16 opacity-50" />
+          <Link
+            to="/exhibitions"
+            className="group relative inline-block font-body text-sm uppercase tracking-[0.25em] text-primary hover:text-accent transition-colors duration-500"
+          >
+            <span className="relative z-10">{t('exhibitions.viewAll')}</span>
+            <div className="absolute bottom-0 left-0 w-full h-px bg-accent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
           </Link>
-          <p className="font-serif text-sm text-foreground/70 max-w-xl mx-auto leading-relaxed">
-            For exhibition inquiries and collaboration opportunities, please{" "}
-            <Link to="/contact" className="text-accent hover:text-primary font-medium transition-colors duration-300 border-b border-accent/30 hover:border-primary">
-              get in touch
-            </Link>
-          </p>
         </div>
       </div>
     </section>
