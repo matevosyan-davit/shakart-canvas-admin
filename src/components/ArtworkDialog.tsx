@@ -23,6 +23,7 @@ interface Artwork {
   depth_cm: number | null;
   display_order: number;
   created_at: string;
+  year_painted: number | null;
   artwork_images: ArtworkImage[];
 }
 
@@ -169,7 +170,7 @@ const ArtworkDialog = ({ artwork, open, onOpenChange }: ArtworkDialogProps) => {
                   <div className="font-body text-muted-foreground space-y-1">
                     <p className="text-base capitalize">{artwork.category}</p>
                     <p className="text-sm">
-                      {new Date(artwork.created_at).getFullYear()}
+                      {artwork.year_painted || new Date(artwork.created_at).getFullYear()}
                     </p>
                   </div>
                 </div>
@@ -265,7 +266,7 @@ const ArtworkDialog = ({ artwork, open, onOpenChange }: ArtworkDialogProps) => {
                       <div className="font-body text-muted-foreground space-y-1">
                         <p className="text-base capitalize">{artwork.category}</p>
                         <p className="text-sm">
-                          {new Date(artwork.created_at).getFullYear()}
+                          {artwork.year_painted || new Date(artwork.created_at).getFullYear()}
                         </p>
                       </div>
                     </div>

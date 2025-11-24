@@ -45,6 +45,7 @@ interface ArtworkForm {
   width_cm: string;
   height_cm: string;
   depth_cm: string;
+  year_painted: string;
 }
 
 interface ArtworkImage {
@@ -65,6 +66,7 @@ interface Artwork {
   depth_cm: number | null;
   display_order: number;
   created_at: string;
+  year_painted: number | null;
   artwork_images: ArtworkImage[];
 }
 
@@ -372,6 +374,7 @@ const Admin = () => {
       width_cm: "",
       height_cm: "",
       depth_cm: "",
+      year_painted: "",
     },
   });
 
@@ -412,6 +415,7 @@ const Admin = () => {
         width_cm: editingArtwork.width_cm?.toString() || "",
         height_cm: editingArtwork.height_cm?.toString() || "",
         depth_cm: editingArtwork.depth_cm?.toString() || "",
+        year_painted: editingArtwork.year_painted?.toString() || "",
       });
     }
   }, [adminLanguage, editingArtwork, form]);
@@ -450,6 +454,7 @@ const Admin = () => {
         width_cm: editingArtwork.width_cm?.toString() || "",
         height_cm: editingArtwork.height_cm?.toString() || "",
         depth_cm: editingArtwork.depth_cm?.toString() || "",
+        year_painted: editingArtwork.year_painted?.toString() || "",
       });
       setShowAddForm(true);
     }
@@ -832,7 +837,7 @@ const Admin = () => {
           width_cm: data.width_cm ? parseFloat(data.width_cm) : null,
           height_cm: data.height_cm ? parseFloat(data.height_cm) : null,
           depth_cm: data.depth_cm ? parseFloat(data.depth_cm) : null,
-        });
+        }, data.year_painted ? parseInt(data.year_painted) : null);
 
         const { error: artworkError } = await supabase
           .from('artworks')
@@ -873,7 +878,7 @@ const Admin = () => {
             width_cm: data.width_cm ? parseFloat(data.width_cm) : null,
             height_cm: data.height_cm ? parseFloat(data.height_cm) : null,
             depth_cm: data.depth_cm ? parseFloat(data.depth_cm) : null,
-          }),
+          }, data.year_painted ? parseInt(data.year_painted) : null),
           display_order: nextOrder
         };
 
@@ -1329,31 +1334,65 @@ const Admin = () => {
                     )}
                   />
 
-                  <FormField
-                    control={form.control}
-                    name="price"
-                    rules={{ 
-                      required: "Price is required",
-                      pattern: {
-                        value: /^\d+(\.\d{1,2})?$/,
-                        message: "Please enter a valid price"
-                      }
-                    }}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Price ($)</FormLabel>
-                        <FormControl>
-                          <Input 
-                            type="number" 
-                            step="0.01"
-                            placeholder="0.00" 
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="price"
+                      rules={{
+                        required: "Price is required",
+                        pattern: {
+                          value: /^\d+(\.\d{1,2})?$/,
+                          message: "Please enter a valid price"
+                        }
+                      }}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Price ($)</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              placeholder="0.00"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="year_painted"
+                      rules={{
+                        pattern: {
+                          value: /^\d{4}$/,
+                          message: "Please enter a valid 4-digit year"
+                        },
+                        validate: (value) => {
+                          if (!value) return true; // Optional field
+                          const year = parseInt(value);
+                          if (year < 1900 || year > 2100) {
+                            return "Year must be between 1900 and 2100";
+                          }
+                          return true;
+                        }
+                      }}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Year Painted (Optional)</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              placeholder="e.g., 2024"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
                   <div className="grid grid-cols-3 gap-4">
                     <FormField

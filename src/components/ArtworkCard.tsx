@@ -16,6 +16,7 @@ interface Artwork {
   depth_cm: number | null;
   display_order: number;
   created_at: string;
+  year_painted: number | null;
   artwork_images: ArtworkImage[];
 }
 
@@ -65,7 +66,7 @@ const ArtworkCard = ({ artwork, index, onSelect }: ArtworkCardProps) => {
           {artwork.title}
         </h3>
         <div className="font-body text-sm text-muted-foreground uppercase tracking-wider space-y-1">
-          <p>{new Date(artwork.created_at).getFullYear()} • {getCategoryTranslation(artwork.category)}</p>
+          <p>{artwork.year_painted || new Date(artwork.created_at).getFullYear()} • {getCategoryTranslation(artwork.category)}</p>
           <p>${artwork.price?.toFixed(2) || t('gallery.priceOnRequest')}</p>
         </div>
       </div>

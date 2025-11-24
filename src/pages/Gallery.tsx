@@ -23,6 +23,7 @@ interface Artwork {
   depth_cm: number | null;
   display_order: number;
   created_at: string;
+  year_painted: number | null;
   artwork_images: ArtworkImage[];
 }
 

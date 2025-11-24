@@ -26,6 +26,7 @@ interface Artwork {
   depth_cm: number | null;
   display_order: number;
   created_at: string;
+  year_painted: number | null;
   artwork_images: ArtworkImage[];
 }
 
@@ -139,7 +140,7 @@ const FeaturedGallery = () => {
                           {getTranslatedField(artwork, 'title', currentLanguage)}
                         </h3>
                         <div className="font-body text-xs text-muted-foreground uppercase tracking-[0.2em]">
-                          {new Date(artwork.created_at).getFullYear()}
+                          {artwork.year_painted || new Date(artwork.created_at).getFullYear()}
                         </div>
                       </div>
                     </div>
