@@ -35,10 +35,8 @@ const About = () => {
         <div className="max-w-4xl mx-auto space-y-8">
           <Card className="p-8 bg-card shadow-card">
             <h2 className="font-display text-3xl font-medium text-primary mb-6">Artistic Journey</h2>
-            <div className="font-body text-foreground space-y-4 leading-relaxed">
-              <p>
-                {t('about.bio')}
-              </p>
+            <div className="font-body text-foreground space-y-4 leading-relaxed whitespace-pre-line">
+              {t('about.bio')}
             </div>
           </Card>
 

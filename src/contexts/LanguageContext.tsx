@@ -30,15 +30,16 @@ const translations = {
 
     // About Section
     'about.title': 'About Shakart',
-    'about.subtitle': 'Contemporary Artist & Visual Storyteller',
-    'about.bio': 'Shakart is a contemporary artist whose work explores the intersection of traditional techniques and modern expression. With a background in fine arts and a passion for experimental media, Shakart creates pieces that challenge conventional boundaries and invite viewers to see the world through a different lens.',
+    'about.subtitle': 'Contemporary Artist & Physician',
+    'about.bio': 'I am Shakart (Shant Karapetyan) - an artist and a physician.\n\nBorn on October 10, 1994, in Yerevan. Since childhood, two equally powerful worlds have coexisted for me - the world of science and the world of art. One taught me to understand life by analyzing it, the other - to feel it without explanation. My creative and human path runs between these two.\n\nI graduated from Yerevan State Medical University named after Mkhitar Heratsi. Medicine opened up to me the precise structure of the human body, the logic of movements, the perfect harmony of forms. But the deeper I delved into the material, the more I felt that true beauty is hidden in the invisible. Science became the foundation, and art became the path.\n\nI work in the directions of photorealism and classicism, simultaneously introducing elements of dark romanticism, symbolism, and surrealism. For me, color is not just material, but emotional energy. Light and shadow are my language - with them I construct the inner silence of characters.\n\nAt the heart of each of my canvases lies a human story, a psychological state compressed into form and line. Sometimes I paint war without weapons, sometimes a crown without a king. This symbolic language is my way of speaking about what cannot be said in words.\n\nMedical education taught me plastic anatomy - the body\'s structure with the finest detail. But over the years, I realized there is also a psychic anatomy, which I work on as an artist.\n\nFor me, art is philosophy - questioning, experimenting, transforming.\n\nMy art is incurable.',
+    'about.bio.short': 'I am Shakart (Shant Karapetyan) - an artist and a physician. Since childhood, two worlds have coexisted for me: science and art. Medicine taught me the precision of the human body, while art became my path to express what cannot be explained. I work in photorealism and classicism, infused with dark romanticism and symbolism. For me, color is emotional energy, and light and shadow are my language. Each canvas tells a human story, a psychological state compressed into form. My art is incurable.',
     'about.education': 'Education',
-    'about.education.degree': 'Master of Fine Arts',
-    'about.education.school': 'National Academy of Arts',
-    'about.education.year': '2018',
-    'about.recognition': 'Recognition',
-    'about.recognition.award': 'Contemporary Art Prize',
-    'about.recognition.year': '2022',
+    'about.education.degree': 'Medical Doctor',
+    'about.education.school': 'Yerevan State Medical University named after Mkhitar Heratsi',
+    'about.education.year': 'Graduate',
+    'about.recognition': 'Artistic Approach',
+    'about.recognition.award': 'Photorealism, Classicism, Dark Romanticism',
+    'about.recognition.year': 'Symbolism & Surrealism',
 
     // Featured Gallery
     'gallery.title': 'Featured Artworks',
@@ -129,15 +130,16 @@ const translations = {
 
     // About Section
     'about.title': 'Շակարտի մասին',
-    'about.subtitle': 'Հայ ժամանակակից նկարիչ',
-    'about.bio': 'Շակարտը ժամանակակից նկարիչ է, որի աշխատանքները ուսումնասիրում են ավանդական տեխնիկաների և ժամանակակից արտահայտության հատման կետը: Գեղարվեստական կրթության և փորձարարական մեդիայի նկատմամբ կիրքի հետ՝ Շակարտը ստեղծում է ստեղծագործություններ, որոնք մարտահրավեր են նետում ավանդական սահմաններին:',
+    'about.subtitle': 'Ժամանակակից Նկարիչ և Բժիշկ',
+    'about.bio': 'Ես Շակարտն (Շանթ Կարապետյան) եմ՝ նկարիչ և բժիշկ։\n\nԾնվել եմ 1994 թվականի հոկտեմբերի 10-ին, Երևանում։ Մանկության տարիներից ինձ համար գոյություն ուներ երկու հավասարապես հզոր աշխարհ՝ գիտության և արվեստի աշխարհը։ Մեկը սովորեցնում էր հասկանալ կյանքը՝ վերլուծելով, մյուսը՝ զգալ այն՝ առանց բացատրելու։ Այդ երկուսի միջև անցնում է իմ ստեղծագործական և մարդկային ուղին։\n\nԱվարտել եմ Երևանի Մխիթար Հերացու անվան պետական բժշկական համալսարանը։ Բժշկությունն ինձ բացեց մարդկային մարմնի ճշգրիտ կառուցվածքը, շարժումների տրամաբանությունը, ձևերի կատարյալ ներդաշնակությունը։ Բայց որքան խորանում էի նյութականում, այնքան ավելի էի զգում՝ իրական գեղեցկությունը թաքնված է անտեսանելիի մեջ։ Գիտությունը դարձավ հիմք, իսկ արվեստը՝ ճանապարհ։\n\nԱշխատում եմ ֆոտոռեալիզմի և կլասիցիզմի ուղղություններով՝ միաժամանակ ներմուծելով մութ ռոմանտիզմի, սիմվոլիզմի և սյուրռեալիզմի տարրեր։ Ինձ համար գույնը ոչ թե պարզապես նյութ է, այլ հուզական էներգիա։ Լույսն ու ստվերը իմ լեզուն են․ դրանցով եմ կառուցում կերպարների ներքին լռությունը։\n\nՀամար յուրաքանչյուր կտավի հիմքում կա մի մարդկային պատմություն, մի հոգեբանական վիճակ՝ սեղմված ձևի և գծի մեջ։ Երբեմն նկարում եմ պատերազմ՝ առանց զենքի, երբեմն թագ՝ առանց թագավորի։ Այդ խորհրդանշական լեզուն իմ ձևն է խոսելու այն բանի մասին, ինչ խոսքերով չես ասի։\n\nԲժշկական կրթությունը ինձ սովորեցրել է պլաստիկ անատոմիա՝ մարմնի կառուցվածքի ամենափոքր նրբությամբ։ Բայց տարիների ընթացքում ես հասկացա՝ կա նաև հոգեկան անատոմիա, որի վրա եմ աշխատում որպես նկարիչ։\n\nԻնձ համար արվեստը փիլիսոփայություն է՝ հարցադրում, փորձարկում, փոխակերպում։\n\nԻմ արվեստն անբուժելի է:',
+    'about.bio.short': 'Ես Շակարտն (Շանթ Կարապետյան) եմ՝ նկարիչ և բժիշկ։ Մանկությունից ինձ համար գոյություն ուներ երկու աշխարհ՝ գիտությունը և արվեստը։ Բժշկությունը սովորեցրեց մարդկային մարմնի ճշգրտությունը, իսկ արվեստը դարձավ իմ ճանապարհը արտահայտելու այն, ինչ բացատրել չես կարող։ Աշխատում եմ ֆոտոռեալիզմի և կլասիցիզմի ուղղություններով՝ ներմուծելով մութ ռոմանտիզմի և սիմվոլիզմի տարրեր։ Ինձ համար գույնը հուզական էներգիա է, իսկ լույսն ու ստվերը՝ իմ լեզուն։ Յուրաքանչյուր կտավ պատմում է մարդկային պատմություն։ Իմ արվեստն անբուժելի է:',
     'about.education': 'Կրթություն',
-    'about.education.degree': 'Գեղարվեստական Գիտությունների Մագիստրոս',
-    'about.education.school': 'Ազգային Արվեստի Ակադեմիա',
-    'about.education.year': '2018',
-    'about.recognition': 'Ճանաչում',
-    'about.recognition.award': 'Ժամանակակից Արվեստի Մրցանակ',
-    'about.recognition.year': '2022',
+    'about.education.degree': 'Բժիշկ',
+    'about.education.school': 'Երևանի Մխիթար Հերացու անվան պետական բժշկական համալսարան',
+    'about.education.year': 'Շրջանավարտ',
+    'about.recognition': 'Գեղարվեստական Ուղղություն',
+    'about.recognition.award': 'Ֆոտոռեալիզմ, Կլասիցիզմ, Մութ Ռոմանտիզմ',
+    'about.recognition.year': 'Սիմվոլիզմ և Սյուրռեալիզմ',
 
     // Featured Gallery
     'gallery.title': 'Ընտրված Ստեղծագործություններ',
@@ -228,15 +230,16 @@ const translations = {
 
     // About Section
     'about.title': 'О Шакарте',
-    'about.subtitle': 'Современный Художник и Визуальный Рассказчик',
-    'about.bio': 'Шакарт - современный художник, чьи работы исследуют пересечение традиционных техник и современного выражения. С образованием в области изобразительного искусства и страстью к экспериментальным медиа, Шакарт создает произведения, которые бросают вызов обычным границам.',
+    'about.subtitle': 'Современный Художник и Врач',
+    'about.bio': 'Я Шакарт (Шант Карапетян) - художник и врач.\n\nРодился 10 октября 1994 года в Ереване. С детства для меня существовало два одинаково мощных мира - мир науки и мир искусства. Один учил понимать жизнь, анализируя её, другой - чувствовать её без объяснений. Мой творческий и человеческий путь проходит между этими двумя мирами.\n\nЯ окончил Ереванский государственный медицинский университет имени Мхитара Гераци. Медицина открыла мне точную структуру человеческого тела, логику движений, совершенную гармонию форм. Но чем глубже я погружался в материальное, тем больше чувствовал, что истинная красота скрыта в невидимом. Наука стала фундаментом, а искусство - путём.\n\nЯ работаю в направлениях фотореализма и классицизма, одновременно внедряя элементы тёмного романтизма, символизма и сюрреализма. Для меня цвет - это не просто материал, а эмоциональная энергия. Свет и тень - мой язык: с их помощью я выстраиваю внутреннюю тишину персонажей.\n\nВ основе каждого моего холста лежит человеческая история, психологическое состояние, сжатое в форму и линию. Иногда я рисую войну без оружия, иногда корону без короля. Этот символический язык - мой способ говорить о том, что словами не выразить.\n\nМедицинское образование научило меня пластической анатомии - структуре тела с мельчайшими деталями. Но за годы я понял, что существует и психическая анатомия, над которой я работаю как художник.\n\nДля меня искусство - это философия: вопрошание, экспериментирование, преобразование.\n\nМоё искусство неизлечимо.',
+    'about.bio.short': 'Я Шакарт (Шант Карапетян) - художник и врач. С детства для меня существовало два мира: наука и искусство. Медицина научила меня точности человеческого тела, а искусство стало моим путём выразить то, что невозможно объяснить. Я работаю в фотореализме и классицизме, пропитанных тёмным романтизмом и символизмом. Для меня цвет - это эмоциональная энергия, а свет и тень - мой язык. Каждый холст рассказывает человеческую историю. Моё искусство неизлечимо.',
     'about.education': 'Образование',
-    'about.education.degree': 'Магистр Изобразительных Искусств',
-    'about.education.school': 'Национальная Академия Искусств',
-    'about.education.year': '2018',
-    'about.recognition': 'Признание',
-    'about.recognition.award': 'Премия Современного Искусства',
-    'about.recognition.year': '2022',
+    'about.education.degree': 'Врач',
+    'about.education.school': 'Ереванский государственный медицинский университет им. Мхитара Гераци',
+    'about.education.year': 'Выпускник',
+    'about.recognition': 'Художественный Подход',
+    'about.recognition.award': 'Фотореализм, Классицизм, Тёмный Романтизм',
+    'about.recognition.year': 'Символизм и Сюрреализм',
 
     // Featured Gallery
     'gallery.title': 'Избранные Произведения',

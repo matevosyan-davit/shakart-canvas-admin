@@ -30,7 +30,7 @@ const AboutSection = () => {
 
             <div className="prose prose-lg max-w-none">
               <p className="font-serif text-lg sm:text-xl md:text-2xl text-foreground/70 leading-loose tracking-wide">
-                {t('about.bio')}
+                {t('about.bio.short')}
               </p>
             </div>
 
