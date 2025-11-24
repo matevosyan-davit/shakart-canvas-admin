@@ -19,6 +19,7 @@ export const getLanguageValue = (
 };
 
 // Create artwork update object for specific language
+// STRICT LANGUAGE SEPARATION: Only updates fields for the selected language
 export const createArtworkUpdate = (
   data: { title: string; description: string },
   language: Language,
@@ -26,7 +27,8 @@ export const createArtworkUpdate = (
   category: string,
   is_sold: boolean = false,
   dimensions?: { width_cm?: number | null; height_cm?: number | null; depth_cm?: number | null },
-  year_painted?: number | null
+  year_painted?: number | null,
+  isNewArtwork: boolean = false
 ) => {
   const update: any = {
     price,
@@ -47,57 +49,59 @@ export const createArtworkUpdate = (
     update.year_painted = year_painted;
   }
 
+  // STRICT SEPARATION: Only update the fields for the selected language
   if (language === 'en') {
+    // English: update base fields only
     update.title = data.title;
     update.description = data.description;
   } else {
-    // For non-English languages, store the translation in language-specific field
-    // and also store it in the base field as fallback (required by database)
-    update.title = data.title;
-    update.description = data.description;
+    // Other languages: update ONLY language-specific fields
     update[`title_${language}`] = data.title;
     update[`description_${language}`] = data.description;
+
+    // For NEW artworks in non-English languages, we need to provide a placeholder
+    // for the required 'title' field (database constraint)
+    if (isNewArtwork) {
+      update.title = `[${language.toUpperCase()}] ${data.title}`;
+      update.description = `[${language.toUpperCase()}] ${data.description}`;
+    }
   }
 
   return update;
 };
 
 // Create exhibition update object for specific language
+// STRICT LANGUAGE SEPARATION: Only updates fields for the selected language
 export const createExhibitionUpdate = (
   data: { title: string; location: string; theme: string | null; description: string },
   language: Language,
   date: string
 ) => {
-  console.log('Creating exhibition update for language:', language, 'with data:', data);
-
   const update: any = {
     date,
     language,
   };
 
+  // STRICT SEPARATION: Only update the fields for the selected language
   if (language === 'en') {
+    // English: update base fields only
     update.title = data.title;
     update.location = data.location;
     update.theme = data.theme;
     update.description = data.description;
   } else {
-    // For non-English languages, store the translation in language-specific field
-    // and also store it in the base field as fallback (required by database)
-    update.title = data.title;
-    update.location = data.location;
-    update.theme = data.theme;
-    update.description = data.description;
+    // Other languages: update ONLY language-specific fields
     update[`title_${language}`] = data.title;
     update[`location_${language}`] = data.location;
     update[`theme_${language}`] = data.theme;
     update[`description_${language}`] = data.description;
   }
 
-  console.log('Final update object:', update);
   return update;
 };
 
 // Create media update object for specific language
+// STRICT LANGUAGE SEPARATION: Only updates fields for the selected language
 export const createMediaUpdate = (
   data: { title: string; media_name: string },
   language: Language,
@@ -110,14 +114,13 @@ export const createMediaUpdate = (
     article_url: article_url || null,
   };
 
+  // STRICT SEPARATION: Only update the fields for the selected language
   if (language === 'en') {
+    // English: update base fields only
     update.title = data.title;
     update.media_name = data.media_name;
   } else {
-    // For non-English languages, store the translation in language-specific field
-    // and also store it in the base field as fallback (required by database)
-    update.title = data.title;
-    update.media_name = data.media_name;
+    // Other languages: update ONLY language-specific fields
     update[`title_${language}`] = data.title;
     update[`media_name_${language}`] = data.media_name;
   }

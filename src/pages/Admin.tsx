@@ -837,7 +837,7 @@ const Admin = () => {
           width_cm: data.width_cm ? parseFloat(data.width_cm) : null,
           height_cm: data.height_cm ? parseFloat(data.height_cm) : null,
           depth_cm: data.depth_cm ? parseFloat(data.depth_cm) : null,
-        }, data.year_painted ? parseInt(data.year_painted) : null);
+        }, data.year_painted ? parseInt(data.year_painted) : null, false);
 
         const { error: artworkError } = await supabase
           .from('artworks')
@@ -878,7 +878,7 @@ const Admin = () => {
             width_cm: data.width_cm ? parseFloat(data.width_cm) : null,
             height_cm: data.height_cm ? parseFloat(data.height_cm) : null,
             depth_cm: data.depth_cm ? parseFloat(data.depth_cm) : null,
-          }, data.year_painted ? parseInt(data.year_painted) : null),
+          }, data.year_painted ? parseInt(data.year_painted) : null, true),
           display_order: nextOrder
         };
 
