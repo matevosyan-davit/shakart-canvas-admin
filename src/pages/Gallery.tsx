@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { getTranslatedField } from "@/utils/multiLanguageHelpers";
+import { getTranslatedField, filterByLanguage } from "@/utils/multiLanguageHelpers";
 import ArtworkDialog from "@/components/ArtworkDialog";
 
 interface ArtworkImage {
@@ -29,6 +29,7 @@ interface Artwork {
 
 const Gallery = () => {
   const { t, currentLanguage } = useLanguage();
+  const [allArtworks, setAllArtworks] = useState<Artwork[]>([]);
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
@@ -39,6 +40,13 @@ const Gallery = () => {
   useEffect(() => {
     fetchArtworks();
   }, []);
+
+  useEffect(() => {
+    // Filter artworks when language changes
+    const filtered = filterByLanguage(allArtworks, currentLanguage);
+    setArtworks(filtered);
+    setCurrentPage(1); // Reset to first page when language changes
+  }, [currentLanguage, allArtworks]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -65,8 +73,11 @@ const Gallery = () => {
         ...artwork,
         artwork_images: artwork.artwork_images.sort((a: ArtworkImage, b: ArtworkImage) => a.display_order - b.display_order)
       })) || [];
-      
-      setArtworks(sortedArtworks);
+
+      setAllArtworks(sortedArtworks);
+      // Filter by current language
+      const filtered = filterByLanguage(sortedArtworks, currentLanguage);
+      setArtworks(filtered);
     } catch (error) {
       console.error('Error fetching artworks:', error);
     } finally {

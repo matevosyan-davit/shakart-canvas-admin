@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
 import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { getTranslatedField } from "@/utils/multiLanguageHelpers";
+import { getTranslatedField, filterByLanguage } from "@/utils/multiLanguageHelpers";
 import { Button } from "@/components/ui/button";
 import ArtworkDialog from "@/components/ArtworkDialog";
 
@@ -32,6 +32,7 @@ interface Artwork {
 
 const FeaturedGallery = () => {
   const { t, currentLanguage } = useLanguage();
+  const [allArtworks, setAllArtworks] = useState<Artwork[]>([]);
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
@@ -40,6 +41,12 @@ const FeaturedGallery = () => {
   useEffect(() => {
     fetchFeaturedArtworks();
   }, []);
+
+  useEffect(() => {
+    // Filter artworks when language changes
+    const filtered = filterByLanguage(allArtworks, currentLanguage);
+    setArtworks(filtered);
+  }, [currentLanguage, allArtworks]);
 
   useEffect(() => {
     if (!carouselApi) return;
@@ -73,8 +80,11 @@ const FeaturedGallery = () => {
         ...artwork,
         artwork_images: artwork.artwork_images.sort((a: ArtworkImage, b: ArtworkImage) => a.display_order - b.display_order)
       })) || [];
-      
-      setArtworks(sortedArtworks);
+
+      setAllArtworks(sortedArtworks);
+      // Filter by current language
+      const filtered = filterByLanguage(sortedArtworks, currentLanguage);
+      setArtworks(filtered);
     } catch (error) {
       console.error('Error fetching featured artworks:', error);
     }
