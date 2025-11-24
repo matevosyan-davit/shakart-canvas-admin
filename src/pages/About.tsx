@@ -32,32 +32,13 @@ const About = () => {
 
       {/* Biography Section */}
       <section className="py-16 px-6">
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className="max-w-4xl mx-auto">
           <Card className="p-8 bg-card shadow-card">
             <h2 className="font-display text-3xl font-medium text-primary mb-6">Artistic Journey</h2>
             <div className="font-body text-foreground space-y-4 leading-relaxed whitespace-pre-line">
               {t('about.bio')}
             </div>
           </Card>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <Card className="p-6 bg-card shadow-card">
-              <h3 className="font-display text-xl font-medium text-primary mb-4">{t('about.education')}</h3>
-              <div className="font-body text-muted-foreground space-y-2">
-                <p>{t('about.education.degree')}</p>
-                <p>{t('about.education.school')}</p>
-                <p>{t('about.education.year')}</p>
-              </div>
-            </Card>
-
-            <Card className="p-6 bg-card shadow-card">
-              <h3 className="font-display text-xl font-medium text-primary mb-4">{t('about.recognition')}</h3>
-              <div className="font-body text-muted-foreground space-y-2">
-                <p>{t('about.recognition.award')}</p>
-                <p>{t('about.recognition.year')}</p>
-              </div>
-            </Card>
-          </div>
         </div>
       </section>
 

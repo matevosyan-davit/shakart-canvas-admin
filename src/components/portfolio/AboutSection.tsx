@@ -33,29 +33,6 @@ const AboutSection = () => {
                 {t('about.bio.short')}
               </p>
             </div>
-
-            <div className="mt-20 space-y-10">
-              <div className="border-l border-accent/30 pl-6">
-                <span className="font-body text-xs uppercase tracking-[0.25em] text-muted-foreground mb-3 block">
-                  {t('about.education')}
-                </span>
-                <div className="font-body text-foreground/70 space-y-1 leading-relaxed">
-                  <p className="text-base">{t('about.education.degree')}</p>
-                  <p className="text-sm text-muted-foreground">{t('about.education.school')}</p>
-                  <p className="text-xs text-muted-foreground">{t('about.education.year')}</p>
-                </div>
-              </div>
-
-              <div className="border-l border-accent/30 pl-6">
-                <span className="font-body text-xs uppercase tracking-[0.25em] text-muted-foreground mb-3 block">
-                  {t('about.recognition')}
-                </span>
-                <div className="font-body text-foreground/70 space-y-1 leading-relaxed">
-                  <p className="text-base">{t('about.recognition.award')}</p>
-                  <p className="text-xs text-muted-foreground">{t('about.recognition.year')}</p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
