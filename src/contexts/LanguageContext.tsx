@@ -23,9 +23,9 @@ const translations = {
 
     // Hero Section
     'hero.title': 'Shakart',
-    'hero.subtitle': 'Contemporary Artist & Visual Storyteller',
-    'hero.description': 'Exploring the boundaries between traditional and modern art through bold expressions and innovative techniques.',
-    'hero.explore': 'Explore Gallery',
+    'hero.subtitle': 'Armenian Contemporary Artist',
+    'hero.description': 'Exploring the boundaries of traditional and contemporary art',
+    'hero.explore': 'View Gallery',
     'hero.about': 'About the Artist',
 
     // About Section
@@ -56,11 +56,11 @@ const translations = {
     'exhibitions.viewAll': 'View All Exhibitions',
 
     // Contact Section
-    'contact.title': "Let's Connect",
-    'contact.subtitle': 'Ready to discuss a project or learn more about my work?',
-    'contact.hero.description': 'Ready to discuss your vision? I\'d love to hear about your project and explore how we can bring your ideas to life through art.',
-    'contact.email': 'Email Me Directly',
-    'contact.call': 'Call Me Now',
+    'contact.title': 'Contact Me',
+    'contact.subtitle': 'For collaboration and purchasing artworks',
+    'contact.hero.description': 'Ready to discuss your vision? I would like to hear about your project and explore how we can bring your ideas to life through art.',
+    'contact.email': 'Email',
+    'contact.call': 'Call',
     'contact.info': 'Get in Touch',
     'contact.phone': 'Phone',
     'contact.location': 'Location',
@@ -70,9 +70,9 @@ const translations = {
 
     // Gallery Page
     'gallery.page.title': 'Gallery',
-    'gallery.page.description': 'Explore my artistic journey through paintings, sculptures, and street art. Each piece tells a story of emotion, technique, and creative expression.',
+    'gallery.page.description': 'Explore my artistic journey through canvases, sculptures, and mural art.',
     'gallery.paintings': 'Paintings',
-    'gallery.sculpture': 'Sculpture',
+    'gallery.sculpture': 'Sculptures',
     'gallery.streetart': 'Street Art',
     'gallery.noArtworks': 'No artworks in this category yet.',
     'gallery.loadingArtworks': 'Loading artworks...',
@@ -84,20 +84,20 @@ const translations = {
 
     // Exhibitions Page
     'exhibitions.page.title': 'Exhibitions',
-    'exhibitions.page.description': 'A journey through major exhibitions that have shaped my artistic career, featuring highlights from shows in Armenia and around the world.',
+    'exhibitions.page.description': 'Exhibitions are one of the ways to present my artistic journey. Only solo exhibitions are presented here.',
     'exhibitions.loadingExhibitions': 'Loading exhibitions...',
     'exhibitions.noExhibitions': 'No exhibitions found.',
     'exhibitions.theme': 'Theme',
-    'exhibitions.mediaCoverage': 'Media Coverage',
-    'exhibitions.exhibitionHighlights': 'Exhibition Highlights',
+    'exhibitions.mediaCoverage': 'In the Media',
+    'exhibitions.exhibitionHighlights': 'Main Events',
     'exhibitions.inquiries': 'Exhibition Inquiries',
-    'exhibitions.inquiriesText': 'Interested in featuring my work in your gallery or collaborating on an exhibition? I\'m always open to discussing new opportunities and artistic partnerships.',
-    'exhibitions.getInTouch': 'Get in Touch',
+    'exhibitions.inquiriesText': 'Interested in showcasing my work in your gallery or collaborating on an exhibition? I am always ready to discuss new opportunities and artistic collaborations.',
+    'exhibitions.getInTouch': 'Contact',
     'exhibitions.readArticle': 'Read Article',
 
     // Media Page
-    'media.page.title': 'Media & Interviews',
-    'media.page.description': 'Interviews and media coverage exploring my artistic journey and contributions to contemporary art.',
+    'media.page.title': 'Media and Interviews',
+    'media.page.description': '',
     'media.loadingMedia': 'Loading media...',
     'media.noMedia': 'No media content available at the moment.',
     'media.interview': 'Interview',
@@ -223,9 +223,9 @@ const translations = {
 
     // Hero Section
     'hero.title': 'Шакарт',
-    'hero.subtitle': 'Современный Художник и Визуальный Рассказчик',
-    'hero.description': 'Исследуя границы между традиционным и современным искусством через смелые выражения и инновационные техники.',
-    'hero.explore': 'Смотреть Галерею',
+    'hero.subtitle': 'Армянский современный художник',
+    'hero.description': 'Исследуя границы традиционного и современного искусства',
+    'hero.explore': 'Посмотреть Галерею',
     'hero.about': 'О Художнике',
 
     // About Section
@@ -256,11 +256,11 @@ const translations = {
     'exhibitions.viewAll': 'Смотреть Все Выставки',
 
     // Contact Section
-    'contact.title': 'Давайте Свяжемся',
-    'contact.subtitle': 'Готовы обсудить проект или узнать больше о моей работе?',
+    'contact.title': 'Связаться со мной',
+    'contact.subtitle': 'Для сотрудничества и приобретения картин',
     'contact.hero.description': 'Готовы обсудить ваше видение? Я хотел бы услышать о вашем проекте и изучить, как мы можем воплотить ваши идеи в жизнь через искусство.',
-    'contact.email': 'Написать Email',
-    'contact.call': 'Позвонить Сейчас',
+    'contact.email': 'Email',
+    'contact.call': 'Позвонить',
     'contact.info': 'Связаться',
     'contact.phone': 'Телефон',
     'contact.location': 'Местоположение',
@@ -270,9 +270,9 @@ const translations = {
 
     // Gallery Page
     'gallery.page.title': 'Галерея',
-    'gallery.page.description': 'Исследуйте мое художественное путешествие через картины, скульптуры и уличное искусство. Каждое произведение рассказывает историю эмоций, техники и творческого самовыражения.',
+    'gallery.page.description': 'Исследуйте мое художественное путешествие через холсты, скульптуры и настенное искусство.',
     'gallery.paintings': 'Картины',
-    'gallery.sculpture': 'Скульптура',
+    'gallery.sculpture': 'Скульптуры',
     'gallery.streetart': 'Уличное Искусство',
     'gallery.noArtworks': 'В этой категории пока нет произведений.',
     'gallery.loadingArtworks': 'Загрузка произведений...',
@@ -284,20 +284,20 @@ const translations = {
 
     // Exhibitions Page
     'exhibitions.page.title': 'Выставки',
-    'exhibitions.page.description': 'Путешествие по крупным выставкам, сформировавшим мою художественную карьеру, включая основные моменты шоу в Армении и по всему миру.',
+    'exhibitions.page.description': 'Выставки - один из способов представления моего художественного пути. Здесь представлены только персональные выставки.',
     'exhibitions.loadingExhibitions': 'Загрузка выставок...',
     'exhibitions.noExhibitions': 'Выставки не найдены.',
     'exhibitions.theme': 'Тема',
-    'exhibitions.mediaCoverage': 'Освещение в СМИ',
-    'exhibitions.exhibitionHighlights': 'Основные Моменты Выставки',
-    'exhibitions.inquiries': 'Запросы о Выставках',
-    'exhibitions.inquiriesText': 'Заинтересованы в демонстрации моих работ в вашей галерее или сотрудничестве на выставке? Я всегда открыт к обсуждению новых возможностей и художественного партнерства.',
+    'exhibitions.mediaCoverage': 'В СМИ',
+    'exhibitions.exhibitionHighlights': 'Главные События',
+    'exhibitions.inquiries': 'Запросы Касательно Выставок',
+    'exhibitions.inquiriesText': 'Заинтересованы в демонстрации моих работ в вашей галерее или сотрудничестве на выставке? Я всегда готов обсудить новые возможности и художественные сотрудничества.',
     'exhibitions.getInTouch': 'Связаться',
     'exhibitions.readArticle': 'Читать Статью',
 
     // Media Page
-    'media.page.title': 'Медиа и Интервью',
-    'media.page.description': 'Интервью и освещение в СМИ, исследующие мое художественное путешествие и вклад в современное искусство.',
+    'media.page.title': 'Медиа и интервью',
+    'media.page.description': '',
     'media.loadingMedia': 'Загрузка медиа...',
     'media.noMedia': 'Медиа контент пока недоступен.',
     'media.interview': 'Интервью',
